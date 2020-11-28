@@ -1,3 +1,3 @@
 <?php
-//silence is golden
+//This file will contain the model script 
 ?>
