@@ -8,5 +8,6 @@ echo "<h3> Calculate</h3><form method='GET' action='controller.php'>
 			 <option> Subtract </option>
 	     </select>
 		 <input type='submit' value='calculate'/>
-	  </form>";
+	  </form>"
+	<div id='results'></div>;
 ?>
