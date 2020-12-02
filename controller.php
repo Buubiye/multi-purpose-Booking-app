@@ -18,6 +18,9 @@ global $value;
 	  public function getValue(){
 			 return $value;
 	  }
+	  public function signup(){
+		  
+	  }
   }
   
   $numb1 = $_GET['num1'];
