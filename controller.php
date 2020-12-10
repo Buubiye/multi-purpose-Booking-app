@@ -30,4 +30,6 @@ global $value;
   $calculator->calculator($numb1, $numb2, $signt);
   echo $calculator->getValue();
   include 'view.php';
+
+//create the first form and form validation system
 ?>
