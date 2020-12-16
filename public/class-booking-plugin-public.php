@@ -3,10 +3,10 @@
 /**
  * The public-facing functionality of the plugin.
  *
- * @link       http://example.com
+ * @link       http://multi_purpose_booking_app.github.io
  * @since      1.0.0
  *
- * @package    Plugin_Name
+ * @package    Booking app
  * @subpackage Plugin_Name/public
  */
 
