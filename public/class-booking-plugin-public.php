@@ -3,7 +3,7 @@
 /**
  * The public-facing functionality of the plugin.
  *
- * @link       Ahmed-Buubiye
+ * @link       Ahmed-C-Buubiye
  * @since      1.0.0
  *
  * @package    Booking_Plugin
