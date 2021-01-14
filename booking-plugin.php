@@ -80,3 +80,26 @@ function run_booking_plugin() {
 
 }
 run_booking_plugin();
+
+
+class My_Table2 {
+	
+
+        /*
+            Add an menu entry in the Administration. Fore more information see: http://codex.wordpress.org/Administration_Menus
+        */
+        public function __construct() {
+            add_action('admin_menu',    array($this, 'admin_menu'));
+        }
+
+        public function admin_menu() {
+            $menu_title = 'Multi-Purpose-Booking';  // The title of your menu entry
+            $menu_slug  = 'my_table2';                   // The slug, for example: wp-admin/admin.php?page=my_table
+            add_menu_page($menu_title, $menu_title, 'manage_options', $menu_slug, array($this, 'admin_page'));
+        }
+		public function admin_page() {
+		   require_once('admin\partials\booking-plugin-admin-display.php');
+		}
+    }
+
+    new My_Table2();

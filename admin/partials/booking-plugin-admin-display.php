@@ -14,3 +14,9 @@
 ?>
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
+<h1> Insertion</h1>
+	<form method='post' action=''/>
+	  Name: <input type="text" name='Name' placeholder='Name'/>
+	  location: <input type='number' name='location' placeholder='Location'/>
+	  <button type="Submit"> Submit </button>
+	</form>
