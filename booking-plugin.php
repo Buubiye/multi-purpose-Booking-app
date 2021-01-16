@@ -90,15 +90,23 @@ class My_Table2 {
         */
         public function __construct() {
             add_action('admin_menu',    array($this, 'admin_menu'));
+			add_action('admin_menu', array($this, 'settings_page'));
         }
 
         public function admin_menu() {
             $menu_title = 'Multi-Purpose-Booking';  // The title of your menu entry
-            $menu_slug  = 'my_table2';                   // The slug, for example: wp-admin/admin.php?page=my_table
+			$menu_subTitle_1 = 'settings';
+            $menu_slug  = 'my_table2';   
+			$sum_menu_1_slug = 'settings';
+			// The slug, for example: wp-admin/admin.php?page=my_table
             add_menu_page($menu_title, $menu_title, 'manage_options', $menu_slug, array($this, 'admin_page'));
+			add_submenu_page($menu_slug, $menu_subTitle_1, $menu_subTitle_1, 'manage_options', array($this, 'settings_page'));
         }
 		public function admin_page() {
 		   require_once('admin\partials\booking-plugin-admin-display.php');
+		}
+		public function settings_page(){
+			require_once('admin\index.php');
 		}
     }
 
