@@ -94,11 +94,36 @@ class My_Table2 {
 
         public function admin_menu() {
             $menu_title = 'Multi-Purpose-Booking';  // The title of your menu entry
-            $menu_slug  = 'my_table2';                   // The slug, for example: wp-admin/admin.php?page=my_table
+			$menu_subTitles = ['Services', 'orders', 'users', 'service-providers', 'settings'];
+            $menu_slug  = 'my_table2';   
+			$sum_menu_1_slugs = ['Services', 'orders', 'users', 'service-providers', 'settings'];
+			// The slug, for example: wp-admin/admin.php?page=my_table
             add_menu_page($menu_title, $menu_title, 'manage_options', $menu_slug, array($this, 'admin_page'));
-        }
+			add_submenu_page($menu_slug, $menu_subTitles[0], $menu_subTitles[0], 'manage_options', $menu_subTitles[0], array($this, 'services_page'));
+			add_submenu_page($menu_slug, $menu_subTitles[1], $menu_subTitles[1], 'manage_options', $menu_subTitles[1], array($this, 'orders_page'));
+			add_submenu_page($menu_slug, $menu_subTitles[2], $menu_subTitles[2], 'manage_options', $menu_subTitles[2], array($this, 'users_page'));
+			add_submenu_page($menu_slug, $menu_subTitles[3], $menu_subTitles[3], 'manage_options', $menu_subTitles[3], array($this, 'service_providers_page'));
+			add_submenu_page($menu_slug, $menu_subTitles[4], $menu_subTitles[4], 'manage_options', $menu_subTitles[4], array($this, 'settings_page'));
+        
+		}
+		
 		public function admin_page() {
 		   require_once('admin\partials\booking-plugin-admin-display.php');
+		}
+		public function services_page(){
+			require_once('admin\partials\services-admin-display.php');
+		}
+		public function orders_page(){
+			require_once('admin\partials\orders-admin-display.php');
+		}
+		public function users_page(){
+			require_once('admin\partials\users-admin-display.php');
+		}
+		public function service_providers_page(){
+			require_once('admin\partials\service-providers-admin-display.php');
+		}
+		public function settings_page(){
+			require_once('admin\partials\settings-admin-display.php');
 		}
     }
 
