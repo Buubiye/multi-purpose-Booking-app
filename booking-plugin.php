@@ -90,6 +90,8 @@ class My_Table2 {
         */
         public function __construct() {
             add_action('admin_menu',    array($this, 'admin_menu'));
+			require_once('includes\class-booking-plugin-activator.php');
+			register_activation_hook( __FILE__, 'create_mpbp_services_db_table' );
         }
 
         public function admin_menu() {
