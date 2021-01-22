@@ -1,6 +1,7 @@
 <?php
 // This file contains the services page
  echo '<h1> Add New Services </h1>';
+ //require_once plugin_dir_path( __FILE__ ) . 'admin\validators\service-form-validation.php';
 ?>
 
 <form method='POST' action='' id='services_1'>

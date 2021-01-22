@@ -57,6 +57,8 @@ function deactivate_booking_plugin() {
 
 register_activation_hook( __FILE__, 'activate_booking_plugin' );
 register_deactivation_hook( __FILE__, 'deactivate_booking_plugin' );
+require_once('includes\class-booking-plugin-activator.php');
+register_activation_hook( __FILE__, 'create_mpbp_services_db_table' );
 
 /**
  * The core plugin class that is used to define internationalization,
