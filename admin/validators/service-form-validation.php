@@ -3,9 +3,9 @@
 /*
 * Used for service's form validation 
 */
-if (! defind(ABSPATH){
-	die;
-}
+/*if (! defind(ABSPATH){
+	//die;
+}*/
  class post_request
  {
 	 function print_name()

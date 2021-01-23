@@ -214,5 +214,4 @@ class Booking_Plugin {
 	public function get_version() {
 		return $this->version;
 	}
-
 }

@@ -99,5 +99,6 @@ class Booking_Plugin_Admin {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/booking-plugin-admin.js', array( 'jquery' ), $this->version, false );
 
 	}
-
 }
+
+//require_once plugin_dir_path(dirname( __FILE__ ) ) . 'admin\validators\service-form-validation.php';
