@@ -12,7 +12,7 @@
 	 {
  if(isset($_POST['name']))
  {
-	 echo $_POST['name'];
+	 echo '<div style="margin-left: 200px">'. $_POST['name'] . '</div>';
  }
 	 }
 	 
