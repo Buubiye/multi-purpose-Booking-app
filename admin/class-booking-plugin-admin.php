@@ -101,4 +101,4 @@ class Booking_Plugin_Admin {
 	}
 }
 
-require_once plugin_dir_path(dirname( __FILE__ ) ) . 'admin\validators\service-form-validation.php';
+//require_once plugin_dir_path(dirname( __FILE__ ) ) . 'admin\validators\service-form-validation.php';
