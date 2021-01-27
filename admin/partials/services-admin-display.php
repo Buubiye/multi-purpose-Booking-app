@@ -2,20 +2,26 @@
 // This file contains the services page
  function mpbp_validate_services(){
 	 global $mpbp_services_new_name;
-	 global $mpbp_services_data[];
+	 global $mpbp_services_data;
+	 /*array[
+	   "time" => [],
+	   "name" => [],
+	   "text" => [],
+	   "url" => []
+	 ];*/
 	 if(isset($_POST['name']))
 	 {
 		 $mpbp_services_new_name = $_POST['name'];
-		 $mpbp_services_data = [$_POST['name']];
+		 $mpbp_services_data[0] = $_POST['name'];
 	 }
 	 mpbp_insert_to_db();
 }
 
 function mpbp_insert_to_db(){
 	global $wpdb;
-	global $mpbp_services_new_name;
+	global $mpbp_services_data;
 	//global $mpbp_services_data
-	echo $mpbp_services_new_name;
+	echo $mpbp_services_data[0];
 	$wpdb->query(
 		$wpdb->prepare("
 		    INSERT INTO wp_mpbpservices (time, name, text, url) values (%d, %s, %s, %s)", '209922', $mpbp_services_data[0], "hello", "world"
