@@ -97,7 +97,9 @@ class Booking_Plugin_Admin {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/booking-plugin-admin.js', array( 'jquery' ), $this->version, false );
-
+        //scripts for media widget
+		wp_enqueue_script('media-upload');
+		wp_enqueue_media();
 	}
 }
 
