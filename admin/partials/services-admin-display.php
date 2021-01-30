@@ -57,7 +57,7 @@ function mpbp_insert_to_db(){
 mpbp_validate_services();
 
 ?>
-<h1> Add New Services </h1>
+<h1 id="h11"> Add New Services </h1>
 <form method='POST' enctype="multipart/form-data" action='' id='services_1'>
 	<input type='text' id='name' name='name' placeholder='name'/><br>
 	<input type='text' id='description' name='description' placeholder='description'/><br>
@@ -78,6 +78,7 @@ if ( isset( $_POST['submit_image_selector'] ) && isset( $_POST['image_attachment
         update_option( 'media_selector_attachment_id', absint( $_POST['image_attachment_id'] ) );
     endif;
     wp_enqueue_media();
+	wp_enqueue_script( array("jquery", "jquery-ui-core", "interface", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable") );
     ?><form method='post'>
         <div class='image-preview-wrapper'>
             <img id='image-preview' src='<?php echo wp_get_attachment_url( get_option( 'media_selector_attachment_id' ) ); ?>' width='200'>
@@ -87,51 +88,59 @@ if ( isset( $_POST['submit_image_selector'] ) && isset( $_POST['image_attachment
 		
         <input type="submit" name="submit_image_selector" value="Save" class="button-primary">
     </form>
+	
+    <button type="button" id="mpbp_hidden_image_form_btn" value="">insert to Form</button>
 <?php
 $my_saved_attachment_post_id = get_option( 'media_selector_attachment_id', 0 );
     ?><script type='text/javascript'>
-        jQuery( document ).ready( function( $ ) {
-            // Uploading files
-            var file_frame;
-            var wp_media_post_id = wp.media.model.settings.post.id; // Store the old id
-            var set_to_post_id = <?php echo $my_saved_attachment_post_id; ?>; // Set this
-            jQuery('#upload_image_button').on('click', function( event ){
-                event.preventDefault();
-                // If the media frame already exists, reopen it.
-                if ( file_frame ) {
-                    // Set the post ID to what we want
-                    file_frame.uploader.uploader.param( 'post_id', set_to_post_id );
-                    // Open frame
-                    file_frame.open();
-                    return;
-                } else {
-                    // Set the wp.media post id so the uploader grabs the ID we want when initialised
-                    wp.media.model.settings.post.id = set_to_post_id;
-                }
-                // Create the media frame.
-                file_frame = wp.media.frames.file_frame = wp.media({
-                    title: 'Select a image to upload',
-                    button: {
-                        text: 'Use this image',
-                    },
-                    multiple: false // Set to true to allow multiple files to be selected
-                });
-                // When an image is selected, run a callback.
-                file_frame.on( 'select', function() {
-                    // We set multiple to false so only get one image from the uploader
-                    attachment = file_frame.state().get('selection').first().toJSON();
-                    // Do something with attachment.id and/or attachment.url here
-                    $( '#image-preview' ).attr( 'src', attachment.url ).css( 'width', 'auto' );
-                    $( '#image_attachment_id' ).val( attachment.id );
-                    // Restore the main post ID
-                    wp.media.model.settings.post.id = wp_media_post_id;
-                });
-                    // Finally, open the modal
-                    file_frame.open();
-            });
-            // Restore the main ID when the add media button is pressed
-            jQuery( 'a.add_media' ).on( 'click', function() {
-                wp.media.model.settings.post.id = wp_media_post_id;
-            });
-        });
+	// this code stores the image src attribute in one input
+	var pushValues = [];
+		document.getElementById('mpbp_hidden_image_form_btn').onclick = function(){
+		   var imgSrcArray = document.getElementsByClassName('mpbp_new_images');
+		   pushValues = []; // remove the old values
+		   for(i=0; i<imgSrcArray.length; i++){
+			 pushValues.push(document.getElementsByClassName('mpbp_new_images')[i].getAttribute('src'));
+		   }
+		   document.getElementById('pictures').value = pushValues;
+		}
+		
+        var tgm_media_frame;
+        $('h1').click(function(){
+	 $(this).css({color: 'green'});
+	 //$(this).css({color: 'yellow'});
+  });
+  
+  document.getElementById('h11').addEventListener('click', function(){
+	  //console.log('Axmed, here we go again');
+  });
+  
+$('#upload_image_button').click(function() {
+
+  if ( tgm_media_frame ) {
+    tgm_media_frame.open();
+    return;
+  }
+
+  tgm_media_frame = wp.media.frames.tgm_media_frame = wp.media({
+    multiple: 'add',
+    library: {
+      type: 'image'
+    },
+  });
+
+  tgm_media_frame.on('select', function(){
+    var selection = tgm_media_frame.state().get('selection');
+    selection.map( function( attachment ) {
+		attachment = attachment.toJSON();
+		//$('.mpbp_new_images').remove(); // remove the current images
+		$("#image-preview").after("<img class='mpbp_new_images' style='width: 100px;' src=" +attachment.url+">");
+    });
+  });
+
+  tgm_media_frame.open();
+  
+  console.log('Axmed, i dont have event listener');
+  
+});
     </script>
+	

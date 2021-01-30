@@ -29,4 +29,8 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
+     document.querySelector('#h11').onclick = function(){
+	 //$('#wpbody-content > h1').hide();
+	 console.log('axmed Nuur is watching');
+	 }
 })( jQuery );
