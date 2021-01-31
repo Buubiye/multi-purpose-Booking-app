@@ -10,24 +10,14 @@
 		 $mpbp_services_data[0] = $_POST['name'];
 	 }
 	 // validate the description
-	 //if(){
-		 
-	 //}
-	 //uploaded pictures
-	 if($_FILES['mpbp_services_pic_upload']['name'] == !''){
-		 $mpbp_services_data[2] = $_FILES['mpbp_services_pic_upload']['name'];
-		 
-		 $mpbp_upload = media_handle_upload('mpbp_services_pic_upload', 0);
-		 if(is_wp_error($mpbp_upload)){
-            echo "Error uploading file: " . $mpbp_upload->get_error_message();
-        }else{
-            echo "File upload successful!";
-        }
+	 if(isset($_POST['description'])){
+		 $mpbp_services_data[1] = $_POST['description'];
 	 }
 	 //validate price
 	  if(isset($_POST['price'])){
+		 $mpbp_services_data[2] = $_POST['pictures'];
 		 $mpbp_services_data[3] = $_POST['price'];
-		 $mpbp_services_data[4] = $_POST['date-created'];
+		 $mpbp_services_data[4] = $_POST['date_created'];
 		 $mpbp_services_data[5] = $_POST['category'];
 		 $mpbp_services_data[6] = $_POST['available_times'];
 		 $mpbp_services_data[7] = $_POST['quantity'];
@@ -58,7 +48,7 @@ function mpbp_insert_to_db(){
 	echo $mpbp_services_data[0];
 	$wpdb->query(
 		$wpdb->prepare("
-		    INSERT INTO wp_mpbpservices2 (name, description, pictures, price, date-created, category, available_times, quantity, status, extra_info) values (%s, %s, %s, %d, %d, %s, %s, %d, %s, %s)", $mpbp_services_data[0], $mpbp_services_data[1], $mpbp_services_data[2], $mpbp_services_data[3], $mpbp_services_data[4], $mpbp_services_data[5], $mpbp_services_data[6], $mpbp_services_data[7], $mpbp_services_data[8], $mpbp_services_data[9]
+		    INSERT INTO wp_mpbpservices2 (name, description, pictures, price, date_created, category, available_times, quantity, status, extra_info) values (%d, %s, %s, %d, %d, %s, %s, %d, %s, %s)", 123, $mpbp_services_data[1], $mpbp_services_data[2], $mpbp_services_data[3], $mpbp_services_data[4], $mpbp_services_data[5], $mpbp_services_data[6], $mpbp_services_data[7], $mpbp_services_data[8], $mpbp_services_data[9]
 		)
 	);
 }
@@ -80,10 +70,24 @@ mpbp_validate_services();
 	<button type="button" id="mpbp_hidden_image_form_btn" value="">insert to Form</button><br>
 	<input type='text' id='price' name='price' placeholder='price'/><br>
 	<input type='text' id='date_created' name='date_created' placeholder='date_created'/><br>
-	<input type='text' id='category' name='category' placeholder='category'/><br>
-	<input type='text' id='available_times' name='available_times' placeholder='available_times'/><br>
-	<textarea type='text' id='quantity' name='quantity' placeholder='quantity'> </textarea><br>
-	<input type='text' id='status' name='status' placeholder='status'/><br>
+	<select type='text' id='category' name='category' placeholder='category'>
+		<option id="mpbp_category_select"> Select Category </option>
+		<option id="mpbp_services_taxi"> Ride Sharing </option>
+		<option id="mpbp_services_hotel"> Hotel </option>
+		<option id="mpbp_services_accomodation"> Accomodation </option>
+		<option id="mpbp_services_flight"> Flight </option>
+		<option id="mpbp_services_other"> Other </option>
+	</select><br>
+	<label> The available time should be written like this [00:00 am - 00:00 pm], [00:00 am - 00:00 pm] .... <br>
+			 [] = the brackets mean the different opening and closing times throught the day</label> <br>
+	<input type='text' id='available_times' name='available_times' placeholder='available_times'/>
+	<p id="mpbp_available_times_tester"></p><br>
+	<textarea type='number' id='quantity' name='quantity' placeholder='quantity'> </textarea><br>
+	<select type='text' id='status' name='status' placeholder='status'>
+	    <option id="mpbp_services_status"> Select Status </option>
+	    <option id="mpbp_services_available"> Available </option>
+		<option id="mpbp_services_not_available"> Not Available </option>
+	</select><br>
 	<input type='text' id='extra_info' name='extra_info' placeholder='extra_info'/><br>
 	<input class="button" type='submit'/>
  </form>
@@ -94,14 +98,20 @@ if ( isset( $_POST['submit_image_selector'] ) && isset( $_POST['image_attachment
     endif;
     wp_enqueue_media();
 	wp_enqueue_script( array("jquery", "jquery-ui-core", "interface", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable") );
-    ?><form method='post'>
-        
-        <input type="submit" name="submit_image_selector" value="Save" class="button-primary">
-    </form>
+    ?>
 	
 <?php
 $my_saved_attachment_post_id = get_option( 'media_selector_attachment_id', 0 );
     ?><script type='text/javascript'>
+	// this code validates the ['available_times'] input value using regex
+	document.getElementById("available_times").addEventListener("keyup", displayDate);
+
+	function displayDate() {
+		  let regex = /\[(\d\d|\d)\:(\d\d|\d)(\s|\S)(am|pm)\s(\-|\,)\s(\d\d|\d)\:(\d\d|\d)(\s|\S)(am|pm)]/gi;
+		  let mpbp_available_regex = document.getElementById("available_times").value;
+		  document.getElementById('mpbp_available_times_tester').innerHTML = regex.test(mpbp_available_regex);
+	  
+	}
 	// this code stores the image src attribute in one input
 	var pushValues = [];
 		document.getElementById('mpbp_hidden_image_form_btn').onclick = function(){

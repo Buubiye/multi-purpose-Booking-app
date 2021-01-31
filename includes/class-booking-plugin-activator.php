@@ -48,7 +48,7 @@ class Booking_Plugin_Activator {
 							description varchar(50000),
 							pictures varchar(2000),
 							price varchar(255),
-							date_created datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+							date_created datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
 							category varchar(255),
 							available_times varchar(255),
 							quantity varchar(255),
