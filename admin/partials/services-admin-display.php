@@ -25,7 +25,16 @@
         }
 	 }
 	 //validate price
-	 
+	  if(isset($_POST['price'])){
+		 $mpbp_services_data[3] = $_POST['price'];
+		 $mpbp_services_data[4] = $_POST['date-created'];
+		 $mpbp_services_data[5] = $_POST['category'];
+		 $mpbp_services_data[6] = $_POST['available_times'];
+		 $mpbp_services_data[7] = $_POST['quantity'];
+		 $mpbp_services_data[8] = $_POST['status'];
+		 $mpbp_services_data[9] = $_POST['extra_info'];
+		 
+	  }
 	 //date_created
 	 
 	 //validate category
@@ -49,7 +58,7 @@ function mpbp_insert_to_db(){
 	echo $mpbp_services_data[0];
 	$wpdb->query(
 		$wpdb->prepare("
-		    INSERT INTO wp_mpbpservices2 (name, description, pictures, price) values (%d, %s, %s, %d)", '209922', $mpbp_services_data[0], "hello", 5645
+		    INSERT INTO wp_mpbpservices2 (name, description, pictures, price, date-created, category, available_times, quantity, status, extra_info) values (%s, %s, %s, %d, %d, %s, %s, %d, %s, %s)", $mpbp_services_data[0], $mpbp_services_data[1], $mpbp_services_data[2], $mpbp_services_data[3], $mpbp_services_data[4], $mpbp_services_data[5], $mpbp_services_data[6], $mpbp_services_data[7], $mpbp_services_data[8], $mpbp_services_data[9]
 		)
 	);
 }
@@ -62,7 +71,13 @@ mpbp_validate_services();
 	<input type='text' id='name' name='name' placeholder='name'/><br>
 	<input type='text' id='description' name='description' placeholder='description'/><br>
 	<input type='text' id='pictures' name='pictures' placeholder='pictures'/>
-	<input type="file" id="mpbp_services_pic_upload" name="mpbp_services_pic_upload" value="Upload Picture"/><br>
+	<div class='image-preview-wrapper'>
+            <img id='image-preview' src='<?php echo wp_get_attachment_url( get_option( 'media_selector_attachment_id' ) ); ?>' width='200'>
+        </div>
+        <input id="upload_image_button" type="button" class="button" value="<?php _e( 'Upload image' ); ?>" />
+        <input type='hidden' name='image_attachment_id' id='image_attachment_id' value='<?php echo get_option( 'media_selector_attachment_id' ); ?>'>
+		
+	<button type="button" id="mpbp_hidden_image_form_btn" value="">insert to Form</button><br>
 	<input type='text' id='price' name='price' placeholder='price'/><br>
 	<input type='text' id='date_created' name='date_created' placeholder='date_created'/><br>
 	<input type='text' id='category' name='category' placeholder='category'/><br>
@@ -80,16 +95,10 @@ if ( isset( $_POST['submit_image_selector'] ) && isset( $_POST['image_attachment
     wp_enqueue_media();
 	wp_enqueue_script( array("jquery", "jquery-ui-core", "interface", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable") );
     ?><form method='post'>
-        <div class='image-preview-wrapper'>
-            <img id='image-preview' src='<?php echo wp_get_attachment_url( get_option( 'media_selector_attachment_id' ) ); ?>' width='200'>
-        </div>
-        <input id="upload_image_button" type="button" class="button" value="<?php _e( 'Upload image' ); ?>" />
-        <input type='hidden' name='image_attachment_id' id='image_attachment_id' value='<?php echo get_option( 'media_selector_attachment_id' ); ?>'>
-		
+        
         <input type="submit" name="submit_image_selector" value="Save" class="button-primary">
     </form>
 	
-    <button type="button" id="mpbp_hidden_image_form_btn" value="">insert to Form</button>
 <?php
 $my_saved_attachment_post_id = get_option( 'media_selector_attachment_id', 0 );
     ?><script type='text/javascript'>
