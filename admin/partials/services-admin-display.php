@@ -3,62 +3,91 @@
  function mpbp_validate_services(){
 	 global $mpbp_services_new_name;
 	 global $mpbp_services_data;
+	 global $mpbp_services_error;
 	 // validate the name
-	 if(isset($_POST['name']))
+	 if(!empty($_POST['name']))
 	 {
 		 $mpbp_services_new_name = $_POST['name'];
 		 $mpbp_services_data[0] = $_POST['name'];
+		 //if($mpbp_services_error != ''){
+			 //unset($mpbp_services_error['name_error']);
+			 $mpbp_services_error = "Please check the name2";
+		 //}
+	 }else{
+		 $mpbp_services_error["name_error"] = "Please check the name";
 	 }
 	 // validate the description
-	 if(isset($_POST['description'])){
+	 if(!empty($_POST['description'])){
 		 $mpbp_services_data[1] = $_POST['description'];
+	 }else{
+		 $mpbp_services_error["Description_error"] = "Please check the Description";
 	 }
 	 //validate price
-	  if(isset($_POST['price'])){
+	  if(!empty($_POST['pictures'])){
 		 $mpbp_services_data[2] = $_POST['pictures'];
-		 $mpbp_services_data[3] = $_POST['price'];
-		 $mpbp_services_data[4] = $_POST['date_created'];
-		 $mpbp_services_data[5] = $_POST['category'];
-		 $mpbp_services_data[6] = $_POST['available_times'];
-		 $mpbp_services_data[7] = $_POST['quantity'];
-		 $mpbp_services_data[8] = $_POST['status'];
-		 $mpbp_services_data[9] = $_POST['extra_info'];
-		 
+	  }else{
+		  $mpbp_services_error["Picture_error"] = "Please check the pictures";
 	  }
-	 //date_created
-	 
-	 //validate category
-	 
-	 //avialable_times
-	 
-	 //validate quantity
-	 
-	 //validate status
-	 
-	 //validate extra_info
-	 
-	 //
-	 mpbp_insert_to_db();
+	  if(!empty($_POST['price'])){
+		 $mpbp_services_data[3] = $_POST['price'];
+	  }else{
+		  $mpbp_services_error["Price_error"] = "Please check the price";
+	  }
+	  if(!empty($_POST['date_created'])){
+		 $mpbp_services_data[4] = $_POST['date_created'];
+	  }else{
+		  $mpbp_services_error["Date_created_error"] = "Please check the date_created";
+	  }
+	  if(!empty($_POST['category'])){
+		 $mpbp_services_data[5] = $_POST['category'];
+	  }else{
+		  $mpbp_services_error["category_error"] = "Please check the category";
+	  }
+	  if(!empty($_POST['available_times'])){
+		 $mpbp_services_data[6] = $_POST['available_times'];
+	  }else{
+		  $mpbp_services_error["available_times_error"] = "Please check the available_times";
+	  }
+	  if(!empty($_POST['quantity'])){
+		 $mpbp_services_data[7] = $_POST['quantity'];
+	  }else{
+		  $mpbp_services_error["Quantity_error"] = "Please check the quantity";
+	  }
+	  if(!empty($_POST['status'])){
+		 $mpbp_services_data[8] = $_POST['status'];
+	  }else{
+		  $mpbp_services_error["status_error"] = "Please check the status";
+	  }
+	  if(!empty($_POST['extra_info'])){
+		 $mpbp_services_data[9] = $_POST['extra_info'];
+	  }else{
+		  $mpbp_services_error["extra_info_error"] = "Please check the extra_info";
+	  }
 }
 
 function mpbp_insert_to_db(){
+	mpbp_validate_services();
 	global $wpdb;
 	global $mpbp_services_data;
-	//global $mpbp_services_data
+	global $mpbp_services_error;
 	echo $mpbp_services_data[0];
-	$wpdb->query(
-		$wpdb->prepare("
-		    INSERT INTO wp_mpbpservices2 (name, description, pictures, price, date_created, category, available_times, quantity, status, extra_info) values (%d, %s, %s, %d, %d, %s, %s, %d, %s, %s)", 123, $mpbp_services_data[1], $mpbp_services_data[2], $mpbp_services_data[3], $mpbp_services_data[4], $mpbp_services_data[5], $mpbp_services_data[6], $mpbp_services_data[7], $mpbp_services_data[8], $mpbp_services_data[9]
-		)
-	);
+	if($mpbp_services_error == ''){
+		$wpdb->query(
+			$wpdb->prepare("
+				INSERT INTO wp_mpbpservices2 (name, description, pictures, price, date_created, category, available_times, quantity, status, extra_info) values (%s, %s, %s, %d, %s, %s, %s, %d, %s, %s)",  $mpbp_services_data[0], $mpbp_services_data[1], $mpbp_services_data[2], $mpbp_services_data[3], $mpbp_services_data[4], $mpbp_services_data[5], $mpbp_services_data[6], $mpbp_services_data[7], $mpbp_services_data[8], $mpbp_services_data[9]
+			)
+		);
+    }else{
+		print_r($mpbp_services_error);
+	}
 }
 
-mpbp_validate_services();
+mpbp_insert_to_db();
 
 ?>
 <h1 id="h11"> Add New Services </h1>
 <form method='POST' enctype="multipart/form-data" action='' id='services_1'>
-	<input type='text' id='name' name='name' placeholder='name'/><br>
+	<input type='text' id='name' name='name' placeholder='name' value=''/><br>
 	<input type='text' id='description' name='description' placeholder='description'/><br>
 	<input type='text' id='pictures' name='pictures' placeholder='pictures'/>
 	<div class='image-preview-wrapper'>
