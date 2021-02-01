@@ -11,7 +11,7 @@
 		 $mpbp_services_data[0] = $_POST['name'];
 		 //if($mpbp_services_error != ''){
 			 //unset($mpbp_services_error['name_error']);
-			 $mpbp_services_error = "Please check the name2";
+			 //$mpbp_services_error = "Please check the name2";
 		 //}
 	 }else{
 		 $mpbp_services_error["name_error"] = "Please check the name";
@@ -19,6 +19,13 @@
 	 // validate the description
 	 if(!empty($_POST['description'])){
 		 $mpbp_services_data[1] = $_POST['description'];
+		 /*$mpbp_services_data[3] = $_POST['price'];
+		 $mpbp_services_data[4] = $_POST['date-created'];
+		 $mpbp_services_data[5] = $_POST['category'];
+		 $mpbp_services_data[6] = $_POST['available_times'];
+		 $mpbp_services_data[7] = $_POST['quantity'];
+		 $mpbp_services_data[8] = $_POST['status'];
+		 $mpbp_services_data[9] = $_POST['extra_info'];*/
 	 }else{
 		 $mpbp_services_error["Description_error"] = "Please check the Description";
 	 }
@@ -63,10 +70,12 @@
 	  }else{
 		  $mpbp_services_error["extra_info_error"] = "Please check the extra_info";
 	  }
+	  
+	  mpbp_insert_to_db();
 }
 
+
 function mpbp_insert_to_db(){
-	mpbp_validate_services();
 	global $wpdb;
 	global $mpbp_services_data;
 	global $mpbp_services_error;
@@ -77,18 +86,20 @@ function mpbp_insert_to_db(){
 				INSERT INTO wp_mpbpservices2 (name, description, pictures, price, date_created, category, available_times, quantity, status, extra_info) values (%s, %s, %s, %d, %s, %s, %s, %d, %s, %s)",  $mpbp_services_data[0], $mpbp_services_data[1], $mpbp_services_data[2], $mpbp_services_data[3], $mpbp_services_data[4], $mpbp_services_data[5], $mpbp_services_data[6], $mpbp_services_data[7], $mpbp_services_data[8], $mpbp_services_data[9]
 			)
 		);
+		echo 'this is excecuted';
     }else{
 		print_r($mpbp_services_error);
 	}
 }
 
-mpbp_insert_to_db();
+mpbp_validate_services();
+
 
 ?>
 <h1 id="h11"> Add New Services </h1>
 <form method='POST' enctype="multipart/form-data" action='' id='services_1'>
 	<input type='text' id='name' name='name' placeholder='name' value=''/><br>
-	<input type='text' id='description' name='description' placeholder='description'/><br>
+	<textarea type='text' id='description' name='description' placeholder='description'></textarea><br>
 	<input type='text' id='pictures' name='pictures' placeholder='pictures'/>
 	<div class='image-preview-wrapper'>
             <img id='image-preview' src='<?php echo wp_get_attachment_url( get_option( 'media_selector_attachment_id' ) ); ?>' width='200'>
@@ -111,7 +122,7 @@ mpbp_insert_to_db();
 			 [] = the brackets mean the different opening and closing times throught the day</label> <br>
 	<input type='text' id='available_times' name='available_times' placeholder='available_times'/>
 	<p id="mpbp_available_times_tester"></p><br>
-	<textarea type='number' id='quantity' name='quantity' placeholder='quantity'> </textarea><br>
+	<input type='number' id='quantity' name='quantity' placeholder='quantity'/><br>
 	<select type='text' id='status' name='status' placeholder='status'>
 	    <option id="mpbp_services_status"> Select Status </option>
 	    <option id="mpbp_services_available"> Available </option>
