@@ -5,27 +5,17 @@
 	 global $mpbp_services_data;
 	 global $mpbp_services_error;
 	 // validate the name
+	 if(isset($_POST['name'])){ // just to not excute this code if page is refreshed
 	 if(!empty($_POST['name']))
 	 {
 		 $mpbp_services_new_name = $_POST['name'];
 		 $mpbp_services_data[0] = $_POST['name'];
-		 //if($mpbp_services_error != ''){
-			 //unset($mpbp_services_error['name_error']);
-			 //$mpbp_services_error = "Please check the name2";
-		 //}
 	 }else{
 		 $mpbp_services_error["name_error"] = "Please check the name";
 	 }
 	 // validate the description
 	 if(!empty($_POST['description'])){
 		 $mpbp_services_data[1] = $_POST['description'];
-		 /*$mpbp_services_data[3] = $_POST['price'];
-		 $mpbp_services_data[4] = $_POST['date-created'];
-		 $mpbp_services_data[5] = $_POST['category'];
-		 $mpbp_services_data[6] = $_POST['available_times'];
-		 $mpbp_services_data[7] = $_POST['quantity'];
-		 $mpbp_services_data[8] = $_POST['status'];
-		 $mpbp_services_data[9] = $_POST['extra_info'];*/
 	 }else{
 		 $mpbp_services_error["Description_error"] = "Please check the Description";
 	 }
@@ -70,7 +60,7 @@
 	  }else{
 		  $mpbp_services_error["extra_info_error"] = "Please check the extra_info";
 	  }
-	  
+	 }
 	  mpbp_insert_to_db();
 }
 
@@ -129,6 +119,7 @@ mpbp_validate_services();
 		<option id="mpbp_services_not_available"> Not Available </option>
 	</select><br>
 	<input type='text' id='extra_info' name='extra_info' placeholder='extra_info'/><br>
+	<input placeholder='service providers IDs'/>
 	<input class="button" type='submit'/>
  </form>
  
@@ -142,64 +133,5 @@ if ( isset( $_POST['submit_image_selector'] ) && isset( $_POST['image_attachment
 	
 <?php
 $my_saved_attachment_post_id = get_option( 'media_selector_attachment_id', 0 );
-    ?><script type='text/javascript'>
-	// this code validates the ['available_times'] input value using regex
-	document.getElementById("available_times").addEventListener("keyup", displayDate);
-
-	function displayDate() {
-		  let regex = /\[(\d\d|\d)\:(\d\d|\d)(\s|\S)(am|pm)\s(\-|\,)\s(\d\d|\d)\:(\d\d|\d)(\s|\S)(am|pm)]/gi;
-		  let mpbp_available_regex = document.getElementById("available_times").value;
-		  document.getElementById('mpbp_available_times_tester').innerHTML = regex.test(mpbp_available_regex);
-	  
-	}
-	// this code stores the image src attribute in one input
-	var pushValues = [];
-		document.getElementById('mpbp_hidden_image_form_btn').onclick = function(){
-		   var imgSrcArray = document.getElementsByClassName('mpbp_new_images');
-		   pushValues = []; // remove the old values
-		   for(i=0; i<imgSrcArray.length; i++){
-			 pushValues.push(document.getElementsByClassName('mpbp_new_images')[i].getAttribute('src'));
-		   }
-		   document.getElementById('pictures').value = pushValues;
-		}
-		
-        var tgm_media_frame;
-        $('h1').click(function(){
-	 $(this).css({color: 'green'});
-	 //$(this).css({color: 'yellow'});
-  });
-  
-  document.getElementById('h11').addEventListener('click', function(){
-	  //console.log('Axmed, here we go again');
-  });
-  
-$('#upload_image_button').click(function() {
-
-  if ( tgm_media_frame ) {
-    tgm_media_frame.open();
-    return;
-  }
-
-  tgm_media_frame = wp.media.frames.tgm_media_frame = wp.media({
-    multiple: 'add',
-    library: {
-      type: 'image'
-    },
-  });
-
-  tgm_media_frame.on('select', function(){
-    var selection = tgm_media_frame.state().get('selection');
-    selection.map( function( attachment ) {
-		attachment = attachment.toJSON();
-		//$('.mpbp_new_images').remove(); // remove the current images
-		$("#image-preview").after("<img class='mpbp_new_images' style='width: 100px;' src=" +attachment.url+">");
-    });
-  });
-
-  tgm_media_frame.open();
-  
-  console.log('Axmed, i dont have event listener');
-  
-});
-    </script>
+    ?>
 	
