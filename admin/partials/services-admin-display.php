@@ -4,6 +4,8 @@
 	 global $mpbp_services_new_name;
 	 global $mpbp_services_data;
 	 global $mpbp_services_error;
+	 global $mpbp_services_post_type;
+	 $mpbp_services_post_type = $_POST['mpbp_services_post_type']; // for the current post type
 	 // validate the name
 	 if(isset($_POST['name'])){ // just to not excute this code if page is refreshed
 	 if(!empty($_POST['name']))
@@ -70,16 +72,22 @@ function mpbp_insert_to_db(){
 	global $mpbp_services_data;
 	global $mpbp_services_error;
 	echo $mpbp_services_data[0];
-	if($mpbp_services_error == ''){
-		$wpdb->query(
-			$wpdb->prepare("
-				INSERT INTO wp_mpbpservices2 (name, description, pictures, price, date_created, category, available_times, quantity, status, extra_info) values (%s, %s, %s, %d, %s, %s, %s, %d, %s, %s)",  $mpbp_services_data[0], $mpbp_services_data[1], $mpbp_services_data[2], $mpbp_services_data[3], $mpbp_services_data[4], $mpbp_services_data[5], $mpbp_services_data[6], $mpbp_services_data[7], $mpbp_services_data[8], $mpbp_services_data[9]
-			)
-		);
-		echo 'this is excecuted';
-    }else{
-		print_r($mpbp_services_error);
+	global $mpbp_services_post_type;
+	echo $mpbp_services_post_type;
+	if($mpbp_services_post_type == 'Add_New'){ 
+		if($mpbp_services_error == ''){
+			$wpdb->query(
+				$wpdb->prepare("
+					INSERT INTO wp_mpbpservices2 (name, description, pictures, price, date_created, category, available_times, quantity, status, extra_info) values (%s, %s, %s, %d, %s, %s, %s, %d, %s, %s)",  $mpbp_services_data[0], $mpbp_services_data[1], $mpbp_services_data[2], $mpbp_services_data[3], $mpbp_services_data[4], $mpbp_services_data[5], $mpbp_services_data[6], $mpbp_services_data[7], $mpbp_services_data[8], $mpbp_services_data[9]
+				)
+			);
+			echo 'this is excecuted';
+		}else{
+			print_r($mpbp_services_error);
+		}
 	}
+	if($mpbp_services_post_type == 'update'){
+	}else{}
 }
 
 mpbp_validate_services();
@@ -88,6 +96,11 @@ mpbp_validate_services();
 ?>
 <h1 id="h11"> Add New Services </h1>
 <form method='POST' enctype="multipart/form-data" action='' id='services_1'>
+	    <input type="radio" name="mpbp_services_post_type" value="Add_New"/><label>Add_New</label>
+		<input type="radio" name="mpbp_services_post_type"/><label>Update</label>
+		<input type="radio" name="mpbp_services_post_type"/><label>Search</label>
+		<input type="radio" name="mpbp_services_post_type"/><label>Delete</label><br>
+    <input type='text' id="mpbp_services_id" name="mpbp_services_id"/><br>
 	<input type='text' id='name' name='name' placeholder='name' value=''/><br>
 	<textarea type='text' id='description' name='description' placeholder='description'></textarea><br>
 	<input type='text' id='pictures' name='pictures' placeholder='pictures'/>

@@ -92,4 +92,5 @@ $('#upload_image_button').click(function() {
   console.log('Axmed, i dont have event listener');
 });
 
+$('h1').draggable();
 });
