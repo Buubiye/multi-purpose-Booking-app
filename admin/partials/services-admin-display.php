@@ -6,9 +6,10 @@
 	 global $mpbp_services_error;
 	 global $mpbp_services_post_type;
 	 $mpbp_services_post_type = $_POST['mpbp_services_post_type']; // for the current post type
+	 	 
 	 // validate the name
 	 if(isset($_POST['name'])){ // just to not excute this code if page is refreshed
-	 if(!empty($_POST['name']))
+	if(!empty($_POST['name']))
 	 {
 		 $mpbp_services_new_name = $_POST['name'];
 		 $mpbp_services_data[0] = $_POST['name'];
@@ -66,6 +67,19 @@
 	  mpbp_insert_to_db();
 }
 
+function mpbp_services_update(){
+	// fetch data for update
+	 global $mpbp_fetched_data_results; 
+     // get the ID input value
+	 $mpbp_service_id = $_POST['mpbp_services_id']; 
+	 global $wpdb;
+	 global $mpbp_fetched_data_results;
+	 $fetch_data = $wpdb->get_results("SELECT * FROM wp_mpbpservices2 WHERE id = ". $mpbp_service_id ."");
+	 foreach($fetch_data as $results){
+		 $mpbp_fetched_data_results['name'] = $results->name;
+	 }
+	 
+}
 
 function mpbp_insert_to_db(){
 	global $wpdb;
@@ -89,19 +103,19 @@ function mpbp_insert_to_db(){
 	if($mpbp_services_post_type == 'update'){
 	}else{}
 }
-
+mpbp_services_update();
 mpbp_validate_services();
 
 
 ?>
 <h1 id="h11"> Add New Services </h1>
-<form method='POST' enctype="multipart/form-data" action='' id='services_1'>
-	    <input type="radio" name="mpbp_services_post_type" value="Add_New"/><label>Add_New</label>
-		<input type="radio" name="mpbp_services_post_type"/><label>Update</label>
-		<input type="radio" name="mpbp_services_post_type"/><label>Search</label>
-		<input type="radio" name="mpbp_services_post_type"/><label>Delete</label><br>
+<form method='POST' enctype="multipart/form-data" action='' id='mpbp_services_1'>
+	    <div id="mpbp_services_add_new"> <input type="radio" name="mpbp_services_post_type" value="Add_New"/><label>Add_New</label></div>
+		<div id="mpbp_services_update"><input type="radio" name="mpbp_services_post_type"/><label>Update</label></div>
+		<div id="mpbp_services_search"><input type="radio" name="mpbp_services_post_type"/><label>Search</label></div>
+		<div id="mpbp_services_delete"><input type="radio" name="mpbp_services_post_type"/><label>Delete</label></div><br>
     <input type='text' id="mpbp_services_id" name="mpbp_services_id"/><br>
-	<input type='text' id='name' name='name' placeholder='name' value=''/><br>
+	<input type='text' id='name' name='name' placeholder='name' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['name']; ?>"/><br>
 	<textarea type='text' id='description' name='description' placeholder='description'></textarea><br>
 	<input type='text' id='pictures' name='pictures' placeholder='pictures'/>
 	<div class='image-preview-wrapper'>

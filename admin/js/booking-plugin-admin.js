@@ -33,7 +33,6 @@ jQuery(document).ready(function ($){
 	 //$('#wpbody-content > h1').hide();
 	 console.log('axmed Nuur is watching');
 	 }*/
-	 alert('hello world 222');
 	 	// this code validates the ['available_times'] input value using regex
 	document.getElementById("available_times").addEventListener("keyup", displayDate);
 
