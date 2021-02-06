@@ -68,17 +68,47 @@
 }
 
 function mpbp_services_update(){
+	//if($_POST['mpbp_services_post_type'] == 'Update'){
 	// fetch data for update
-	 global $mpbp_fetched_data_results; 
-     // get the ID input value
-	 $mpbp_service_id = $_POST['mpbp_services_id']; 
-	 global $wpdb;
-	 global $mpbp_fetched_data_results;
-	 $fetch_data = $wpdb->get_results("SELECT * FROM wp_mpbpservices2 WHERE id = ". $mpbp_service_id ."");
-	 foreach($fetch_data as $results){
-		 $mpbp_fetched_data_results['name'] = $results->name;
+		 global $mpbp_fetched_data_results; 
+		 global $mpbp_services_data;
+		 global $mpbp_service_id;
+		 // get the ID input value
+		 $mpbp_service_id = $_POST['mpbp_services_id']; 
+		 global $wpdb;
+		 global $mpbp_fetched_data_results;
+		 $fetch_data = $wpdb->get_results("SELECT * FROM wp_mpbpservices2 WHERE id = ". $mpbp_service_id ."");
+		 foreach($fetch_data as $results){
+			 $mpbp_fetched_data_results['name'] = $results->name;
+			 $mpbp_fetched_data_results['description'] = $results->description;
+			 $mpbp_fetched_data_results['pictures'] = $results->pictures;
+			 $mpbp_fetched_data_results['price'] = $results->price;
+			 $mpbp_fetched_data_results['date_created'] = $results->date_created;
+			 $mpbp_fetched_data_results['category'] = $results->category;
+			 $mpbp_fetched_data_results['available_times'] = $results->available_times;
+			 $mpbp_fetched_data_results['quantity'] = $results->quantity;
+			 $mpbp_fetched_data_results['status'] = $results->status;
+			 $mpbp_fetched_data_results['extra_info'] = $results->extra_info;
+		 }
+	//}
+	 if($_POST['mpbp_services_post_type'] == 'Update'){
+		 if($mpbp_services_error == ''){
+			$wpdb->query(
+				$wpdb->prepare("
+					 UPDATE wp_mpbpservices2 SET name='".$mpbp_services_data[0]."',
+					 description = '".$mpbp_services_data[1]."' WHERE id=".$mpbp_service_id
+				)
+			);
+			echo 'this is excecuted';
+			/* description, pictures, price, date_created, category, 
+					 available_times, quantity, status, extra_info)
+					 values (. $mpbp_services_data[0], $mpbp_services_data[1], $mpbp_services_data[2], 
+					 $mpbp_services_data[3], $mpbp_services_data[4], $mpbp_services_data[5], $mpbp_services_data[6], 
+					// $mpbp_services_data[7], $mpbp_services_data[8], $mpbp_services_data[9] .')*/
+		}else{
+			print_r($mpbp_services_error);
+		}
 	 }
-	 
 }
 
 function mpbp_insert_to_db(){
@@ -110,14 +140,14 @@ mpbp_validate_services();
 ?>
 <h1 id="h11"> Add New Services </h1>
 <form method='POST' enctype="multipart/form-data" action='' id='mpbp_services_1'>
-	    <div id="mpbp_services_add_new"> <input type="radio" name="mpbp_services_post_type" value="Add_New"/><label>Add_New</label></div>
-		<div id="mpbp_services_update"><input type="radio" name="mpbp_services_post_type"/><label>Update</label></div>
-		<div id="mpbp_services_search"><input type="radio" name="mpbp_services_post_type"/><label>Search</label></div>
-		<div id="mpbp_services_delete"><input type="radio" name="mpbp_services_post_type"/><label>Delete</label></div><br>
+	    <div id="mpbp_services_add_new"> <input type="radio" name="mpbp_services_post_type" value="Add_New" /><label>Add_New</label></div>
+		<div id="mpbp_services_update"><input type="radio" name="mpbp_services_post_type" value="Update"/><label>Update</label></div>
+		<div id="mpbp_services_search"><input type="radio" name="mpbp_services_post_type" value="Search"/><label>Search</label></div>
+		<div id="mpbp_services_delete"><input type="radio" name="mpbp_services_post_type" value="Delete"/><label>Delete</label></div><br>
     <input type='text' id="mpbp_services_id" name="mpbp_services_id"/><br>
 	<input type='text' id='name' name='name' placeholder='name' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['name']; ?>"/><br>
-	<textarea type='text' id='description' name='description' placeholder='description'></textarea><br>
-	<input type='text' id='pictures' name='pictures' placeholder='pictures'/>
+	<textarea type='text' id='description' name='description' placeholder='description'><?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['description'];?></textarea><br>
+	<input type='text' id='pictures' name='pictures' placeholder='pictures' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['pictures'];?>"/>
 	<div class='image-preview-wrapper'>
             <img id='image-preview' src='<?php echo wp_get_attachment_url( get_option( 'media_selector_attachment_id' ) ); ?>' width='200'>
         </div>
@@ -125,10 +155,10 @@ mpbp_validate_services();
         <input type='hidden' name='image_attachment_id' id='image_attachment_id' value='<?php echo get_option( 'media_selector_attachment_id' ); ?>'>
 		
 	<button type="button" id="mpbp_hidden_image_form_btn" value="">insert to Form</button><br>
-	<input type='text' id='price' name='price' placeholder='price'/><br>
-	<input type='text' id='date_created' name='date_created' placeholder='date_created'/><br>
-	<select type='text' id='category' name='category' placeholder='category'>
-		<option id="mpbp_category_select"> Select Category </option>
+	<input type='text' id='price' name='price' placeholder='price' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['price'];?>"/><br>
+	<input type='text' id='date_created' name='date_created' placeholder='date_created' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['date_created']; ?>"/><br>
+	<select type='text' id='category' name='category' placeholder='category' value="">
+		<option id="mpbp_category_select"> <?php global $mpbp_fetched_data_results; echo (!empty($mpbp_fetched_data_results['category'])) ? $mpbp_fetched_data_results['category'] : 'Select Category'; ?></option>
 		<option id="mpbp_services_taxi"> Ride Sharing </option>
 		<option id="mpbp_services_hotel"> Hotel </option>
 		<option id="mpbp_services_accomodation"> Accomodation </option>
@@ -137,15 +167,15 @@ mpbp_validate_services();
 	</select><br>
 	<label> The available time should be written like this [00:00 am - 00:00 pm], [00:00 am - 00:00 pm] .... <br>
 			 [] = the brackets mean the different opening and closing times throught the day</label> <br>
-	<input type='text' id='available_times' name='available_times' placeholder='available_times'/>
+	<input type='text' id='available_times' name='available_times' placeholder='available_times' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['available_times']; ?>"/>
 	<p id="mpbp_available_times_tester"></p><br>
-	<input type='number' id='quantity' name='quantity' placeholder='quantity'/><br>
-	<select type='text' id='status' name='status' placeholder='status'>
-	    <option id="mpbp_services_status"> Select Status </option>
+	<input type='number' id='quantity' name='quantity' placeholder='quantity' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['quantity'];?>"/><br>
+	<select type='text' id='status' name='status' placeholder='status' value="">
+	    <option id="mpbp_services_status"> <?php global $mpbp_fetched_data_results; echo (!empty($mpbp_fetched_data_results['status'])) ? $mpbp_fetched_data_results['status'] : 'Select Status' ;?> </option>
 	    <option id="mpbp_services_available"> Available </option>
 		<option id="mpbp_services_not_available"> Not Available </option>
 	</select><br>
-	<input type='text' id='extra_info' name='extra_info' placeholder='extra_info'/><br>
+	<input type='text' id='extra_info' name='extra_info' placeholder='extra_info' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['extra_info'];?>"/><br>
 	<input placeholder='service providers IDs'/>
 	<input class="button" type='submit'/>
  </form>
