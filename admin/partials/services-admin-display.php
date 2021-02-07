@@ -69,11 +69,38 @@
 
 function mpbp_services_update(){
 	//if($_POST['mpbp_services_post_type'] == 'Update'){
+		
 	// fetch data for update
-		 global $mpbp_fetched_data_results; 
-		 global $mpbp_services_data;
 		 global $mpbp_service_id;
-		 // get the ID input value
+		 $mpbp_service_id = $_POST['mpbp_services_id']; 
+		 
+		 //update services data
+		 global $wpdb; 
+		 if($_POST['mpbp_services_post_type'] == 'Update'){
+		 if($mpbp_services_error == ''){
+			$wpdb->query(
+				$wpdb->prepare("
+					 UPDATE wp_mpbpservices2 SET name='%s', description='%s',
+					 pictures = '%s', price= '%s', date_created = '%s',
+					 category = '%s', available_times = '%s', quantity = '%d',
+					 status = '%s', extra_info = '%s'
+					 WHERE id= %d", $_POST['name'],
+					 $_POST['description'], $_POST['pictures'], $_POST['price'],
+					 $_POST['date_created'], $_POST['category'], $_POST['available_times'],
+					 $_POST['quantity'], $_POST['status'], $_POST['extra_info'], $mpbp_service_id
+				)
+			);
+		}else{
+			print_r($mpbp_services_error);
+		}
+	 }
+	//}
+}
+
+// display data on inputs
+function mpbp_display_services_data(){
+	// get the ID input value
+	     global $mpbp_service_id;
 		 $mpbp_service_id = $_POST['mpbp_services_id']; 
 		 global $wpdb;
 		 global $mpbp_fetched_data_results;
@@ -90,25 +117,6 @@ function mpbp_services_update(){
 			 $mpbp_fetched_data_results['status'] = $results->status;
 			 $mpbp_fetched_data_results['extra_info'] = $results->extra_info;
 		 }
-	//}
-	 if($_POST['mpbp_services_post_type'] == 'Update'){
-		 if($mpbp_services_error == ''){
-			$wpdb->query(
-				$wpdb->prepare("
-					 UPDATE wp_mpbpservices2 SET name='".$mpbp_services_data[0]."',
-					 description = '".$mpbp_services_data[1]."' WHERE id=".$mpbp_service_id
-				)
-			);
-			echo 'this is excecuted';
-			/* description, pictures, price, date_created, category, 
-					 available_times, quantity, status, extra_info)
-					 values (. $mpbp_services_data[0], $mpbp_services_data[1], $mpbp_services_data[2], 
-					 $mpbp_services_data[3], $mpbp_services_data[4], $mpbp_services_data[5], $mpbp_services_data[6], 
-					// $mpbp_services_data[7], $mpbp_services_data[8], $mpbp_services_data[9] .')*/
-		}else{
-			print_r($mpbp_services_error);
-		}
-	 }
 }
 
 function mpbp_insert_to_db(){
@@ -135,7 +143,7 @@ function mpbp_insert_to_db(){
 }
 mpbp_services_update();
 mpbp_validate_services();
-
+mpbp_display_services_data();
 
 ?>
 <h1 id="h11"> Add New Services </h1>
@@ -144,8 +152,8 @@ mpbp_validate_services();
 		<div id="mpbp_services_update"><input type="radio" name="mpbp_services_post_type" value="Update"/><label>Update</label></div>
 		<div id="mpbp_services_search"><input type="radio" name="mpbp_services_post_type" value="Search"/><label>Search</label></div>
 		<div id="mpbp_services_delete"><input type="radio" name="mpbp_services_post_type" value="Delete"/><label>Delete</label></div><br>
-    <input type='text' id="mpbp_services_id" name="mpbp_services_id"/><br>
-	<input type='text' id='name' name='name' placeholder='name' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['name']; ?>"/><br>
+    <input type='text' id="mpbp_services_id" name="mpbp_services_id" placeholder="Search ID" value="<?php echo $_POST['mpbp_services_id']; ?>"/><br>
+	<input type='text' id='name' name='name' placeholder='name' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['name'];?>"/><br>
 	<textarea type='text' id='description' name='description' placeholder='description'><?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['description'];?></textarea><br>
 	<input type='text' id='pictures' name='pictures' placeholder='pictures' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['pictures'];?>"/>
 	<div class='image-preview-wrapper'>
