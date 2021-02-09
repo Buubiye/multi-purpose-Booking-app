@@ -101,7 +101,7 @@ function mpbp_services_update(){
 function mpbp_display_services_data(){
 	// get the ID input value
 	     global $mpbp_service_id;
-		 $mpbp_service_id = $_POST['mpbp_services_id']; 
+		 $mpbp_service_id = $_GET['id']; 
 		 global $wpdb;
 		 global $mpbp_fetched_data_results;
 		 $fetch_data = $wpdb->get_results("SELECT * FROM wp_mpbpservices2 WHERE id = ". $mpbp_service_id ."");
@@ -152,7 +152,7 @@ mpbp_display_services_data();
 		<div id="mpbp_services_update"><input type="radio" name="mpbp_services_post_type" value="Update"/><label>Update</label></div>
 		<div id="mpbp_services_search"><input type="radio" name="mpbp_services_post_type" value="Search"/><label>Search</label></div>
 		<div id="mpbp_services_delete"><input type="radio" name="mpbp_services_post_type" value="Delete"/><label>Delete</label></div><br>
-    <input type='text' id="mpbp_services_id" name="mpbp_services_id" placeholder="Search ID" value="<?php echo $_POST['mpbp_services_id']; ?>"/><br>
+    <input type='text' id="mpbp_services_id" name="mpbp_services_id" placeholder="Search ID" value="<?php echo $_GET['id'];/*$_POST['mpbp_services_id'];*/ ?>"/><br>
 	<input type='text' id='name' name='name' placeholder='name' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['name'];?>"/><br>
 	<textarea type='text' id='description' name='description' placeholder='description'><?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['description'];?></textarea><br>
 	<input type='text' id='pictures' name='pictures' placeholder='pictures' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['pictures'];?>"/>

@@ -98,9 +98,9 @@ class My_Table2 {
 
         public function admin_menu() {
             $menu_title = 'Multi-Purpose-Booking';  // The title of your menu entry
-			$menu_subTitles = ['Services', 'orders', 'users', 'service-providers', 'settings'];
+			$menu_subTitles = ['Services', 'orders', 'users', 'service-providers', 'settings', 'all_services'];
             $menu_slug  = 'my_table2';   
-			$sum_menu_1_slugs = ['Services', 'orders', 'users', 'service-providers', 'settings'];
+			$sum_menu_1_slugs = ['Services', 'orders', 'users', 'service-providers', 'settings', 'all_services'];
 			// The slug, for example: wp-admin/admin.php?page=my_table
             add_menu_page($menu_title, $menu_title, 'manage_options', $menu_slug, array($this, 'admin_page'));
 			add_submenu_page($menu_slug, $menu_subTitles[0], $menu_subTitles[0], 'manage_options', $menu_subTitles[0], array($this, 'services_page'));
@@ -108,7 +108,8 @@ class My_Table2 {
 			add_submenu_page($menu_slug, $menu_subTitles[2], $menu_subTitles[2], 'manage_options', $menu_subTitles[2], array($this, 'users_page'));
 			add_submenu_page($menu_slug, $menu_subTitles[3], $menu_subTitles[3], 'manage_options', $menu_subTitles[3], array($this, 'service_providers_page'));
 			add_submenu_page($menu_slug, $menu_subTitles[4], $menu_subTitles[4], 'manage_options', $menu_subTitles[4], array($this, 'settings_page'));
-        
+            //hidden submenus
+			add_submenu_page($menu_slug, $menu_subTitles[5], $menu_subTitles[5], 'manage_options', $menu_subTitles[5], array($this, 'all_services_page'));
 		}
 		
 		public function admin_page() {
@@ -116,6 +117,9 @@ class My_Table2 {
 		}
 		public function services_page(){
 			require_once('admin\partials\services-admin-display.php');
+		}
+		public function all_services_page(){
+			require_once('admin\partials\all_services_page.php');
 		}
 		public function orders_page(){
 			require_once('admin\partials\orders-admin-display.php');
