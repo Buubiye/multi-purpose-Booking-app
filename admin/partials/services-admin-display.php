@@ -68,7 +68,6 @@
 }
 
 function mpbp_services_update(){
-	//if($_POST['mpbp_services_post_type'] == 'Update'){
 		
 	// fetch data for update
 		 global $mpbp_service_id;
@@ -94,7 +93,6 @@ function mpbp_services_update(){
 			print_r($mpbp_services_error);
 		}
 	 }
-	//}
 }
 
 // display data on inputs
@@ -104,7 +102,9 @@ function mpbp_display_services_data(){
 		 $mpbp_service_id = $_GET['id']; 
 		 global $wpdb;
 		 global $mpbp_fetched_data_results;
-		 $fetch_data = $wpdb->get_results("SELECT * FROM wp_mpbpservices2 WHERE id = ". $mpbp_service_id ."");
+		 $fetch_data;
+		 if(isset($mpbp_service_id)){
+			$fetch_data = $wpdb->get_results("SELECT * FROM wp_mpbpservices2 WHERE id = ". $mpbp_service_id ."");
 		 foreach($fetch_data as $results){
 			 $mpbp_fetched_data_results['name'] = $results->name;
 			 $mpbp_fetched_data_results['description'] = $results->description;
@@ -116,6 +116,7 @@ function mpbp_display_services_data(){
 			 $mpbp_fetched_data_results['quantity'] = $results->quantity;
 			 $mpbp_fetched_data_results['status'] = $results->status;
 			 $mpbp_fetched_data_results['extra_info'] = $results->extra_info;
+		 }
 		 }
 }
 
@@ -185,6 +186,7 @@ mpbp_display_services_data();
 	</select><br>
 	<input type='text' id='extra_info' name='extra_info' placeholder='extra_info' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['extra_info'];?>"/><br>
 	<input placeholder='service providers IDs'/>
+	<input placeholder="last updated by"/>
 	<input class="button" type='submit'/>
  </form>
  
