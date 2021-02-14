@@ -2,3 +2,9 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+ 
+ .mpbp_disabled{
+	 cursor: not-allowed;
+     opacity: 0.5;
+	 pointer-events: none;
+ }
