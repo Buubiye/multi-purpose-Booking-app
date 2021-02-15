@@ -4,8 +4,6 @@
 	 global $mpbp_services_new_name;
 	 global $mpbp_services_data;
 	 global $mpbp_services_error;
-	 global $mpbp_services_post_type;
-	 $mpbp_services_post_type = $_POST['mpbp_services_post_type']; // for the current post type
 	 	 
 	 // validate the name
 	 if(isset($_POST['name'])){ // just to not excute this code if page is refreshed
@@ -75,7 +73,7 @@ function mpbp_services_update(){
 		 
 		 //update services data
 		 global $wpdb; 
-		 if($_POST['mpbp_services_post_type'] == 'Update'){
+		 if($_GET['action'] == 'edit'){
 		 if($mpbp_services_error == ''){
 			$wpdb->query(
 				$wpdb->prepare("
@@ -125,34 +123,26 @@ function mpbp_insert_to_db(){
 	global $mpbp_services_data;
 	global $mpbp_services_error;
 	echo $mpbp_services_data[0];
-	global $mpbp_services_post_type;
-	echo $mpbp_services_post_type;
-	if($mpbp_services_post_type == 'Add_New'){ 
+	if($_GET['action'] == 'add_new'){ 
 		if($mpbp_services_error == ''){
 			$wpdb->query(
 				$wpdb->prepare("
 					INSERT INTO wp_mpbpservices2 (name, description, pictures, price, date_created, category, available_times, quantity, status, extra_info) values (%s, %s, %s, %d, %s, %s, %s, %d, %s, %s)",  $mpbp_services_data[0], $mpbp_services_data[1], $mpbp_services_data[2], $mpbp_services_data[3], $mpbp_services_data[4], $mpbp_services_data[5], $mpbp_services_data[6], $mpbp_services_data[7], $mpbp_services_data[8], $mpbp_services_data[9]
 				)
 			);
-			echo 'this is excecuted';
 		}else{
 			print_r($mpbp_services_error);
 		}
 	}
-	if($mpbp_services_post_type == 'update'){
-	}else{}
 }
 mpbp_services_update();
 mpbp_validate_services();
 mpbp_display_services_data();
 
 ?>
-<h1 id="h11"> Add New Services </h1>
+<h1 id="h11" class="wp-heading-inline"> Add New Services </h1>
+<a href="<?php echo get_site_url(). '/wp-admin/admin.php?page=Services&action=add_new';?>" class="page-title-action">Add New</a>
 <form method='POST' enctype="multipart/form-data" action='' id='mpbp_services_1'>
-	    <div id="mpbp_services_add_new"> <input type="radio" name="mpbp_services_post_type" value="Add_New" /><label>Add_New</label></div>
-		<div id="mpbp_services_update"><input type="radio" name="mpbp_services_post_type" value="Update"/><label>Update</label></div>
-		<div id="mpbp_services_search"><input type="radio" name="mpbp_services_post_type" value="Search"/><label>Search</label></div>
-		<div id="mpbp_services_delete"><input type="radio" name="mpbp_services_post_type" value="Delete"/><label>Delete</label></div><br>
     <input type='text' id="mpbp_services_id" name="mpbp_services_id" placeholder="Search ID" value="<?php echo $_GET['id'];/*$_POST['mpbp_services_id'];*/ ?>"/><br>
 	<input type='text' id='name' name='name' placeholder='name' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['name'];?>"/><br>
 	<textarea type='text' id='description' name='description' placeholder='description'><?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['description'];?></textarea><br>
