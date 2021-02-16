@@ -8,3 +8,17 @@
      opacity: 0.5;
 	 pointer-events: none;
  }
+ 
+ .mpbp_image_parent{
+	 display: inline-block;
+ }
+ 
+ #mpbp_img_deleter{
+	font-weight: bold;
+    padding: 5px;
+    background: red;
+    position: relative;
+    left: 20px;
+    top: -8px;
+    color: white;
+ }

@@ -29,7 +29,7 @@ jQuery(document).ready(function ($){
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
-	 /**
+	 /*
 	 * this code validates the ['available_times'] input value using regex
 	 */
 	document.getElementById("available_times").addEventListener("keyup", displayDate);
@@ -44,15 +44,28 @@ jQuery(document).ready(function ($){
 	* this code stores the image src attribute in one input
 	*/
 	var pushValues = [];
-		document.getElementById('mpbp_hidden_image_form_btn').onclick = function(){
+		$('#mpbp_hidden_image_form_btn').on('click', function(){
 		   var imgSrcArray = document.getElementsByClassName('mpbp_new_images');
 		   pushValues = []; // remove the old values
+		   let i = '';
 		   for(i=0; i<imgSrcArray.length; i++){
 			 pushValues.push(document.getElementsByClassName('mpbp_new_images')[i].getAttribute('src'));
 		   }
 		   document.getElementById('pictures').value = pushValues;
-		}
-		
+		});
+	
+	/*
+	* function for deleting unwanted images 
+	*/
+	$('body').on('click', '#mpbp_img_deleter', function(){
+		$(this).parent().remove();
+	});
+	
+	$('.image-preview-wrapper').sortable();
+	$('body').on('mouseover', '.mpbp_image_parent', function(){
+	 $('.image-preview-wrapper').sortable();
+	});
+	
         var tgm_media_frame;
   
 		$('#upload_image_button').click(function() {
@@ -73,10 +86,11 @@ jQuery(document).ready(function ($){
 			var selection = tgm_media_frame.state().get('selection');
 			selection.map( function( attachment ) {
 				attachment = attachment.toJSON();
-				$("#image-preview").after("<img class='mpbp_new_images' style='width: 100px;' src=" +attachment.url+">");
+				$("#image-preview").after("<div class='mpbp_image_parent'><span id='mpbp_img_deleter'> &#10006 </span><img class='mpbp_new_images' style='width: 100px;' src=" +attachment.url+"></div>");
 			});
 		  });
 
 		  tgm_media_frame.open();
 		});
+	
 });

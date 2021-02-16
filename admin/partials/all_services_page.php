@@ -78,6 +78,7 @@
   print_r($mpbp_s_first_image);
   echo $mpbp_s_first_image[0];*/
   ?>
+  <a href="<?php echo get_site_url(). '/wp-admin/admin.php?page=Services&action=add_new';?>" class="page-title-action">Add New</a>
   <form id="mpbp_services_list_form" method="get">
 
     <p class="search-box">
@@ -110,6 +111,7 @@
         <tbody id="the-list">
 		<?php      
 		for($row=0; $row<5; $row++){
+			if($mpbp_services_query_this_page[$row]->name != ''){
 			?>
             <tr id="post-3" class="iedit author-self level-0 post-3 type-page status-draft hentry entry">
                 <th scope="row" class="check-column"> <label class="screen-reader-text" for="cb-select-3">Select Privacy Policy</label>
@@ -117,7 +119,7 @@
                 </th>
                 <td class="title column-title has-row-actions column-primary page-title" data-colname="Title">
                     <div class="locked-info"><span class="locked-avatar"></span> <span class="locked-text"></span></div>
-                    <strong><a class="row-title" href="http://localhost:8080/wordpress/wp-admin/post.php?post=3&amp;action=edit" aria-label="“Privacy Policy” (Edit)"><?php echo $mpbp_services_query_this_page[$row]->name; ?></a> </strong>
+                    <strong><a class="row-title" href="<?php echo get_site_url() ?>/wp-admin/post.php?post=3&amp;action=edit" aria-label="“Privacy Policy” (Edit)"><?php echo $mpbp_services_query_this_page[$row]->name; ?></a> </strong>
 					
                     <div class="row-actions"><span class="edit"><a href="<?php echo get_site_url(). '/wp-admin/admin.php?page=Services&action=edit&id='. $mpbp_services_query_this_page[$row]->id;?>" aria-label="Edit “Privacy Policy”">Tifaftir</a> | </span><span class="inline hide-if-no-js"><a href="#" class="editinline" aria-label="Quick edit “Privacy Policy” inline">Quick&nbsp;Edit</a> | </span><span class="trash"><a href="http://localhost:8080/wordpress/wp-admin/post.php?post=3&amp;action=trash&amp;_wpnonce=8de0949d48" class="submitdelete" aria-label="Move “Privacy Policy” to the Bin">Trash</a> | </span><span class="view"><a href="http://localhost:8080/wordpress/?page_id=3&amp;preview=true" rel="bookmark" aria-label="Preview “Privacy Policy”">Horu’eeg</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button>
                 </td>
@@ -131,7 +133,8 @@
 				<td class="date mpbp-column-status" data-colname="status"><?php echo $mpbp_services_query_this_page[$row]->status; ?></td>
             </tr>
 			<?php
-		} ?>
+			}
+			} ?>
         </tbody>
 
         <tfoot>

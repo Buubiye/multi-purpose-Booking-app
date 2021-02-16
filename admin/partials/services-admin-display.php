@@ -36,7 +36,7 @@
 	  }else{
 		  $mpbp_services_error["Date_created_error"] = "Please check the date_created";
 	  }
-	  if(!empty($_POST['category'])){
+	  if(!empty($_POST['category']) | !$_POST['category'] = 'Select Category'){
 		 $mpbp_services_data[5] = $_POST['category'];
 	  }else{
 		  $mpbp_services_error["category_error"] = "Please check the category";
@@ -125,11 +125,18 @@ function mpbp_insert_to_db(){
 	echo $mpbp_services_data[0];
 	if($_GET['action'] == 'add_new'){ 
 		if($mpbp_services_error == ''){
+			/*
+			* if(isset('name') is used to stop the query from happening if the user -
+			* loads empty values
+			* This SQL query inserts new value to database wp_mpbpservices2
+			*/
+			if(isset($_POST['name'])){
 			$wpdb->query(
 				$wpdb->prepare("
 					INSERT INTO wp_mpbpservices2 (name, description, pictures, price, date_created, category, available_times, quantity, status, extra_info) values (%s, %s, %s, %d, %s, %s, %s, %d, %s, %s)",  $mpbp_services_data[0], $mpbp_services_data[1], $mpbp_services_data[2], $mpbp_services_data[3], $mpbp_services_data[4], $mpbp_services_data[5], $mpbp_services_data[6], $mpbp_services_data[7], $mpbp_services_data[8], $mpbp_services_data[9]
 				)
 			);
+			}
 		}else{
 			print_r($mpbp_services_error);
 		}
