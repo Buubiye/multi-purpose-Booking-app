@@ -61,9 +61,19 @@ jQuery(document).ready(function ($){
 		$(this).parent().remove();
 	});
 	
+	/*
+	* make created images sortbale in services "editng" and "add new" actions
+	*/
 	$('.image-preview-wrapper').sortable();
 	$('body').on('mouseover', '.mpbp_image_parent', function(){
 	 $('.image-preview-wrapper').sortable();
+	});
+	
+	/*
+	* add a datepicker
+	*/
+	$('body').on('mouseover', '#date_created', function(){
+	$('#date_created').datepicker();
 	});
 	
         var tgm_media_frame;

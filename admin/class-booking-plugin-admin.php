@@ -97,9 +97,18 @@ class Booking_Plugin_Admin {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/booking-plugin-admin.js', array( 'jquery' ), $this->version, false );
-        //scripts for media widget
+        /*
+		* scripts for media widget
+		*/
 		wp_enqueue_script('media-upload');
 		wp_enqueue_media();
+		
+		/*
+		* enqueue jqeury ui and jquery-ui date picker
+		*/
+		 wp_enqueue_script('jquery-ui-datepicker');
+		 wp_register_style('jquery-ui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css');
+		 wp_enqueue_style('jquery-ui');
 	}
 }
 

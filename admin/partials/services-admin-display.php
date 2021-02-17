@@ -1,5 +1,13 @@
 <?php
-// This file contains the services page
+/*
+* This file contains the services page
+*/
+
+/*
+*******
+* This function validates data for "update" action and "add_new" action
+*******
+*/
  function mpbp_validate_services(){
 	 global $mpbp_services_new_name;
 	 global $mpbp_services_data;
@@ -65,8 +73,12 @@
 	  mpbp_insert_to_db();
 }
 
+/*
+*******
+* update data the selected row from db(wp_mpbpservices2 )
+*******
+*/
 function mpbp_services_update(){
-		
 	// fetch data for update
 		 global $mpbp_service_id;
 		 $mpbp_service_id = $_POST['mpbp_services_id']; 
@@ -93,7 +105,11 @@ function mpbp_services_update(){
 	 }
 }
 
-// display data on inputs
+/*
+*******
+* fetch data from db(wp_mpbpservices2), this data will be displayed on the "input" elements 
+*******
+*/
 function mpbp_display_services_data(){
 	// get the ID input value
 	     global $mpbp_service_id;
@@ -118,6 +134,11 @@ function mpbp_display_services_data(){
 		 }
 }
 
+/*
+*******
+* inserts new values to the database(wp_mpbpservices2 )
+*******
+*/
 function mpbp_insert_to_db(){
 	global $wpdb;
 	global $mpbp_services_data;
@@ -142,10 +163,47 @@ function mpbp_insert_to_db(){
 		}
 	}
 }
+
+/*
+********
+* Deletes the selected row(s) in db(wp_mpbpservices2)
+*******
+*/
+function mpbp_delete_services_data(){
+	global $wpdb;
+	/*
+	* This is a conformation form which appears when user tries to delete data from his services db
+	*/
+	if($_GET['action'] == 'delete' && $_GET['id'] != '' && $_POST['mpbp_verify_service_delete'] == ''){
+		echo "<form method='POST' action=''><h3> Are you sure you want to delete service #". $_GET['id'] ."</h3>
+			  <label>YES:</lable><input type='radio' name='mpbp_verify_service_delete' value='Yes'/>
+			  <label>NO:</label><input type='radio' name='mpbp_verify_service_delete' value='No'/>
+			  <input type='submit' value='I CONFIRM THIS ACTION'/></form>";
+	}  
+	/*
+	* When confrmation forms appears, if user clicks "yes" [radio input element] delete the row by -
+	* extracting it id from $_GET['id'] method. Then print out a success message
+	*/
+	if($_GET['action'] == 'delete' && $_GET['id'] != '' && $_POST['mpbp_verify_service_delete'] == 'Yes'){		  
+		$wpdb->query(
+			$wpdb->prepare("
+				DELETE FROM wp_mpbpservices2 WHERE id='%d'", $_GET['id']."
+			")
+		);
+		echo "succesfully deleted Service #". $_GET['id'];
+	}else if($_POST['mpbp_verify_service_delete'] == 'No'){
+		/*
+		* if user chooses not to delete his data redirect him to all services page
+		*/
+		header('Location:'. get_site_url() .'/wp-admin/admin.php?page=all_services');
+		die();
+	}
+}
+
 mpbp_services_update();
 mpbp_validate_services();
 mpbp_display_services_data();
-
+mpbp_delete_services_data();
 ?>
 <h1 id="h11" class="wp-heading-inline"> Add New Services </h1>
 <a href="<?php echo get_site_url(). '/wp-admin/admin.php?page=Services&action=add_new';?>" class="page-title-action">Add New</a>

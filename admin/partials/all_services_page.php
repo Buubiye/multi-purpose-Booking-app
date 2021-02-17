@@ -19,7 +19,12 @@
   /*
   * find out the number of results stored in database
   */
-  $mpbp_all_services = $wpdb->get_results("SELECT id FROM wp_mpbpservices2");
+  $mpbp_all_services;
+  if(empty($_GET['search'])){
+	  $mpbp_all_services = $wpdb->get_results("SELECT id FROM wp_mpbpservices2");
+  }elseif(!empty($_GET['search'])){
+	  $mpbp_all_services = $wpdb->get_results("SELECT * FROM wp_mpbpservices2 WHERE '". $_GET['search'] ."' IN (id, name)");
+  }
   $mpbp_services_size = sizeof($mpbp_all_services);
   
   /* 
@@ -45,8 +50,12 @@
   /*
   * retrieves selected results from databse and display the on page
   */
-  $mpbp_services_query_this_page = $wpdb->get_results("SELECT * FROM wp_mpbpservices2 LIMIT ". $mpbp_this_page_first_result ."," . $mpbp_services_results_per_page);
- 
+  $mpbp_services_query_this_page;
+  if(empty($_GET['search'])){
+	  $mpbp_services_query_this_page = $wpdb->get_results("SELECT * FROM wp_mpbpservices2 LIMIT ". $mpbp_this_page_first_result ."," . $mpbp_services_results_per_page);
+  }elseif(!empty($_GET['search'])){
+	 $mpbp_services_query_this_page = $wpdb->get_results("SELECT * FROM wp_mpbpservices2 WHERE '". $_GET['search'] ."' IN (id, name)");
+  }
   /*
   * retrieves selected results from databse and displays them on page
   */
@@ -69,7 +78,17 @@
   $mpbp_services_page_next_limit;
   $mpbp_services_page_previous_limit;
   ($mpbp_current_service_page>=$mpbp_services_number_of_pages)? $mpbp_services_page_next_limit = "mpbp_disabled" : '';
+  ($mpbp_current_service_page<=1)? $mpbp_services_page_previous_limit = "mpbp_disabled" : '';
   
+  /*
+  * search
+  */
+  /*$mpbp_all_services_search = $wpdb->get_results("
+	SELECT * FROM wp_mpbpservices2 WHERE '". $_GET['search'] ."' IN (id, name, date_created, category, status, extra_info)
+  ");
+  for($rows = 0; $rows<sizeof($mpbp_all_services_search); $rows++){
+	 echo $mpbp_all_services_search[$rows]->id ." , ". $mpbp_all_services_search[$rows]->name  ."<br>";
+  }*/
   /*
   * extract the first image link for image display
   */
@@ -79,19 +98,20 @@
   echo $mpbp_s_first_image[0];*/
   ?>
   <a href="<?php echo get_site_url(). '/wp-admin/admin.php?page=Services&action=add_new';?>" class="page-title-action">Add New</a>
-  <form id="mpbp_services_list_form" method="get">
+  <form id="mpbp_services_list_form" method="GET">
 
-    <p class="search-box">
-        <label class="screen-reader-text" for="post-search-input">Raadi Bogag:</label>
-        <input type="search" id="post-search-input" name="s" value="">
-        <input type="submit" id="search-submit" class="button" value="Raadi Bogag">
+    <p class="">
+        <label class="" for="">Raadi Bogag:</label>
+        <input type="search" id="" name="search" value="">
+        <input type="submit" id="" class="button" value="Raadi Bogag">
     </p>
 
     <div class="tablenav top">
         <h2 class="screen-reader-text">Pages list navigation</h2>
         <div class="tablenav-pages"><span class="displaying-num"><?php echo $mpbp_services_size; ?> items</span>
+		        <input name="page" value="all_services"/>
                 <a  class="prev-page <?php echo $mpbp_services_page_previous_limit;?>" href="<?php echo get_site_url(). '/wp-admin/admin.php?page=all_services&order='. $mpbp_previous_service_page;?>"><span class="screen-reader-text">Boggii hore</span><span aria-hidden="true">‹</span></a>
-                <span class="paging-input"><label for="current-page-selector" class="screen-reader-text">Current Page</label><input class="current-page" id="current-page-selector" type="text" name="paged" value="<?php echo $_GET['order'];?>" size="1" aria-describedby="table-paging"><span class="tablenav-paging-text"> of <span class="total-pages"><?php echo $mpbp_services_number_of_pages;?></span></span></span>
+                <span class="paging-input"><label for="current-page-selector" class="screen-reader-text">Current Page</label><input class="current-page" id="current-page-selector" type="text" name="order" value="<?php echo $_GET['order'];?>" size="1" aria-describedby="table-paging"><span class="tablenav-paging-text"> of <span class="total-pages"><?php echo $mpbp_services_number_of_pages;?></span></span></span>
                 <a class="next-page <?php echo $mpbp_services_page_next_limit;?>" href="<?php echo get_site_url(). '/wp-admin/admin.php?page=all_services&order='. $mpbp_next_service_page;?>"><span class="screen-reader-text">Bogga xiga</span><span aria-hidden="true">›</span></a>
         </div>
         <br class="clear">
@@ -121,7 +141,7 @@
                     <div class="locked-info"><span class="locked-avatar"></span> <span class="locked-text"></span></div>
                     <strong><a class="row-title" href="<?php echo get_site_url() ?>/wp-admin/post.php?post=3&amp;action=edit" aria-label="“Privacy Policy” (Edit)"><?php echo $mpbp_services_query_this_page[$row]->name; ?></a> </strong>
 					
-                    <div class="row-actions"><span class="edit"><a href="<?php echo get_site_url(). '/wp-admin/admin.php?page=Services&action=edit&id='. $mpbp_services_query_this_page[$row]->id;?>" aria-label="Edit “Privacy Policy”">Tifaftir</a> | </span><span class="inline hide-if-no-js"><a href="#" class="editinline" aria-label="Quick edit “Privacy Policy” inline">Quick&nbsp;Edit</a> | </span><span class="trash"><a href="http://localhost:8080/wordpress/wp-admin/post.php?post=3&amp;action=trash&amp;_wpnonce=8de0949d48" class="submitdelete" aria-label="Move “Privacy Policy” to the Bin">Trash</a> | </span><span class="view"><a href="http://localhost:8080/wordpress/?page_id=3&amp;preview=true" rel="bookmark" aria-label="Preview “Privacy Policy”">Horu’eeg</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button>
+                    <div class="row-actions"><span class="edit"><a href="<?php echo get_site_url(). '/wp-admin/admin.php?page=Services&action=edit&id='. $mpbp_services_query_this_page[$row]->id;?>" aria-label="Edit “Privacy Policy”">Tifaftir</a> | </span><span class="inline hide-if-no-js"><a href="#" class="editinline" aria-label="Quick edit “Privacy Policy” inline">Quick&nbsp;Edit</a> | </span><span class="trash"><a href="<?php echo get_site_url(); ?>/wp-admin/admin.php?page=Services&action=delete&id=<?php echo $mpbp_services_query_this_page[$row]->id; ?>" class="submitdelete" aria-label="Move “Privacy Policy” to the Bin">Trash</a> | </span><span class="view"><a href="http://localhost:8080/wordpress/?page_id=3&amp;preview=true" rel="bookmark" aria-label="Preview “Privacy Policy”">Horu’eeg</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button>
                 </td>
                 <td class="author column-author" data-colname="Qoraa"><a href="edit.php?post_type=page&amp;author=1"><img src="<?php preg_match('/(http(.*?)(?=\,))/', $mpbp_services_query_this_page[$row]->pictures, $mpbp_s_first_image); echo($mpbp_s_first_image[0]);?>" height="100" width="100"/></a></td>
                 <td class="comments column-comments" data-colname="Faallooyin">
@@ -149,7 +169,7 @@
         </tfoot>
 
     </table>
-
+</form>
   <?php
   }
   
