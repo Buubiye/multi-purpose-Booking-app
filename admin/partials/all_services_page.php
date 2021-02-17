@@ -173,6 +173,6 @@
   <?php
   }
   
-  
+  add_shortcode('mpbp_services', 'mpbp_display_services');
   mpbp_display_services();
 ?>
