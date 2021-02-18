@@ -44,7 +44,7 @@ jQuery(document).ready(function ($){
 	* this code stores the image src attribute in one input
 	*/
 	var pushValues = [];
-		$('#mpbp_hidden_image_form_btn').on('click', function(){
+		$('body').on('click', '#mpbp_hidden_image_form_btn', function(){
 		   var imgSrcArray = document.getElementsByClassName('mpbp_new_images');
 		   pushValues = []; // remove the old values
 		   let i = '';
