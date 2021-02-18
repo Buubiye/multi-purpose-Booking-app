@@ -224,7 +224,7 @@ function mpbp_printout_inputs($name, $element, $type, $class , $placeholder, $va
 					<div class='image-preview-wrapper'>
                     <img id='image-preview' src='' width='200'/>
 					</div>
-					<input id='upload_image_button' type='button' class='button' value='". _e( 'Upload image' ) ."' /></br>
+					<input id='upload_image_button' type='button' class='button' value='". __( 'Upload image' ) ."' /></br>
 					<input type='hidden' name='image_attachment_id' id='image_attachment_id' value=''/>
 					<button type='button' id='mpbp_hidden_image_form_btn' value=''>insert to Form</button><br>";
 					break;
@@ -283,7 +283,7 @@ function mpbp_render_services(){
 mpbp_render_services();
 ?>
 
-<!--<form method='POST' enctype="multipart/form-data" action='' id='mpbp_services_1'>
+    <form method='POST' enctype="multipart/form-data" action='' id='mpbp_services_1'>
     <input type='text' id="mpbp_services_id" name="mpbp_services_id" placeholder="Search ID" value="<?php echo $_GET['id'];/*$_POST['mpbp_services_id'];*/ ?>"/><br>
 	<input type='text' id='name' name='name' placeholder='name' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['name'];?>"/><br>
 	<textarea type='text' id='description' name='description' placeholder='description'><?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['description'];?></textarea><br>
@@ -315,7 +315,7 @@ mpbp_render_services();
 	    <option id="mpbp_services_available"> Available </option>
 		<option id="mpbp_services_not_available"> Not Available </option>
 	</select><br>
-	<input type='text' id='extra_info' name='extra_info' placeholder='extra_info' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['extra_info'];?>"/><br>-->
+	<input type='text' id='extra_info' name='extra_info' placeholder='extra_info' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['extra_info'];?>"/><br>
 	<input placeholder='service providers IDs'/>
 	<input placeholder="last updated by"/>
 	<input placeholder="location"/>
