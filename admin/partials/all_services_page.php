@@ -173,6 +173,9 @@
   <?php
   }
   
-  add_shortcode('mpbp_services', 'mpbp_display_services');
+  function mpbp_shortcode_func(){
+	  return 'hello world';
+  }
+  add_shortcode('mpbp_services', 'mpbp_shortcode_func');
   mpbp_display_services();
 ?>
