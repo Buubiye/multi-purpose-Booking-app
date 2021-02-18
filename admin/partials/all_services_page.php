@@ -130,7 +130,7 @@
 
         <tbody id="the-list">
 		<?php      
-		for($row=0; $row<5; $row++){
+		for($row=0; $row<$mpbp_services_results_per_page; $row++){
 			if($mpbp_services_query_this_page[$row]->name != ''){
 			?>
             <tr id="post-3" class="iedit author-self level-0 post-3 type-page status-draft hentry entry">

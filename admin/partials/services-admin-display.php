@@ -9,67 +9,70 @@
 *******
 */
  function mpbp_validate_services(){
-	 global $mpbp_services_new_name;
-	 global $mpbp_services_data;
-	 global $mpbp_services_error;
-	 	 
-	 // validate the name
-	 if(isset($_POST['name'])){ // just to not excute this code if page is refreshed
-	if(!empty($_POST['name']))
-	 {
-		 $mpbp_services_new_name = $_POST['name'];
-		 $mpbp_services_data[0] = $_POST['name'];
-	 }else{
-		 $mpbp_services_error["name_error"] = "Please check the name";
-	 }
-	 // validate the description
-	 if(!empty($_POST['description'])){
-		 $mpbp_services_data[1] = $_POST['description'];
-	 }else{
-		 $mpbp_services_error["Description_error"] = "Please check the Description";
-	 }
-	 //validate price
-	  if(!empty($_POST['pictures'])){
-		 $mpbp_services_data[2] = $_POST['pictures'];
-	  }else{
-		  $mpbp_services_error["Picture_error"] = "Please check the pictures";
-	  }
-	  if(!empty($_POST['price'])){
-		 $mpbp_services_data[3] = $_POST['price'];
-	  }else{
-		  $mpbp_services_error["Price_error"] = "Please check the price";
-	  }
-	  if(!empty($_POST['date_created'])){
-		 $mpbp_services_data[4] = $_POST['date_created'];
-	  }else{
-		  $mpbp_services_error["Date_created_error"] = "Please check the date_created";
-	  }
-	  if(!empty($_POST['category']) | !$_POST['category'] = 'Select Category'){
-		 $mpbp_services_data[5] = $_POST['category'];
-	  }else{
-		  $mpbp_services_error["category_error"] = "Please check the category";
-	  }
-	  if(!empty($_POST['available_times'])){
-		 $mpbp_services_data[6] = $_POST['available_times'];
-	  }else{
-		  $mpbp_services_error["available_times_error"] = "Please check the available_times";
-	  }
-	  if(!empty($_POST['quantity'])){
-		 $mpbp_services_data[7] = $_POST['quantity'];
-	  }else{
-		  $mpbp_services_error["Quantity_error"] = "Please check the quantity";
-	  }
-	  if(!empty($_POST['status'])){
-		 $mpbp_services_data[8] = $_POST['status'];
-	  }else{
-		  $mpbp_services_error["status_error"] = "Please check the status";
-	  }
-	  if(!empty($_POST['extra_info'])){
-		 $mpbp_services_data[9] = $_POST['extra_info'];
-	  }else{
-		  $mpbp_services_error["extra_info_error"] = "Please check the extra_info";
-	  }
-	 }
+	 
+	 /*
+	 * The below four global variable do the following stuff respectively
+	 * stores the data after it is validated
+	 * stores the errors when user clicks submit
+	 * stores the input names of services update or add new form
+	 * Stores the logic for validating inputs
+	 */
+	 global $mpbp_services_data;  		       
+	 global $mpbp_services_error; 		      
+	 global $mpbp_services;       		      
+	 global $mpbp_services_validation_logic;  
+	 
+	/*
+	* This array stores the names of the inputs in service page
+	*/
+	$mpbp_services = [
+	"name", 
+	"Description",
+	"Picture",
+	"Price",
+	"Date_created",
+	"category",
+	"available_times",
+	"Quantity",
+	"status",
+	"extra_info" 
+	];
+	
+	/*
+	* This array stores the logic for validating every input
+	*/
+	$mpbp_services_validation_logic = [
+	!empty($_POST['name']),
+	!empty($_POST['description']),
+	!empty($_POST['pictures']),
+    !empty($_POST['price']),
+	!empty($_POST['date_created']),
+	!empty($_POST['category']) | !$_POST['category'] = 'Select Category',
+	!empty($_POST['available_times']),
+	!empty($_POST['quantity']),
+	!empty($_POST['status']),
+	!empty($_POST['extra_info']) 
+	];
+	
+	/*
+	* This if statement fires if user sets the name value and clicks submit
+	* the for loop loops through the data submitted by user and validates the data
+	* with the logic stored in "$mpbp_services_validation_logic" array.
+	* all the errors detected are assigned to the "$mpbp_services_error" array for later use
+	*/
+	if(isset($_POST['name'])){ 
+	for($logic = 0; $logic<sizeof($mpbp_services_validation_logic); $logic++){
+		if($mpbp_services_validation_logic[$logic]){
+			$mpbp_services_data[$logic] = $_POST[$mpbp_services[$logic]];
+		}else{
+			$mpbp_services_error[$mpbp_services[$logic]] = 'please check the'. $mpbp_services[$logic];
+		}
+	}
+	};
+	
+	/*
+	* Fires to insert data to the db
+	*/
 	  mpbp_insert_to_db();
 }
 
@@ -82,7 +85,7 @@ function mpbp_services_update(){
 	// fetch data for update
 		 global $mpbp_service_id;
 		 $mpbp_service_id = $_POST['mpbp_services_id']; 
-		 
+		 global $mpbp_services_error;
 		 //update services data
 		 global $wpdb; 
 		 if($_GET['action'] == 'edit'){
