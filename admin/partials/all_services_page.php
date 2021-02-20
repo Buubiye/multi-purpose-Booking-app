@@ -83,19 +83,6 @@
   /*
   * search
   */
-  /*$mpbp_all_services_search = $wpdb->get_results("
-	SELECT * FROM wp_mpbpservices2 WHERE '". $_GET['search'] ."' IN (id, name, date_created, category, status, extra_info)
-  ");
-  for($rows = 0; $rows<sizeof($mpbp_all_services_search); $rows++){
-	 echo $mpbp_all_services_search[$rows]->id ." , ". $mpbp_all_services_search[$rows]->name  ."<br>";
-  }*/
-  /*
-  * extract the first image link for image display
-  */
-  /*echo $mpbp_services_query_this_page[$row]->pictures;
-  $mpbp_s_first_image = preg_grep('/.(?<=\h)(.*?)(?=\,)/', $mpbp_services_query_this_page[$row]->pictures);
-  print_r($mpbp_s_first_image);
-  echo $mpbp_s_first_image[0];*/
   ?>
   <a href="<?php echo get_site_url(). '/wp-admin/admin.php?page=Services&action=add_new';?>" class="page-title-action">Add New</a>
   <form id="mpbp_services_list_form" method="GET">

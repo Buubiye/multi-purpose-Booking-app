@@ -226,13 +226,12 @@ function mpbp_printout_inputs($name, $element, $type, $class , $placeholder, $va
                     <img id='image-preview' src='' width='200'/>
 					</div>
 					<input id='upload_image_button' type='button' class='button' value='". __( 'Upload image' ) ."' /></br>
-					<input type='hidden' name='image_attachment_id' id='image_attachment_id' value=''/>
 					<button type='button' id='mpbp_hidden_image_form_btn' value=''>insert to Form</button><br>";
 					break;
 		case "select":
 			echo "<label>". $name ."</label><br><select type='". $type ."' id='". $name ."' name='". $name ."' placeholder='". $placeholder ."'>";
 			for($i=0; $i<sizeof($value); $i++){
-				echo "<option id='mpbp_". $value[$i] ."'> ". $value[$i]." </option>";
+				echo "<option id='mpbp_". $value[$i] ."' value='". $value[$i]."'> ". $value[$i]." </option>";
 			}
 			echo "</select><br>";
 			break;
@@ -247,25 +246,34 @@ function mpbp_render_services(){
 	*/
 	global $mpbp_fetched_data_results;
 	$mpbp_s_val = [
-		["name", "input", "text", "mpbp_service_name", "Name", $mpbp_fetched_data_results['name'], ""],
-		["description", "textarea", "text", "mpbp_service_description", "Description", $mpbp_fetched_data_results['description'], ""],
-		["pictures", "img", "text", "mpbp_service_pictures", "Pictures", $mpbp_fetched_data_results['pictures'], ""],
-		["price", "input", "number", "mpbp_s_price", "Price", $mpbp_fetched_data_results['price'], ""],
-		["date_created", "input", "text", "mpbp_s_date_created", "Date Created", $mpbp_fetched_data_results['date_created'], ""],
+	    ["id", "input", "number", "mpbp_service_id", "ID", $_GET['id'], ""],
+		["name", "input", "text", "mpbp_service_name", "Name", 
+		($_GET['action'] == 'add_new')? $_POST['name'] : $mpbp_fetched_data_results['name'], ""],
+		["description", "textarea", "text", "mpbp_service_description", "Description", 
+		($_GET['action'] == 'add_new')? $_POST['description'] : $mpbp_fetched_data_results['description'], ""],
+		["pictures", "img", "text", "mpbp_service_pictures", "Pictures", 
+		($_GET['action'] == 'add_new') ? $_POST['pictures'] : $mpbp_fetched_data_results['pictures'], ""],
+		["price", "input", "number", "mpbp_s_price", "Price", 
+		($_GET['action'] == 'add_new') ? $_POST['price'] : $mpbp_fetched_data_results['price'], ""],
+		["date_created", "input", "text", "mpbp_s_date_created", "Date Created", 
+		($_GET['action'] == 'add_new') ? $_POST['date_created'] : $mpbp_fetched_data_results['date_created'], ""],
 		["category", "select", "text", "mpbp_s_category", "Category", 
-			[($mpbp_fetched_data_results['category'] != '')? $mpbp_fetched_data_results['category'] : "Select Category", 
+			[($_GET['action'] == 'add_new' && $_POST['category'] != '') ? $_POST['category'] : ($mpbp_fetched_data_results['category'] != '')? $mpbp_fetched_data_results['category'] : "Select Category", 
 			"Ride Sharing", 
 			"Accomodation", 
 			"Hotel", 
 			"Flight", 
 			"Other"] , ""],
-		["available_times", "input", "text", "mpbp_s_available_time", "Avaiable Times", $mpbp_fetched_data_results['available_times'], ""],
-		["quantity", "input", "number", "mpbp_s_quantity", "Quantity", $mpbp_fetched_data_results['quantity'], ""],
+		["available_times", "input", "text", "mpbp_s_available_time", "Avaiable Times", 
+		($_GET['action'] == 'add_new') ? $_POST['available_times'] : $mpbp_fetched_data_results['available_times'] , ""],
+		["quantity", "input", "number", "mpbp_s_quantity", "Quantity", 
+		($_GET['action'] == 'add_new') ? $_POST['quantity'] : $mpbp_fetched_data_results['quantity'], ""],
 		["status", "select", "text", "mpbp_s_status", "Status", 
-			[($mpbp_fetched_data_results['status'] != '')? $mpbp_fetched_data_results['status'] : "Select Status",
+			[($_GET['action'] == 'add_new') ? $_POST['status'] : ($mpbp_fetched_data_results['status'] != '')? $mpbp_fetched_data_results['status'] : "Select Status",
 			"Available",
 			"Not Available"], ""],
-		["extra_info", "input", "text", "mpbp_s_extra_info", "Extra Info", $mpbp_fetched_data_results['extra_info'], ""],
+		["extra_info", "input", "text", "mpbp_s_extra_info", "Extra Info", 
+		($_GET['action'] == 'add_new') ? $_POST['extra_info'] : $mpbp_fetched_data_results['extra_info'], ""],
 		["", "input", "submit", "button", "", "Submit", ""]
 	];
 	
