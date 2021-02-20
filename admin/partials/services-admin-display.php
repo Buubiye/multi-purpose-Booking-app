@@ -85,7 +85,9 @@
 function mpbp_services_update(){
 	// fetch data for update
 		 global $mpbp_service_id;
+		 if(isset($_POST['name'])){
 		 $mpbp_service_id = $_POST['mpbp_services_id']; 
+		 }
 		 global $mpbp_services_error;
 		 //update services data
 		 global $wpdb; 
@@ -258,18 +260,18 @@ function mpbp_render_services(){
 		["date_created", "input", "text", "mpbp_s_date_created", "Date Created", 
 		($_GET['action'] == 'add_new') ? $_POST['date_created'] : $mpbp_fetched_data_results['date_created'], ""],
 		["category", "select", "text", "mpbp_s_category", "Category", 
-			[($_GET['action'] == 'add_new' && $_POST['category'] != '') ? $_POST['category'] : ($mpbp_fetched_data_results['category'] != '')? $mpbp_fetched_data_results['category'] : "Select Category", 
-			"Ride Sharing", 
+			[($_GET['action'] == 'add_new' && $_POST['category'] != '') ? $_POST['category'] : (($mpbp_fetched_data_results['category'] != '') ? $mpbp_fetched_data_results['category'] : "Select Category"), 
+			"Ride Sharing",  
 			"Accomodation", 
 			"Hotel", 
 			"Flight", 
-			"Other"] , ""],
+			"Other"] , "h"],
 		["available_times", "input", "text", "mpbp_s_available_time", "Avaiable Times", 
 		($_GET['action'] == 'add_new') ? $_POST['available_times'] : $mpbp_fetched_data_results['available_times'] , ""],
 		["quantity", "input", "number", "mpbp_s_quantity", "Quantity", 
 		($_GET['action'] == 'add_new') ? $_POST['quantity'] : $mpbp_fetched_data_results['quantity'], ""],
 		["status", "select", "text", "mpbp_s_status", "Status", 
-			[($_GET['action'] == 'add_new') ? $_POST['status'] : ($mpbp_fetched_data_results['status'] != '')? $mpbp_fetched_data_results['status'] : "Select Status",
+			[($_GET['action'] == 'add_new') ? $_POST['status'] : (($mpbp_fetched_data_results['status'] != '')? $mpbp_fetched_data_results['status'] : "Select Status"),
 			"Available",
 			"Not Available"], ""],
 		["extra_info", "input", "text", "mpbp_s_extra_info", "Extra Info", 
@@ -288,7 +290,7 @@ function mpbp_render_services(){
 	}
 	echo '</form>';
 }
-
+		
 mpbp_render_services();
 ?>
 
