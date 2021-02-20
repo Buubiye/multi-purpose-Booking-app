@@ -27,13 +27,13 @@
 	*/
 	$mpbp_services = [
 	"name", 
-	"Description",
-	"Picture",
-	"Price",
-	"Date_created",
+	"description",
+	"pictures",
+	"price",
+	"date_created",
 	"category",
 	"available_times",
-	"Quantity",
+	"quantity",
 	"status",
 	"extra_info" 
 	];
@@ -61,11 +61,12 @@
 	* all the errors detected are assigned to the "$mpbp_services_error" array for later use
 	*/
 	if(isset($_POST['name'])){ 
+	$mpbp_services_error = null;
 	for($logic = 0; $logic<sizeof($mpbp_services_validation_logic); $logic++){
 		if($mpbp_services_validation_logic[$logic]){
 			$mpbp_services_data[$logic] = $_POST[$mpbp_services[$logic]];
 		}else{
-			$mpbp_services_error[$mpbp_services[$logic]] = 'please check the'. $mpbp_services[$logic];
+			$mpbp_services_error[$mpbp_services[$logic]] = 'please check the '. $mpbp_services[$logic];
 		}
 	}
 	};
@@ -212,11 +213,11 @@ mpbp_delete_services_data();
 function mpbp_printout_inputs($name, $element, $type, $class , $placeholder, $value, $options){
 	switch($element){
 		case "input":
-			echo "<label>". $name ."</label><br><input type='". $type ."' id=mpbp_services'". $name ."' class='". $class ."' 
+			echo "<label>". $name ."</label><br><input type='". $type ."' name='". $name ."' id='mpbp_services_". $name ."' class='". $class ."' 
 				  placeholder='". $placeholder ."' value='". $value ."'/><br>";
 			break;
 		case "textarea":
-			echo "<label>". $name ."</label><br><textarea type='". $type ."' id='mpbp_services_". $name ."' class='". $class ."' 
+			echo "<label>". $name ."</label><br><textarea type='". $type ."' name='". $name ."' id='mpbp_services_". $name ."' class='". $class ."' 
 				  placeholder='". $placeholder ."'> ". $value ."</textarea><br>";
 			break;
 		case "img":
@@ -247,10 +248,10 @@ function mpbp_render_services(){
 	global $mpbp_fetched_data_results;
 	$mpbp_s_val = [
 		["name", "input", "text", "mpbp_service_name", "Name", $mpbp_fetched_data_results['name'], ""],
-		["Description", "textarea", "text", "mpbp_service_description", "Description", $mpbp_fetched_data_results['description'], ""],
-		["Pictures", "img", "text", "mpbp_service_pictures", "Pictures", $mpbp_fetched_data_results['pictures'], ""],
-		["Price", "input", "number", "mpbp_s_price", "Price", $mpbp_fetched_data_results['price'], ""],
-		["Date_created", "input", "text", "mpbp_s_date_created", "Date Created", $mpbp_fetched_data_results['date_created'], ""],
+		["description", "textarea", "text", "mpbp_service_description", "Description", $mpbp_fetched_data_results['description'], ""],
+		["pictures", "img", "text", "mpbp_service_pictures", "Pictures", $mpbp_fetched_data_results['pictures'], ""],
+		["price", "input", "number", "mpbp_s_price", "Price", $mpbp_fetched_data_results['price'], ""],
+		["date_created", "input", "text", "mpbp_s_date_created", "Date Created", $mpbp_fetched_data_results['date_created'], ""],
 		["category", "select", "text", "mpbp_s_category", "Category", 
 			[($mpbp_fetched_data_results['category'] != '')? $mpbp_fetched_data_results['category'] : "Select Category", 
 			"Ride Sharing", 
@@ -259,7 +260,7 @@ function mpbp_render_services(){
 			"Flight", 
 			"Other"] , ""],
 		["available_times", "input", "text", "mpbp_s_available_time", "Avaiable Times", $mpbp_fetched_data_results['available_times'], ""],
-		["Quantity", "input", "number", "mpbp_s_quantity", "Quantity", $mpbp_fetched_data_results['quantity'], ""],
+		["quantity", "input", "number", "mpbp_s_quantity", "Quantity", $mpbp_fetched_data_results['quantity'], ""],
 		["status", "select", "text", "mpbp_s_status", "Status", 
 			[($mpbp_fetched_data_results['status'] != '')? $mpbp_fetched_data_results['status'] : "Select Status",
 			"Available",
@@ -273,7 +274,7 @@ function mpbp_render_services(){
 	*/
 	echo '<form method="POST" enctype="multipart/form-data" action="" id="mpbp_services_1">';
 	echo '<h1 id="h11" class="wp-heading-inline"> Add New Services </h1>
-    <a href="'. get_site_url() .'"/wp-admin/admin.php?page=Services&action=add_new" class="page-title-action">Add New</a><br>';
+    <a href="'. get_site_url() .'/wp-admin/admin.php?page=Services&action=add_new" class="page-title-action">Add New</a><br>';
 	for($i = 0; $i < sizeof($mpbp_s_val); $i++){
 		mpbp_printout_inputs($mpbp_s_val[$i][0], $mpbp_s_val[$i][1], $mpbp_s_val[$i][2], $mpbp_s_val[$i][3] , $mpbp_s_val[$i][4], $mpbp_s_val[$i][5], $mpbp_s_val[$i][6]);
 	}
@@ -283,45 +284,7 @@ function mpbp_render_services(){
 mpbp_render_services();
 ?>
 
-    <form method='POST' enctype="multipart/form-data" action='' id='mpbp_services_1'>
-    <input type='text' id="mpbp_services_id" name="mpbp_services_id" placeholder="Search ID" value="<?php echo $_GET['id'];/*$_POST['mpbp_services_id'];*/ ?>"/><br>
-	<input type='text' id='name' name='name' placeholder='name' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['name'];?>"/><br>
-	<textarea type='text' id='description' name='description' placeholder='description'><?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['description'];?></textarea><br>
-	<input type='text' id='pictures' name='pictures' placeholder='pictures' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['pictures'];?>"/>
-	<div class='image-preview-wrapper'>
-            <img id='image-preview' src='<?php echo wp_get_attachment_url( get_option( 'media_selector_attachment_id' ) ); ?>' width='200'>
-        </div>
-        <input id="upload_image_button" type="button" class="button" value="<?php _e( 'Upload image' ); ?>" />
-        <input type='hidden' name='image_attachment_id' id='image_attachment_id' value='<?php echo get_option( 'media_selector_attachment_id' ); ?>'>
-		
-	<button type="button" id="mpbp_hidden_image_form_btn" value="">insert to Form</button><br>
-	<input type='text' id='price' name='price' placeholder='price' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['price'];?>"/><br>
-	<input type='text' id='date_created' name='date_created' placeholder='date_created' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['date_created']; ?>"/><br>
-	<select type='text' id='category' name='category' placeholder='category' value="">
-		<option id="mpbp_category_select"> <?php global $mpbp_fetched_data_results; echo (!empty($mpbp_fetched_data_results['category'])) ? $mpbp_fetched_data_results['category'] : 'Select Category'; ?></option>
-		<option id="mpbp_services_taxi"> Ride Sharing </option>
-		<option id="mpbp_services_hotel"> Hotel </option>
-		<option id="mpbp_services_accomodation"> Accomodation </option>
-		<option id="mpbp_services_flight"> Flight </option>
-		<option id="mpbp_services_other"> Other </option>
-	</select><br>
-	<label> The available time should be written like this [00:00 am - 00:00 pm], [00:00 am - 00:00 pm] .... <br>
-			 [] = the brackets mean the different opening and closing times throught the day</label> <br>
-	<input type='text' id='available_times' name='available_times' placeholder='available_times' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['available_times']; ?>"/>
-	<p id="mpbp_available_times_tester"></p><br>
-	<input type='number' id='quantity' name='quantity' placeholder='quantity' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['quantity'];?>"/><br>
-	<select type='text' id='status' name='status' placeholder='status' value="">
-	    <option id="mpbp_services_status"> <?php global $mpbp_fetched_data_results; echo (!empty($mpbp_fetched_data_results['status'])) ? $mpbp_fetched_data_results['status'] : 'Select Status' ;?> </option>
-	    <option id="mpbp_services_available"> Available </option>
-		<option id="mpbp_services_not_available"> Not Available </option>
-	</select><br>
-	<input type='text' id='extra_info' name='extra_info' placeholder='extra_info' value="<?php global $mpbp_fetched_data_results; echo $mpbp_fetched_data_results['extra_info'];?>"/><br>
-	<input placeholder='service providers IDs'/>
-	<input placeholder="last updated by"/>
-	<input placeholder="location"/>
-	<input placeholder="GPS coordinate"/>
-	<input class="button" type='submit'/>
- </form>
+
  
 <?php
 if ( isset( $_POST['submit_image_selector'] ) && isset( $_POST['image_attachment_id'] ) ) :

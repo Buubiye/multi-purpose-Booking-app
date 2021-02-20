@@ -32,11 +32,12 @@ jQuery(document).ready(function ($){
 	 /*
 	 * this code validates the ['available_times'] input value using regex
 	 */
-	document.getElementById("available_times").addEventListener("keyup", displayDate);
+	//document.getElementById("available_times").addEventListener("keyup", displayDate);
+	$('body').on('keyup', 'available_times', displayDate());
     function displayDate() {
 		  let regex = /\[(\d\d|\d)\:(\d\d|\d)(\s|\S)(am|pm)\s(\-|\,)\s(\d\d|\d)\:(\d\d|\d)(\s|\S)(am|pm)]/gi;
-		  let mpbp_available_regex = document.getElementById("available_times").value;
-		  document.getElementById('mpbp_available_times_tester').innerHTML = regex.test(mpbp_available_regex);
+		  let mpbp_available_regex = document.getElementById("mpbp_services_available_times").value;
+		  //document.getElementById('mpbp_available_times_tester').innerHTML = regex.test(mpbp_available_regex);
 	  
 	}
 	
@@ -78,7 +79,7 @@ jQuery(document).ready(function ($){
 	
         var tgm_media_frame;
   
-		$('#upload_image_button').click(function() {
+		$('body').on('click', '#upload_image_button', function() {
 
 		  if ( tgm_media_frame ) {
 			tgm_media_frame.open();
