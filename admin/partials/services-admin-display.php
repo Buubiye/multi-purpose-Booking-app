@@ -265,7 +265,7 @@ function mpbp_render_services(){
 			"Accomodation", 
 			"Hotel", 
 			"Flight", 
-			"Other"] , "h"],
+			"Other"] , ""],
 		["available_times", "input", "text", "mpbp_s_available_time", "Avaiable Times", 
 		($_GET['action'] == 'add_new') ? $_POST['available_times'] : $mpbp_fetched_data_results['available_times'] , ""],
 		["quantity", "input", "number", "mpbp_s_quantity", "Quantity", 

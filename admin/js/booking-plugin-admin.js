@@ -33,10 +33,11 @@ jQuery(document).ready(function ($){
 	 * this code validates the ['available_times'] input value using regex
 	 */
 	//document.getElementById("available_times").addEventListener("keyup", displayDate);
-	$('body').on('keyup', 'available_times', displayDate());
+	$('body').on('keyup', '#mpbp_services_available_times', displayDate);
     function displayDate() {
 		  let regex = /\[(\d\d|\d)\:(\d\d|\d)(\s|\S)(am|pm)\s(\-|\,)\s(\d\d|\d)\:(\d\d|\d)(\s|\S)(am|pm)]/gi;
 		  let mpbp_available_regex = document.getElementById("mpbp_services_available_times").value;
+		  //---- The below line prints out if the format of writing to the available times input was right or wrong
 		  //document.getElementById('mpbp_available_times_tester').innerHTML = regex.test(mpbp_available_regex);
 	  
 	}
