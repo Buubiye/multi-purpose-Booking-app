@@ -47,10 +47,10 @@
 	!empty($_POST['pictures']),
     !empty($_POST['price']),
 	!empty($_POST['date_created']),
-	!empty($_POST['category']) | !$_POST['category'] = 'Select Category',
+	!empty($_POST['category']) | $_POST['category'] != 'Select Category',
 	!empty($_POST['available_times']),
 	!empty($_POST['quantity']),
-	!empty($_POST['status']) | !$_POST['status'] = 'Select Status',
+	!empty($_POST['status']) | $_POST['status'] != 'Select Status',
 	!empty($_POST['extra_info']) 
 	];
 	
