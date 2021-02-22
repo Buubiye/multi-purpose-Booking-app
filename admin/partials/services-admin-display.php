@@ -3,12 +3,13 @@
 * This file contains the services page
 */
 
+class mpbp_crud{
 /*
 *******
 * This function validates data for "update" action and "add_new" action
 *******
 */
- function mpbp_validate_services(){
+public function mpbp_validate_services(){
 	 
 	 /*
 	 * The below four global variable do the following stuff respectively
@@ -47,10 +48,10 @@
 	!empty($_POST['pictures']),
     !empty($_POST['price']),
 	!empty($_POST['date_created']),
-	!empty($_POST['category']) | $_POST['category'] != 'Select Category',
+	!empty($_POST['category']) || isset($_POST['category']) != 'Select Category',
 	!empty($_POST['available_times']),
 	!empty($_POST['quantity']),
-	!empty($_POST['status']) | $_POST['status'] != 'Select Status',
+	!empty($_POST['status']) | isset($_POST['status']) != 'Select Status',
 	!empty($_POST['extra_info']) 
 	];
 	
@@ -70,11 +71,6 @@
 		}
 	}
 	};
-	
-	/*
-	* Fires to insert data to the db
-	*/
-	  mpbp_insert_to_db();
 }
 
 /*
@@ -82,16 +78,16 @@
 * update data the selected row from db(wp_mpbpservices2 )
 *******
 */
-function mpbp_services_update(){
+public function mpbp_services_update(){
 	// fetch data for update
 		 global $mpbp_service_id;
 		 if(isset($_POST['name'])){
-		 $mpbp_service_id = $_POST['mpbp_services_id']; 
+		 $mpbp_service_id = $_POST['id']; 
 		 }
 		 global $mpbp_services_error;
 		 //update services data
 		 global $wpdb; 
-		 if($_GET['action'] == 'edit'){
+		 if($_GET['action'] == 'edit' && isset($_POST['name'])){
 		 if($mpbp_services_error == ''){
 			$wpdb->query(
 				$wpdb->prepare("
@@ -105,7 +101,9 @@ function mpbp_services_update(){
 					 $_POST['quantity'], $_POST['status'], $_POST['extra_info'], $mpbp_service_id
 				)
 			);
+			echo 'Succesfully Updated data!';
 		}else{
+			echo 'ERROR: Unable to update!';
 			print_r($mpbp_services_error);
 		}
 	 }
@@ -116,7 +114,7 @@ function mpbp_services_update(){
 * fetch data from db(wp_mpbpservices2), this data will be displayed on the "input" elements 
 *******
 */
-function mpbp_display_services_data(){
+public function mpbp_display_services_data(){
 	// get the ID input value
 	     global $mpbp_service_id;
 		 $mpbp_service_id = $_GET['id']; 
@@ -145,11 +143,10 @@ function mpbp_display_services_data(){
 * inserts new values to the database(wp_mpbpservices2 )
 *******
 */
-function mpbp_insert_to_db(){
+public function mpbp_insert_to_db(){
 	global $wpdb;
 	global $mpbp_services_data;
 	global $mpbp_services_error;
-	echo $mpbp_services_data[0];
 	if($_GET['action'] == 'add_new'){ 
 		if($mpbp_services_error == ''){
 			/*
@@ -164,7 +161,9 @@ function mpbp_insert_to_db(){
 				)
 			);
 			}
+			echo 'Succesfully Inserted Data!';
 		}else{
+			echo 'ERROR: Unable to insert data!';
 			print_r($mpbp_services_error);
 		}
 	}
@@ -175,12 +174,12 @@ function mpbp_insert_to_db(){
 * Deletes the selected row(s) in db(wp_mpbpservices2)
 *******
 */
-function mpbp_delete_services_data(){
+public function mpbp_delete_services_data(){
 	global $wpdb;
 	/*
 	* This is a conformation form which appears when user tries to delete data from his services db
 	*/
-	if($_GET['action'] == 'delete' && $_GET['id'] != '' && $_POST['mpbp_verify_service_delete'] == ''){
+	if($_GET['action'] == 'delete' && $_GET['id'] != '' && isset($_POST['mpbp_verify_service_delete']) == ''){
 		echo "<form method='POST' action=''><h3> Are you sure you want to delete service #". $_GET['id'] ."</h3>
 			  <label>YES:</lable><input type='radio' name='mpbp_verify_service_delete' value='Yes'/>
 			  <label>NO:</label><input type='radio' name='mpbp_verify_service_delete' value='No'/>
@@ -190,29 +189,27 @@ function mpbp_delete_services_data(){
 	* When confrmation forms appears, if user clicks "yes" [radio input element] delete the row by -
 	* extracting it id from $_GET['id'] method. Then print out a success message
 	*/
-	if($_GET['action'] == 'delete' && $_GET['id'] != '' && $_POST['mpbp_verify_service_delete'] == 'Yes'){		  
-		$wpdb->query(
-			$wpdb->prepare("
-				DELETE FROM wp_mpbpservices2 WHERE id='%d'", $_GET['id']."
-			")
-		);
-		echo "succesfully deleted Service #". $_GET['id'];
-	}else if($_POST['mpbp_verify_service_delete'] == 'No'){
-		/*
-		* if user chooses not to delete his data redirect him to all services page
-		*/
-		header('Location:'. get_site_url() .'/wp-admin/admin.php?page=all_services');
-		die();
+	if(isset($_POST['mpbp_verify_service_delete'])){
+		if($_GET['action'] == 'delete' && $_GET['id'] != '' && $_POST['mpbp_verify_service_delete'] == 'Yes'){		  
+			$wpdb->query(
+				$wpdb->prepare("
+					DELETE FROM wp_mpbpservices2 WHERE id='%d'", $_GET['id']."
+				")
+			);
+			echo "succesfully deleted Service #". $_GET['id'];
+		}else if($_POST['mpbp_verify_service_delete'] == 'No'){
+			/*
+			* if user chooses not to delete his data redirect him to all services page
+			*/
+			header('Location:'. get_site_url() .'/wp-admin/admin.php?page=all_services');
+			die();
+		}
 	}
 }
 
-mpbp_services_update();
-mpbp_validate_services();
-mpbp_display_services_data();
-mpbp_delete_services_data();
 
 //['name', 'element', 'type', 'class' , 'placeholder', 'value', 'options']
-function mpbp_printout_inputs($name, $element, $type, $class , $placeholder, $value, $options){
+public function mpbp_printout_inputs($name, $element, $type, $class , $placeholder, $value, $options){
 	switch($element){
 		case "input":
 			echo "<label>". $name ."</label><br><input type='". $type ."' name='". $name ."' id='mpbp_services_". $name ."' class='". $class ."' 
@@ -240,7 +237,7 @@ function mpbp_printout_inputs($name, $element, $type, $class , $placeholder, $va
 	}
 }
 
-function mpbp_render_services(){
+public function mpbp_render_services(){
 	/*
 	* Prints out new inputs
 	* Below array shows how the data is organized
@@ -290,21 +287,15 @@ function mpbp_render_services(){
 	}
 	echo '</form>';
 }
-		
-mpbp_render_services();
-?>
 
+}
 
- 
-<?php
-if ( isset( $_POST['submit_image_selector'] ) && isset( $_POST['image_attachment_id'] ) ) :
-        update_option( 'media_selector_attachment_id', absint( $_POST['image_attachment_id'] ) );
-    endif;
-    wp_enqueue_media();
-	wp_enqueue_script( array("jquery", "jquery-ui-core", "interface", "jquery-ui-sortable", "wp-lists", "jquery-ui-sortable") );
-    ?>
-	
-<?php
-$my_saved_attachment_post_id = get_option( 'media_selector_attachment_id', 0 );
-    ?>
+$mpbp_new_crud = new mpbp_crud();
+
+$mpbp_new_crud->mpbp_insert_to_db();
+$mpbp_new_crud->mpbp_render_services();
+$mpbp_new_crud->mpbp_services_update();
+$mpbp_new_crud->mpbp_validate_services();
+$mpbp_new_crud->mpbp_display_services_data();
+$mpbp_new_crud->mpbp_delete_services_data();
 	
