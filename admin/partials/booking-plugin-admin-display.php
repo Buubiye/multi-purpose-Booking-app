@@ -11,6 +11,24 @@
  * @package    Booking_Plugin
  * @subpackage Booking_Plugin/admin/partials
  */
+ 
+ require_once plugin_dir_path(dirname(__FILE__) ).'class-booking-plugin-crud-actions.php';
+ 
+ $mpbp_crud_printer = new mpbp_crud();
+ 
+ /*
+ * This function renders the form
+ * mpbp_render_services($data, $url, $action, $h1Text, $method, $id, $buttonName)
+ */
+ echo $mpbp_crud_printer->mpbp_render_services(
+ [['name', 'input', 'text', "mpbp_name" , 'Name', '', '']], 
+  '/wp-admin/admin.php?page=Services&action=add_new', 
+  '', 
+  'Add New My G!', 
+  'POST', 
+  'mpbp_add_new', 
+  'Update');
+ 
 ?>
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->

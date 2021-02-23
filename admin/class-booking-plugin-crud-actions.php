@@ -99,23 +99,16 @@ public function mpbp_validate_admin(){
 * $error string to print out error messages
 *******
 */
-public function mpbp_admin_update($id, $type, $success, $error){
+public function mpbp_admin_update($id, $sql, $logic, $success, $error){
 	     // fetch data for update
 		 
 		 //update admin data
 		 global $wpdb; 
-		 if($_GET['action'] == 'edit' && isset($_POST['name'])){
+		 if($logic){
 		 if($mpbp_admin_error == ''){
 			$wpdb->query(
-				$wpdb->prepare("
-					 UPDATE wp_mpbpadmin2 SET name='%s', description='%s',
-					 pictures = '%s', price= '%s', date_created = '%s',
-					 category = '%s', available_times = '%s', quantity = '%d',
-					 status = '%s', extra_info = '%s'
-					 WHERE id= %d", $_POST['name'],
-					 $_POST['description'], $_POST['pictures'], $_POST['price'],
-					 $_POST['date_created'], $_POST['category'], $_POST['available_times'],
-					 $_POST['quantity'], $_POST['status'], $_POST['extra_info'], $id
+				$wpdb->prepare(
+					 $sql
 				)
 			);
 			
@@ -127,8 +120,8 @@ public function mpbp_admin_update($id, $type, $success, $error){
 			*/
 			return $success;
 		}else{
-			return $error;
-			print_r($mpbp_admin_error);
+			 $errorMessage= json_encode($mpbp_admin_error);
+			 return $error . $errorMessage;
 		}
 	 }
 }
@@ -155,7 +148,7 @@ public function mpbp_display_admin_data($id, $dbTable){
 * inserts new values to the database(wp_mpbpadmin2 )
 *******
 */
-public function mpbp_insert_to_db($success, $error){
+public function mpbp_insert_to_db($sql, $isset, $success){
 	global $wpdb;
 	if($_GET['action'] == 'add_new'){ 
 		if($mpbp_admin_error == ''){
@@ -164,17 +157,16 @@ public function mpbp_insert_to_db($success, $error){
 			* loads empty values
 			* This SQL query inserts new value to database wp_mpbpadmin2
 			*/
-			if(isset($_POST['name'])){
+			if(isset($_POST[$isset])){
 			$wpdb->query(
 				$wpdb->prepare("
-					INSERT INTO wp_mpbpadmin2 (name, description, pictures, price, date_created, category, available_times, quantity, status, extra_info) values (%s, %s, %s, %d, %s, %s, %s, %d, %s, %s)",  $mpbp_admin_data[0], $mpbp_admin_data[1], $mpbp_admin_data[2], $mpbp_admin_data[3], $mpbp_admin_data[4], $mpbp_admin_data[5], $mpbp_admin_data[6], $mpbp_admin_data[7], $mpbp_admin_data[8], $mpbp_admin_data[9]
-				)
+					". $sql ."
+				")
 			);
 			}
 			return $success;
 		}else{
-			return $error;
-			print_r($mpbp_admin_error);
+			return json_encode($mpbp_admin_error);
 		}
 	}
 }
@@ -188,7 +180,7 @@ public function mpbp_insert_to_db($success, $error){
 * $section string to specify which page's data is deleted eg servies or orders
 * $page string to specify the page we are in
 */
-public function mpbp_delete_admin_data($dbTable, $section, $page, $success, $url){
+public function mpbp_delete_admin_data($sql, $section, $page, $success, $url){
 	global $wpdb;
 	/*
 	* This is a conformation form which appears when user tries to delete data from his admin db
@@ -207,7 +199,7 @@ public function mpbp_delete_admin_data($dbTable, $section, $page, $success, $url
 		if($_GET['action'] == 'delete' && $_GET['id'] != '' && $_POST[$section] == 'Yes'){		  
 			$wpdb->query(
 				$wpdb->prepare("
-					DELETE FROM ". $dbTable ." WHERE id='%d'", $_GET['id']."
+					". $sql ."
 				")
 			);
 			return $success . $_GET['id'];
@@ -215,7 +207,7 @@ public function mpbp_delete_admin_data($dbTable, $section, $page, $success, $url
 			/*
 			* if user chooses not to delete his data redirect him to all admin page
 			*/
-			header('Location:'. get_site_url() . $url);
+			return header('Location:'. get_site_url() . $url);
 			die();
 		}
 	}
@@ -226,15 +218,15 @@ public function mpbp_delete_admin_data($dbTable, $section, $page, $success, $url
 public function mpbp_printout_inputs($name, $element, $type, $class , $placeholder, $value, $options){
 	switch($element){
 		case "input":
-			echo "<label>". $name ."</label><br><input type='". $type ."' name='". $name ."' id='mpbp_admin_". $name ."' class='". $class ."' 
+			return "<label>". $name ."</label><br><input type='". $type ."' name='". $name ."' id='mpbp_admin_". $name ."' class='". $class ."' 
 				  placeholder='". $placeholder ."' value='". $value ."'/><br>";
 			break;
 		case "textarea":
-			echo "<label>". $name ."</label><br><textarea type='". $type ."' name='". $name ."' id='mpbp_admin_". $name ."' class='". $class ."' 
+			return "<label>". $name ."</label><br><textarea type='". $type ."' name='". $name ."' id='mpbp_admin_". $name ."' class='". $class ."' 
 				  placeholder='". $placeholder ."'> ". $value ."</textarea><br>";
 			break;
 		case "img":
-			echo "<input type='". $type ."' id='". $name ."' name='". $name ."' placeholder='". $placeholder ."' value='". $value ."'/>
+			return "<input type='". $type ."' id='". $name ."' name='". $name ."' placeholder='". $placeholder ."' value='". $value ."'/>
 					<div class='image-preview-wrapper'>
                     <img id='image-preview' src='' width='200'/>
 					</div>
@@ -242,18 +234,41 @@ public function mpbp_printout_inputs($name, $element, $type, $class , $placehold
 					<button type='button' id='mpbp_hidden_image_form_btn' value=''>insert to Form</button><br>";
 					break;
 		case "select":
-			echo "<label>". $name ."</label><br><select type='". $type ."' id='". $name ."' name='". $name ."' placeholder='". $placeholder ."'>";
+		    $looped_results;
 			for($i=0; $i<sizeof($value); $i++){
-				echo "<option id='mpbp_". $value[$i] ."' value='". $value[$i]."'> ". $value[$i]." </option>";
+				$looped_results[] = "<option id='mpbp_". $value[$i] ."' value='". $value[$i]."'> ". $value[$i]." </option>";
 			}
-			echo "</select><br>";
+			$result = "<label>". $name ."</label><br><select type='". $type ."' id='". $name ."' name='". $name ."' placeholder='". $placeholder ."'>".
+			 implode($looped_results)
+			 ."</select><br>";
+			 return $result;
 			break;
 	}
 }
 
+/* 
+* renders the inputs in respective order
+*/
+public function mpbp_render_services($data, $url, $action, $h1Text, $method, $id, $buttonName){
+	/*
+	* Prints out new inputs
+	* Below array shows how the data is organized
+	* ['name', 'element', 'type', 'class' , 'placeholder', 'value', 'options']
+	* Loops through the above array and print out values
+	*/
+	$dataArray;
+	for($i = 0; $i < sizeof($data); $i++){
+		$dataArray[] = $this->mpbp_printout_inputs($data[$i][0], $data[$i][1], $data[$i][2], $data[$i][3] , $data[$i][4], $data[$i][5], $data[$i][6]);
+	}
+	$results = '<form method="'. $method .'" enctype="multipart/form-data" action="'. $action .'" id="'. $id .'">
+	<h1 id="h11" class="wp-heading-inline"> '. $h1Text .' 
+	</h1> <a href="'. get_site_url() . $url .'" class="page-title-action">'. $buttonName.'</a>
+	<br>'. implode($dataArray) .'</form>';
+	return $results;
+}
 }
 
-$mpbp_new_crud = new mpbp_crud();
+/* $mpbp_new_crud = new mpbp_crud();
 
 $mpbp_new_crud->mpbp_insert_to_db();
 $mpbp_new_crud->mpbp_render_admin();
@@ -261,4 +276,4 @@ $mpbp_new_crud->mpbp_admin_update();
 $mpbp_new_crud->mpbp_validate_admin();
 $mpbp_new_crud->mpbp_display_admin_data();
 $mpbp_new_crud->mpbp_delete_admin_data();
-	
+	*/
