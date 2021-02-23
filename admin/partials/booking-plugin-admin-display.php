@@ -28,6 +28,10 @@
   'POST', 
   'mpbp_add_new', 
   'Update');
+  $mpbp_crud_printer->mpbp_insert_to_db(
+  '[INSERT INTO wp_mpbpservices2 (name, description, pictures,) values (%s, %s, %s),'. $mpbp_services_data[0], $mpbp_services_data[1], $mpbp_services_data[2]],
+  $_{POST['name'], 
+  'Succes! inserted data.');
  
 ?>
 

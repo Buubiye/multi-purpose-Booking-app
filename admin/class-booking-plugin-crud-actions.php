@@ -51,14 +51,6 @@ class mpbp_crud{
 	*/
 	public $mpbp_fetched_data_results;
 	
-	/*
-	* To store element data in this form ['name', 'element', 'type', 'class' , 'placeholder', 'value', 'options']
-	*
-	* @since    1.0.0
-	* @access   public
-	* @var      array 
-	*/
-	public $mpbp_s_val;
 /*
 *******
 * This function validates data for "update" action and "add_new" action
@@ -75,13 +67,13 @@ public function mpbp_validate_admin(){
 	* with the logic stored in "$mpbp_admin_validation_logic" array.
 	* all the errors detected are assigned to the "$mpbp_admin_error" array for later use
 	*/
-	if(isset($_POST[$mpbp_admin[1]])){ 
-	$mpbp_admin_error = null;
-	for($logic = 0; $logic<sizeof($mpbp_admin_validation_logic); $logic++){
-		if($mpbp_admin_validation_logic[$logic]){
-			$mpbp_admin_data[$logic] = $_POST[$mpbp_admin[$logic]];
+	if(isset($_POST[$this->mpbp_admin[1]])){ 
+	$this->mpbp_admin_error = null;
+	for($logic = 0; $logic<sizeof($this->mpbp_admin_validation_logic); $logic++){
+		if($this->mpbp_admin_validation_logic[$logic]){
+			$this->mpbp_admin_data[$logic] = $_POST[$this->mpbp_admin[$logic]];
 		}else{
-			$mpbp_admin_error[$mpbp_admin[$logic]] = 'please check the '. $mpbp_admin[$logic];
+			$this->mpbp_admin_error[$this->mpbp_admin[$logic]] = 'please check the '. $this->mpbp_admin[$logic];
 		}
 	}
 	};
@@ -105,7 +97,7 @@ public function mpbp_admin_update($id, $sql, $logic, $success, $error){
 		 //update admin data
 		 global $wpdb; 
 		 if($logic){
-		 if($mpbp_admin_error == ''){
+		 if($this->mpbp_admin_error == ''){
 			$wpdb->query(
 				$wpdb->prepare(
 					 $sql
@@ -120,7 +112,7 @@ public function mpbp_admin_update($id, $sql, $logic, $success, $error){
 			*/
 			return $success;
 		}else{
-			 $errorMessage= json_encode($mpbp_admin_error);
+			 $errorMessage= json_encode($this->mpbp_admin_error);
 			 return $error . $errorMessage;
 		}
 	 }
@@ -137,7 +129,7 @@ public function mpbp_display_admin_data($id, $dbTable){
 		 if(isset($id)){
 			$fetch_data = $wpdb->get_results("SELECT * FROM ". $dbTable ." WHERE id = ". $id ."");
 			for($i = 0; $i < sizeof($fetch_data); $i++){
-				$mpbp_fetched_data_results[$mpbp_admin[$i]] = $fetch_data->$mpbp_admin[$i];
+				$this->mpbp_fetched_data_results[$this->mpbp_admin[$i]] = $fetch_data->$this->mpbp_admin[$i];
 			}
 			}
 }
@@ -151,7 +143,7 @@ public function mpbp_display_admin_data($id, $dbTable){
 public function mpbp_insert_to_db($sql, $isset, $success){
 	global $wpdb;
 	if($_GET['action'] == 'add_new'){ 
-		if($mpbp_admin_error == ''){
+		if($this->mpbp_admin_error == ''){
 			/*
 			* if(isset('name') is used to stop the query from happening if the user -
 			* loads empty values
@@ -166,7 +158,7 @@ public function mpbp_insert_to_db($sql, $isset, $success){
 			}
 			return $success;
 		}else{
-			return json_encode($mpbp_admin_error);
+			return json_encode($this->mpbp_admin_error);
 		}
 	}
 }
@@ -267,13 +259,3 @@ public function mpbp_render_services($data, $url, $action, $h1Text, $method, $id
 	return $results;
 }
 }
-
-/* $mpbp_new_crud = new mpbp_crud();
-
-$mpbp_new_crud->mpbp_insert_to_db();
-$mpbp_new_crud->mpbp_render_admin();
-$mpbp_new_crud->mpbp_admin_update();
-$mpbp_new_crud->mpbp_validate_admin();
-$mpbp_new_crud->mpbp_display_admin_data();
-$mpbp_new_crud->mpbp_delete_admin_data();
-	*/
