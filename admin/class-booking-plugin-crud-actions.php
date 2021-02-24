@@ -76,6 +76,15 @@ public function mpbp_validate_admin(){
 			$this->mpbp_admin_error[$this->mpbp_admin[$logic]] = 'please check the '. $this->mpbp_admin[$logic];
 		}
 	}
+	/*
+	* return the values of the validated data or if the there is error with the input
+	* print out the errors 
+	*/
+	if($this->mpbp_admin_error == ''){
+		return $this->mpbp_admin_data;
+	}else{
+		return $this->mpbp_admin_error;
+	}
 	};
 }
 
@@ -143,23 +152,21 @@ public function mpbp_display_admin_data($id, $dbTable){
 public function mpbp_insert_to_db($sql, $isset, $success){
 	global $wpdb;
 	if($_GET['action'] == 'add_new'){ 
-		if($this->mpbp_admin_error == ''){
+		//if($this->mpbp_admin_error == ''){
 			/*
 			* if(isset('name') is used to stop the query from happening if the user -
 			* loads empty values
 			* This SQL query inserts new value to database wp_mpbpadmin2
 			*/
-			if(isset($_POST[$isset])){
+			//if(isset($_POST[$isset])){
 			$wpdb->query(
-				$wpdb->prepare("
-					". $sql ."
-				")
+				$wpdb->prepare($sql)
 			);
-			}
+			//}
 			return $success;
-		}else{
+		/*}else{
 			return json_encode($this->mpbp_admin_error);
-		}
+		}*/
 	}
 }
 
@@ -218,7 +225,7 @@ public function mpbp_printout_inputs($name, $element, $type, $class , $placehold
 				  placeholder='". $placeholder ."'> ". $value ."</textarea><br>";
 			break;
 		case "img":
-			return "<input type='". $type ."' id='". $name ."' name='". $name ."' placeholder='". $placeholder ."' value='". $value ."'/>
+			return "<label>". $name ."</label><br><input type='". $type ."' id='". $name ."' name='". $name ."' placeholder='". $placeholder ."' value='". $value ."'/>
 					<div class='image-preview-wrapper'>
                     <img id='image-preview' src='' width='200'/>
 					</div>
