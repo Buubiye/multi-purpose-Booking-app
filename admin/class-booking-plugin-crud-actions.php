@@ -149,27 +149,25 @@ public function mpbp_display_admin_data($id, $dbTable){
 * inserts new values to the database(wp_mpbpadmin2 )
 *******
 */
-public function mpbp_insert_to_db($sql, $isset, $success){
+public function mpbp_insert_to_db($tableName, $data, $dataFormat, $isset, $success){
 	global $wpdb;
 	if($_GET['action'] == 'add_new'){ 
-		//if($this->mpbp_admin_error == ''){
+		if($this->mpbp_admin_error == ''){
 			/*
 			* if(isset('name') is used to stop the query from happening if the user -
 			* loads empty values
 			* This SQL query inserts new value to database wp_mpbpadmin2
 			*/
-			//if(isset($_POST[$isset])){
-			$wpdb->query(
-				$wpdb->prepare($sql)
-			);
+			if(isset($_POST[$isset])){
+			return $wpdb->insert($tableName, $data, $dataFormat);
 			//}
-			return $success;
-		/*}else{
-			return json_encode($this->mpbp_admin_error);
-		}*/
+			echo $success;
+		}else{
+			echo "<br>Error!". json_encode($this->mpbp_admin_error) .'<br>';
+		}
 	}
 }
-
+}
 /*
 ********
 * Deletes the selected row(s) in db(wp_mpbpadmin2)
