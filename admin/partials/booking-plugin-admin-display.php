@@ -12,36 +12,32 @@
  * @subpackage Booking_Plugin/admin/partials
  */
  
- class Fruit {
-  public $name;
-  public function go(){
-  for($i = 0; $i<5; $i++){
-    $this->name[$i] = "hello". $i;
-  }
-   if($this->name != '') {return $this->name;}
-  }
-}
-$apple = new Fruit();
- //$h = $apple->name; 
- //echo $h[0];
- 
  require_once plugin_dir_path(dirname(__FILE__) ).'class-booking-plugin-crud-actions.php';
  
  $mpbp_crud_printer = new mpbp_crud();
- //print_r($mpbp_crud_printer->mpbp_admin_data);
  $mpbp_crud_printer->mpbp_admin = [
 	"name", 
 	"description",
-	"pictures"
+	"pictures",
+	"price",
+	"category",
+	"available_times",
+	"quantity",
+	"status",
+	"extra_info" 
 ];
  $mpbp_crud_printer->mpbp_admin_validation_logic = [
 	!empty($_POST['name']),
 	!empty($_POST['description']),
-	!empty($_POST['pictures'])
+	!empty($_POST['pictures']),
+	!empty($_POST['price']),
+	!empty($_POST['category']),
+	!empty($_POST['available_times']),
+	!empty($_POST['quantity']),
+	!empty($_POST['status']),
+	!empty($_POST['extra_info'])
 	];
 $mpbp_insert = $mpbp_crud_printer->mpbp_validate_admin();
- $sql = ['"INSERT INTO wp_mpbpservices2 (name, description, pictures) values (%s, %s, %s)"', '"'. $mpbp_insert[0]. '","'. $mpbp_insert[1]. '","'. $mpbp_insert[2]. '"'];
- echo implode(',', $sql);
 /*
 *******
 * This function validates data for "update" action and "add_new" action
@@ -107,20 +103,46 @@ $mpbp_insert = $mpbp_crud_printer->mpbp_validate_admin();
  echo $mpbp_crud_printer->mpbp_render_services(
  [['name', 'input', 'text', "mpbp_name" , 'Name', '', ''],
  ['description', 'textarea', 'text', 'mpbp_description', 'Description', '', ''],
- ['pictures', 'img', 'text', 'mpbp_pictures', '', '', '' ],
- ['', 'input', 'submit', 'mpbp_submit', 'Submit', 'Submit', '']], 
+ ['pictures', 'img', 'text', 'mpbp_pictures', 'Pictures', '', '' ],
+ ["price", 'input', 'number', 'mpbp_price', 'Price', '', ''],
+ ["category", 'select', 'text', 'mpbp_category' , 'Category', 
+ ['Select Category', 
+  "Ride Sharing",  
+  "Accomodation", 
+  "Hotel", 
+  "Flight", 
+  "Other"], ''],
+ ["available_times", 'input', 'text', 'mpbp_available_times' , 'Available Times', '', ''],
+ ["quantity", 'input', 'number', 'mpbp_quantity' , 'Quantity', '', 'options'],
+ ["status", 'select', 'text', 'mpbp_status' , 'Status', 
+ ["Available",
+ "Not Available"], ''],
+ ["extra_info", 'input', 'text', 'mpbp_extra_info' , 'Extra Info', '', ''],
+ ["", "input", "submit", "button", "", "Submit", ""]], 
   '/wp-admin/admin.php?page=Services&action=add_new', 
   '', 
   'Add New My G!', 
   'POST', 
   'mpbp_add_new', 
   'Update');
-  global $wpdb;
+  
   $mpbp_crud_printer->mpbp_insert_to_db(
-  implode(',', $sql),
+  'wp_mpbpservices2',
+  array(
+  'name' => $mpbp_insert[0],
+  'description' => $mpbp_insert[1],
+  'pictures' => $mpbp_insert[2],
+  "price" => $mpbp_insert[3],
+  "category" => $mpbp_insert[4],
+  "available_times" => $mpbp_insert[5],
+  "quantity" => $mpbp_insert[6],
+  "status" => $mpbp_insert[7],
+  "extra_info" => $mpbp_insert[8] 
+  ),
+  array('%s', '%s', '%s', '%d', '%s', '%s', '%d', '%s', '%s'),
   'name', 
   'Succes! inserted data.');
- 
+
 ?>
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
