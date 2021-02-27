@@ -13,8 +13,14 @@
  */
  
  require_once plugin_dir_path(dirname(__FILE__) ).'class-booking-plugin-crud-actions.php';
- 
+ /*
+ * initializes the "mpbp_crud" class
+ */
  $mpbp_crud_printer = new mpbp_crud();
+ 
+ /*
+ *
+ */
  $mpbp_crud_printer->mpbp_admin = [
 	"name", 
 	"description",
@@ -26,18 +32,27 @@
 	"status",
 	"extra_info" 
 ];
+
+/*
+* stores the logic for input validation
+*/
  $mpbp_crud_printer->mpbp_admin_validation_logic = [
 	!empty($_POST['name']),
 	!empty($_POST['description']),
 	!empty($_POST['pictures']),
 	!empty($_POST['price']),
-	!empty($_POST['category']),
+	!empty($_POST['category']) || isset($_POST['category']) != 'Select Category',
 	!empty($_POST['available_times']),
 	!empty($_POST['quantity']),
-	!empty($_POST['status']),
+	!empty($_POST['status']) || isset($_POST['status']) != 'Select Status',
 	!empty($_POST['extra_info'])
 	];
+	
+/*
+* stores the data after it is validated
+*/
 $mpbp_insert = $mpbp_crud_printer->mpbp_validate_admin();
+print_r($mpbp_insert);
 /*
 *******
 * This function validates data for "update" action and "add_new" action
@@ -60,15 +75,39 @@ $mpbp_insert = $mpbp_crud_printer->mpbp_validate_admin();
 * $error string to print out error messages
 *******
 */
-//mpbp_admin_update($id, $sql, $logic, $success, $error);
+$mpbp_crud_printer->mpbp_admin_update(
+'wp_mpbpservices2',
+ array(
+  'name' => $_POST['name'],
+  'description' => $_POST['description'],
+  'pictures' => $_POST['pictures'],
+  "price" => $_POST['price'],
+  "category" => $_POST['category'],
+  "available_times" => $_POST['available_times'],
+  "quantity" => $_POST['quantity'],
+  "status" => $_POST['status'],
+  "extra_info" => $_POST['extra_info'] 
+  ), 
+  array(
+  'id' => $_POST['id']
+  ), 
+$_GET['action'] == 'edit',
+'Successfully updated service #'.$_POST['id'], 
+'There is error! Please check check the values.'
+);
 
 /*
 *******
 * fetch data from db(wp_mpbpadmin2), this data will be displayed on the "input" elements 
 *******
 */
-//mpbp_display_admin_data($id, $dbTable);
+ $mpbp_crud_printer->mpbp_display_admin_data(
+  $_GET['id'], 
+  'wp_mpbpservices2'
+  ); 
 
+$array_fetch = $mpbp_crud_printer->mpbp_fetched_data_results;
+print_r($array_fetch);
 
 /*
 *******
@@ -101,7 +140,9 @@ $mpbp_insert = $mpbp_crud_printer->mpbp_validate_admin();
  * mpbp_render_services($data, $url, $action, $h1Text, $method, $id, $buttonName)
  */
  echo $mpbp_crud_printer->mpbp_render_services(
- [['name', 'input', 'text', "mpbp_name" , 'Name', '', ''],
+ [
+ ['id', 'input', 'number', 'mpbp_id', 'ID', $_GET['id'], ''],
+ ['name', 'input', 'text', "mpbp_name" , 'Name', '', ''],
  ['description', 'textarea', 'text', 'mpbp_description', 'Description', '', ''],
  ['pictures', 'img', 'text', 'mpbp_pictures', 'Pictures', '', '' ],
  ["price", 'input', 'number', 'mpbp_price', 'Price', '', ''],
@@ -119,13 +160,17 @@ $mpbp_insert = $mpbp_crud_printer->mpbp_validate_admin();
  "Not Available"], ''],
  ["extra_info", 'input', 'text', 'mpbp_extra_info' , 'Extra Info', '', ''],
  ["", "input", "submit", "button", "", "Submit", ""]], 
-  '/wp-admin/admin.php?page=Services&action=add_new', 
+  ($_GET['action'] == 'edit')? '/wp-admin/admin.php?page=Services&action=edit' : "", 
   '', 
   'Add New My G!', 
   'POST', 
   'mpbp_add_new', 
-  'Update');
+  ($_GET['action'] == 'edit')? 'Add New' : '');
   
+  /*
+  * The below function stores inserted 
+  */
+  if(!empty($mpbp_insert)){
   $mpbp_crud_printer->mpbp_insert_to_db(
   'wp_mpbpservices2',
   array(
@@ -142,13 +187,7 @@ $mpbp_insert = $mpbp_crud_printer->mpbp_validate_admin();
   array('%s', '%s', '%s', '%d', '%s', '%s', '%d', '%s', '%s'),
   'name', 
   'Succes! inserted data.');
+  }
 
 ?>
 
-<!-- This file should primarily consist of HTML with a little bit of PHP. -->
-<h1> Insertion</h1>
-	<form method='post' action=''/>
-	  Name: <input type="text" name='Name' placeholder='Name'/>
-	  location: <input type='number' name='location' placeholder='Location'/>
-	  <button type="Submit"> Submit </button>
-	</form>

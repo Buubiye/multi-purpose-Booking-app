@@ -50,7 +50,18 @@ class mpbp_crud{
 	* @var      array 
 	*/
 	public $mpbp_fetched_data_results;
-	
+
+
+/*
+*
+*/
+public function mpbp_admin_initializer($mpbp_admin_error, $mpbp_admin_validation_logic, $mpbp_admin_data, $mpbp_fetched_data_results, $mpbp_admin){
+	$this->mpbp_admin_error = $mpbp_admin_error;
+	$this->mpbp_admin_validation_logic = $mpbp_admin_validation_logic;
+	$this->mpbp_admin_data = $mpbp_admin_data; 
+	$this->mpbp_fetched_data_results = $mpbp_fetched_data_results;
+	$this->mpbp_admin = $mpbp_admin;
+}
 /*
 *******
 * This function validates data for "update" action and "add_new" action
@@ -67,6 +78,7 @@ public function mpbp_validate_admin(){
 	* with the logic stored in "$mpbp_admin_validation_logic" array.
 	* all the errors detected are assigned to the "$mpbp_admin_error" array for later use
 	*/
+	
 	if(isset($_POST[$this->mpbp_admin[1]])){ 
 	$this->mpbp_admin_error = null;
 	for($logic = 0; $logic<sizeof($this->mpbp_admin_validation_logic); $logic++){
@@ -100,18 +112,14 @@ public function mpbp_validate_admin(){
 * $error string to print out error messages
 *******
 */
-public function mpbp_admin_update($id, $sql, $logic, $success, $error){
+public function mpbp_admin_update($dbTable, $data, $dataFormat, $logic, $success, $error){
 	     // fetch data for update
 		 
 		 //update admin data
 		 global $wpdb; 
 		 if($logic){
 		 if($this->mpbp_admin_error == ''){
-			$wpdb->query(
-				$wpdb->prepare(
-					 $sql
-				)
-			);
+				$wpdb->update($dbTable, $data, $dataFormat);
 			
 			/*
 			* This is stores the success message
@@ -133,13 +141,20 @@ public function mpbp_admin_update($id, $sql, $logic, $success, $error){
 *******
 */
 public function mpbp_display_admin_data($id, $dbTable){
+		 
 		 global $wpdb;
 		 $fetch_data;
 		 if(isset($id)){
 			$fetch_data = $wpdb->get_results("SELECT * FROM ". $dbTable ." WHERE id = ". $id ."");
+			// stores the mpbp_admin data
+			$array_data = $this->mpbp_admin;
+			echo 'heloooo: '. sizeof($fetch_data);
+			print_r($fetch_data);
 			for($i = 0; $i < sizeof($fetch_data); $i++){
-				$this->mpbp_fetched_data_results[$this->mpbp_admin[$i]] = $fetch_data->$this->mpbp_admin[$i];
+				$mpbp_fetched_data_results1["'". $array_data[$i] . "'"] = $fetch_data->$array_data[$i];
 			}
+			print_r($this->mpbp_admin);
+			print_r($mpbp_fetched_data_results1);
 			}
 }
 
@@ -149,7 +164,7 @@ public function mpbp_display_admin_data($id, $dbTable){
 * inserts new values to the database(wp_mpbpadmin2 )
 *******
 */
-public function mpbp_insert_to_db($tableName, $data, $dataFormat, $isset, $success){
+public function mpbp_insert_to_db($tableName, $data, $dataFormat, $isset, $success, $mpbp_admin_error){
 	global $wpdb;
 	if($_GET['action'] == 'add_new'){ 
 		if($this->mpbp_admin_error == ''){
