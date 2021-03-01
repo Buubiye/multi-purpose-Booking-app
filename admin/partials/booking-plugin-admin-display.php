@@ -26,6 +26,7 @@
 	"description",
 	"pictures",
 	"price",
+	"date_created",
 	"category",
 	"available_times",
 	"quantity",
@@ -41,6 +42,7 @@
 	!empty($_POST['description']),
 	!empty($_POST['pictures']),
 	!empty($_POST['price']),
+	!empty($_POST['date_created']),
 	!empty($_POST['category']) || isset($_POST['category']) != 'Select Category',
 	!empty($_POST['available_times']),
 	!empty($_POST['quantity']),
@@ -75,36 +77,41 @@ print_r($mpbp_insert);
 * $error string to print out error messages
 *******
 */
-$mpbp_crud_printer->mpbp_admin_update(
-'wp_mpbpservices2',
- array(
-  'name' => $_POST['name'],
-  'description' => $_POST['description'],
-  'pictures' => $_POST['pictures'],
-  "price" => $_POST['price'],
-  "category" => $_POST['category'],
-  "available_times" => $_POST['available_times'],
-  "quantity" => $_POST['quantity'],
-  "status" => $_POST['status'],
-  "extra_info" => $_POST['extra_info'] 
-  ), 
-  array(
-  'id' => $_POST['id']
-  ), 
-$_GET['action'] == 'edit',
-'Successfully updated service #'.$_POST['id'], 
-'There is error! Please check check the values.'
-);
+if(isset($_POST['name'])){
+	$mpbp_crud_printer->mpbp_admin_update(
+	'wp_mpbpservices2',
+	 array(
+	  'name' => $_POST['name'],
+	  'description' => $_POST['description'],
+	  'pictures' => $_POST['pictures'],
+	  "price" => $_POST['price'],
+	  "category" => $_POST['category'],
+	  "available_times" => $_POST['available_times'],
+	  "quantity" => $_POST['quantity'],
+	  "status" => $_POST['status'],
+	  "extra_info" => $_POST['extra_info'] 
+	  ), 
+	  array(
+	  'id' => $_POST['id']
+	  ), 
+	$_GET['action'] == 'edit',
+	'Successfully updated service #'.$_POST['id'], 
+	'There is error! Please check check the values.'
+	);
+}
 
 /*
 *******
 * fetch data from db(wp_mpbpadmin2), this data will be displayed on the "input" elements 
 *******
 */
- $mpbp_crud_printer->mpbp_display_admin_data(
-  $_GET['id'], 
-  'wp_mpbpservices2'
-  ); 
+ if($_GET['action'] == 'edit'){
+	  $mpbp_crud_printer->mpbp_display_admin_data(
+	  "id",
+	  $_GET['id'], 
+	  'wp_mpbpservices2'
+	  ); 
+ }
 
 $array_fetch = $mpbp_crud_printer->mpbp_fetched_data_results;
 print_r($array_fetch);
@@ -132,7 +139,7 @@ print_r($array_fetch);
 //mpbp_printout_inputs($name, $element, $type, $class , $placeholder, $value, $options);
 
 /* 
-* renders the inputs in respective order
+* renders the inputs in respective order 
 */
 //mpbp_render_services($data, $url, $action, $h1Text, $method, $id, $buttonName)
  /*
@@ -141,24 +148,34 @@ print_r($array_fetch);
  */
  echo $mpbp_crud_printer->mpbp_render_services(
  [
- ['id', 'input', 'number', 'mpbp_id', 'ID', $_GET['id'], ''],
- ['name', 'input', 'text', "mpbp_name" , 'Name', '', ''],
- ['description', 'textarea', 'text', 'mpbp_description', 'Description', '', ''],
- ['pictures', 'img', 'text', 'mpbp_pictures', 'Pictures', '', '' ],
- ["price", 'input', 'number', 'mpbp_price', 'Price', '', ''],
+ ['id', 'input', 'number', 'mpbp_id', 'ID', (isset($_GET['id']))? $_GET['id'] : '', ''],
+ ['name', 'input', 'text', "mpbp_name" , 'Name', 
+ ($_GET['action'] == 'edit') ? $array_fetch['name'] : ((isset($_POST['name']))? $_POST['name'] : ""), ''],
+ ['description', 'textarea', 'text', 'mpbp_description', 'Description', 
+ ($_GET['action'] == 'edit') ? $array_fetch['description'] : ((isset($_POST['description']))? $_POST['description'] : ""), ''],
+ ['pictures', 'img', 'text', 'mpbp_pictures', 'Pictures', 
+ ($_GET['action'] == 'edit') ? $array_fetch['pictures'] : ((isset($_POST['pictures']))? $_POST['pictures'] : ""), '' ],
+ ["price", 'input', 'number', 'mpbp_price', 'Price', 
+ ($_GET['action'] == 'edit') ? $array_fetch['price'] : ((isset($_POST['price']))? $_POST['price'] : ""), ''],
+ ["date_created", "input", "text", "mpbp_s_date_created", "Date Created", 
+ ($_GET['action'] == 'edit') ? $array_fetch['date_created'] : ((isset($_POST['date_created']))? $_POST['date_created'] : ""), ""],
  ["category", 'select', 'text', 'mpbp_category' , 'Category', 
- ['Select Category', 
+ [($_GET['action'] == 'edit') ? $array_fetch['category'] : ((isset($_POST['category']))? $_POST['category'] : "Select Category"), 
   "Ride Sharing",  
   "Accomodation", 
   "Hotel", 
   "Flight", 
   "Other"], ''],
- ["available_times", 'input', 'text', 'mpbp_available_times' , 'Available Times', '', ''],
- ["quantity", 'input', 'number', 'mpbp_quantity' , 'Quantity', '', 'options'],
+ ["available_times", 'input', 'text', 'mpbp_available_times' , 'Available Times', 
+ ($_GET['action'] == 'edit') ? $array_fetch['available_times'] : ((isset($_POST['available_times']))? $_POST['available_times'] : ""), ''],
+ ["quantity", 'input', 'number', 'mpbp_quantity' , 'Quantity', 
+ ($_GET['action'] == 'edit') ? $array_fetch['quantity'] : ((isset($_POST['quantity']))? $_POST['quantity'] : ""), ''],
  ["status", 'select', 'text', 'mpbp_status' , 'Status', 
- ["Available",
+ [($_GET['action'] == 'edit') ? $array_fetch['status'] : ((isset($_POST['status']))? $_POST['status'] : "Select Status"),
+ "Available",
  "Not Available"], ''],
- ["extra_info", 'input', 'text', 'mpbp_extra_info' , 'Extra Info', '', ''],
+ ["extra_info", 'input', 'text', 'mpbp_extra_info' , 'Extra Info', 
+ ($_GET['action'] == 'edit') ? $array_fetch['extra_info'] : ((isset($_POST['extra_info']))? $_POST['extra_info'] : ""), ''],
  ["", "input", "submit", "button", "", "Submit", ""]], 
   ($_GET['action'] == 'edit')? '/wp-admin/admin.php?page=Services&action=edit' : "", 
   '', 
@@ -178,15 +195,19 @@ print_r($array_fetch);
   'description' => $mpbp_insert[1],
   'pictures' => $mpbp_insert[2],
   "price" => $mpbp_insert[3],
-  "category" => $mpbp_insert[4],
-  "available_times" => $mpbp_insert[5],
-  "quantity" => $mpbp_insert[6],
-  "status" => $mpbp_insert[7],
-  "extra_info" => $mpbp_insert[8] 
+  "date_created" => $mpbp_insert[4],
+  "category" => $mpbp_insert[5],
+  "available_times" => $mpbp_insert[6],
+  "quantity" => $mpbp_insert[7],
+  "status" => $mpbp_insert[8],
+  "extra_info" => $mpbp_insert[9] 
   ),
-  array('%s', '%s', '%s', '%d', '%s', '%s', '%d', '%s', '%s'),
+  array('%s', '%s', '%s', '%d', '%s', '%s', '%s', '%d', '%s', '%s'),
   'name', 
   'Succes! inserted data.');
+  
+  header('Location:'. get_site_url() . '/wp-admin/admin.php?page=my_table2&action=edit&id=4');
+  die();
   }
 
 ?>

@@ -2,7 +2,7 @@
 /*
 * This file contains the admin page
 */
-
+ob_start();
 class mpbp_crud{
 	
 	/*
@@ -140,21 +140,18 @@ public function mpbp_admin_update($dbTable, $data, $dataFormat, $logic, $success
 * fetch data from db(wp_mpbpadmin2), this data will be displayed on the "input" elements 
 *******
 */
-public function mpbp_display_admin_data($id, $dbTable){
+public function mpbp_display_admin_data($type, $id, $dbTable){
 		 
 		 global $wpdb;
 		 $fetch_data;
 		 if(isset($id)){
-			$fetch_data = $wpdb->get_results("SELECT * FROM ". $dbTable ." WHERE id = ". $id ."");
+			$fetch_data = $wpdb->get_results("SELECT * FROM ". $dbTable ." WHERE ". $type ." = ". $id ."");
 			// stores the mpbp_admin data
 			$array_data = $this->mpbp_admin;
-			echo 'heloooo: '. sizeof($fetch_data);
-			print_r($fetch_data);
-			for($i = 0; $i < sizeof($fetch_data); $i++){
-				$mpbp_fetched_data_results1["'". $array_data[$i] . "'"] = $fetch_data->$array_data[$i];
+			for($i = 0; $i < sizeof($array_data); $i++){
+				$x = $array_data[$i];;
+				$this->mpbp_fetched_data_results[$array_data[$i]] = $fetch_data[0]->$x;
 			}
-			print_r($this->mpbp_admin);
-			print_r($mpbp_fetched_data_results1);
 			}
 }
 
@@ -164,7 +161,7 @@ public function mpbp_display_admin_data($id, $dbTable){
 * inserts new values to the database(wp_mpbpadmin2 )
 *******
 */
-public function mpbp_insert_to_db($tableName, $data, $dataFormat, $isset, $success, $mpbp_admin_error){
+public function mpbp_insert_to_db($tableName, $data, $dataFormat, $isset, $success){
 	global $wpdb;
 	if($_GET['action'] == 'add_new'){ 
 		if($this->mpbp_admin_error == ''){
@@ -174,9 +171,12 @@ public function mpbp_insert_to_db($tableName, $data, $dataFormat, $isset, $succe
 			* This SQL query inserts new value to database wp_mpbpadmin2
 			*/
 			if(isset($_POST[$isset])){
-			return $wpdb->insert($tableName, $data, $dataFormat);
+			$wpdb->insert($tableName, $data, $dataFormat);
+			$lastid = $wpdb->insert_id;
+			header('Location:'. get_site_url() . '/wp-admin/admin.php?page=my_table2&action=edit&id='. $lastid);
+			die();
 			//}
-			echo $success;
+			return $success;
 		}else{
 			echo "<br>Error!". json_encode($this->mpbp_admin_error) .'<br>';
 		}
@@ -279,3 +279,4 @@ public function mpbp_render_services($data, $url, $action, $h1Text, $method, $id
 	return $results;
 }
 }
+ob_end_flush();
