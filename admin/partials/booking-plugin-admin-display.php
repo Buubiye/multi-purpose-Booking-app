@@ -17,7 +17,6 @@
  * initializes the "mpbp_crud" class
  */
  $mpbp_crud_printer = new mpbp_crud();
- 
  /*
  *
  */
@@ -132,7 +131,14 @@ print_r($array_fetch);
 * $section string to specify which page's data is deleted eg servies or orders
 * $page string to specify the page we are in
 */
-//mpbp_delete_admin_data($sql, $section, $page, $success, $url);
+$mpbp_crud_printer->mpbp_delete_admin_data(
+     "wp_mpbpservices2",
+	 $_GET['id'], 
+	 'mpbp_verify_service_delete', 
+	 'service', 
+	 'successfully deleted ', 
+	 get_site_url() .'/wp-admin/admin.php?page=all_services'
+	 );
 
 
 //['name', 'element', 'type', 'class' , 'placeholder', 'value', 'options']
@@ -187,7 +193,7 @@ print_r($array_fetch);
   /*
   * The below function stores inserted 
   */
-  if(!empty($mpbp_insert)){
+  if(!empty($_POST['name']) && $_GET['action'] == 'add_new'){
   $mpbp_crud_printer->mpbp_insert_to_db(
   'wp_mpbpservices2',
   array(
@@ -205,9 +211,6 @@ print_r($array_fetch);
   array('%s', '%s', '%s', '%d', '%s', '%s', '%s', '%d', '%s', '%s'),
   'name', 
   'Succes! inserted data.');
-  
-  header('Location:'. get_site_url() . '/wp-admin/admin.php?page=my_table2&action=edit&id=4');
-  die();
   }
 
 ?>

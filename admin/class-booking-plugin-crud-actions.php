@@ -173,9 +173,11 @@ public function mpbp_insert_to_db($tableName, $data, $dataFormat, $isset, $succe
 			if(isset($_POST[$isset])){
 			$wpdb->insert($tableName, $data, $dataFormat);
 			$lastid = $wpdb->insert_id;
-			header('Location:'. get_site_url() . '/wp-admin/admin.php?page=my_table2&action=edit&id='. $lastid);
-			die();
-			//}
+			?>
+			<script type="text/javascript">
+				window.location = <?php echo "'". get_site_url(). '/wp-admin/admin.php?page=my_table2&action=edit&id='. $lastid . "';";?>
+			</script>
+             <?php
 			return $success;
 		}else{
 			echo "<br>Error!". json_encode($this->mpbp_admin_error) .'<br>';
@@ -189,10 +191,13 @@ public function mpbp_insert_to_db($tableName, $data, $dataFormat, $isset, $succe
 *******
 *
 * since 1.0.0
-* $section string to specify which page's data is deleted eg servies or orders
-* $page string to specify the page we are in
+* $dbTable string stores the name of the datable table which the deletion will occur.
+* $id integer stores the id of the row which will be deleted.
+* $section string to specify which page's data is deleted eg servies or orders.
+* $page string to specify the page we are in.
+* $url string stores the url which we redirected to after the deletion occurs.
 */
-public function mpbp_delete_admin_data($sql, $section, $page, $success, $url){
+public function mpbp_delete_admin_data($dbTable, $id, $section, $page, $success, $url){
 	global $wpdb;
 	/*
 	* This is a conformation form which appears when user tries to delete data from his admin db
@@ -207,20 +212,16 @@ public function mpbp_delete_admin_data($sql, $section, $page, $success, $url){
 	* When confrmation forms appears, if user clicks "yes" [radio input element] delete the row by -
 	* extracting it id from $_GET['id'] method. Then print out a success message
 	*/
+	
 	if(isset($_POST[$section])){
 		if($_GET['action'] == 'delete' && $_GET['id'] != '' && $_POST[$section] == 'Yes'){		  
-			$wpdb->query(
-				$wpdb->prepare("
-					". $sql ."
-				")
-			);
-			return $success . $_GET['id'];
+			$wpdb->delete( $dbTable, array('id' => $id ));
+			echo $success . $_GET['id'];
 		}else if($_POST[$section] == 'No'){
 			/*
 			* if user chooses not to delete his data redirect him to all admin page
 			*/
-			return header('Location:'. get_site_url() . $url);
-			die();
+			//return header('Location:'. get_site_url() . $url);
 		}
 	}
 }
