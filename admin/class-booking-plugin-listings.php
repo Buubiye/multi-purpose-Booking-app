@@ -2,25 +2,42 @@
 
 /*
 * variables needed to be added
-* 1. Database table
-* 2. number of rows to be displayed per page
-* 3. page title
-* 4. header button name update/add_new
-* 5. header button [add_new] url
+* 1. Database table - $mpbp_db_table
+* 2. number of rows to be displayed per page - $mpbp_services_results_per_page
+* 3. page title - $mpbp_listing_title
+* 4. header button name update/add_new - $mpbp_listing_button;
+* 5. header button [add_new] url - $mpbp_listing_button_url;
 * 6. page name - $mpbp_items
 * 7. page name for get request e.g. $_GET['all_services'] - $mpbp_page_name;
 * 8. short url when user click next or previous e.g. '/wp-admin/admin.php?page=all_services&order=' - $mpbp_listing_url;
-* 9. Table header name array() 
+* 9. Table header <th> name array - $mpbp_listing_th;
+* 10. Table header <th> data array - $mpbp_listing_th_data;
+* 10. Table data <td> array() - $mpbp_listing_td;
 */
 
-
+  $mpbp_db_table =  'wp_mpbpservices2';
+  $mpbp_services_results_per_page = 5;
+  $mpbp_listing_title = 'Services';
+  $mpbp_listing_button = 'Add New';
+  $mpbp_listing_button_url = '/wp-admin/admin.php?page=Services&action=add_new';
+  $mpbp_items = 'Services';
+  $mpbp_page_name = 'all_services';
+  $mpbp_listing_url = '/wp-admin/admin.php?page=all_services&order=';
+  /*
+  *
+  */
+  $mpbp_listing_th = ["Name", "Pictures", "Category", "Quantity", "Status"];
+  $mpbp_listing_th_data = ['<td id="cb" class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-1">Select All</label><input id="cb-select-all-1" type="checkbox"></td>'];
+  for($i = 1; $i < sizeof($mpbp_listing_th){
+	  $mpbp_listing_th_data[$i] = '<th scope="col" id="mpbp_'. $mpbp_listing_th[$i] .'" class="manage-column column-'. $mpbp_listing_th[$i] .' sortable">'. $mpbp_listing_th[$i] .'</span></th>';
+  }
   /*
   * This file displays the services in a list of 10 per laod
   *
   */
   
   function mpbp_display_services(){
-  echo "<h1>This is Services List</h1>";
+  echo $mpbp_listing_title;
   /*
   * connect to database
   */
@@ -36,9 +53,9 @@
   */
   $mpbp_all_services;
   if(empty($_GET['search'])){
-	  $mpbp_all_services = $wpdb->get_results("SELECT id FROM wp_mpbpservices2");
+	  $mpbp_all_services = $wpdb->get_results("SELECT id FROM ". $mpbp_db_table);
   }elseif(!empty($_GET['search'])){
-	  $mpbp_all_services = $wpdb->get_results("SELECT * FROM wp_mpbpservices2 WHERE '". $_GET['search'] ."' IN (id, name)");
+	  $mpbp_all_services = $wpdb->get_results("SELECT * FROM ". $mpbp_db_table ." WHERE '". $_GET['search'] ."' IN (id, name)");
   }
   $mpbp_services_size = sizeof($mpbp_all_services);
   
@@ -99,7 +116,8 @@
   * search
   */
   ?>
-  <a href="<?php echo get_site_url(). '/wp-admin/admin.php?page=Services&action=add_new';?>" class="page-title-action">Add New</a>
+  <a href="<?php echo get_site_url(). $mpbp_listing_button_url;?>" class="page-title-action">
+  <?php echo $mpbp_listing_button; ?></a>
   <form id="mpbp_services_list_form" method="GET">
 
     <p class="">
@@ -122,12 +140,9 @@
     <table class="wp-list-table widefat fixed striped pages">
         <thead>
             <tr>
-                <td id="cb" class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-1">Select All</label><input id="cb-select-all-1" type="checkbox"></td>
-                <th scope="col" id="mpbp_s_name" class="manage-column column-title column-primary sortable"><span>Name</span></th>
-                <th scope="col" id="mpbp_s_pictures" class="manage-column column-author">Pictures</th>
-                <th scope="col" id="mpbp_s_category" class="manage-column column-comments num sortable">Category<span></span></th>
-                <th scope="col" id="mpbp_s_quantity" class="manage-column column-date sortable"><span>Quantity</span></th>
-				<th scope="col" id="mpbp_s_status" class="manage-column column-date sortable"><span>Status</span></th>
+                <?php
+				  echo implode($mpbp_listing_th_data);
+				?>
             </tr>
         </thead>
 

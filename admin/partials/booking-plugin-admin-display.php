@@ -104,7 +104,7 @@ if(isset($_POST['name'])){
 * fetch data from db(wp_mpbpadmin2), this data will be displayed on the "input" elements 
 *******
 */
- if($_GET['action'] == 'edit'){
+ if($_GET['action'] == 'edit' || $_GET['action'] == 'delete'){
 	  $mpbp_crud_printer->mpbp_display_admin_data(
 	  "id",
 	  $_GET['id'], 
@@ -131,6 +131,7 @@ print_r($array_fetch);
 * $section string to specify which page's data is deleted eg servies or orders
 * $page string to specify the page we are in
 */
+if($_GET['action'] == 'delete'){
 $mpbp_crud_printer->mpbp_delete_admin_data(
      "wp_mpbpservices2",
 	 $_GET['id'], 
@@ -139,7 +140,7 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
 	 'successfully deleted ', 
 	 get_site_url() .'/wp-admin/admin.php?page=all_services'
 	 );
-
+}
 
 //['name', 'element', 'type', 'class' , 'placeholder', 'value', 'options']
 //mpbp_printout_inputs($name, $element, $type, $class , $placeholder, $value, $options);
@@ -152,36 +153,50 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
  * This function renders the form
  * mpbp_render_services($data, $url, $action, $h1Text, $method, $id, $buttonName)
  */
+ global $wpdb;
+ if($_GET['action'] == 'edit' || $_GET['action'] == 'delete'){
+ $mpbp_verify_if_data_exists = $wpdb->get_results("SELECT * FROM wp_mpbpservices2 WHERE  id = ". $_GET['id'] ."");
+ }
+ $mpbp_print_data;
+
+ if($wpdb->num_rows > 0 || $_GET['action'] == 'add_new'){
+	 for($x = 0; $x < sizeof($mpbp_crud_printer->mpbp_admin); $x++){
+	 //user exists
+	 if($_GET['action'] == 'add_new' && isset($_POST[$mpbp_crud_printer->mpbp_admin[$x]]) != ''){
+		 $mpbp_print_data[$x] = $_POST[$mpbp_crud_printer->mpbp_admin[$x]];
+	 } elseif($_GET['action'] == 'add_new' && isset($_POST[$mpbp_crud_printer->mpbp_admin[$x]]) == ''){
+		 $mpbp_print_data[$x] = '';
+	 } elseif($_GET['action'] == 'edit' || $_GET['action'] == 'delete'){
+		 $mpbp_print_data[$x] = $array_fetch[$mpbp_crud_printer->mpbp_admin[$x]];
+	}
+	}
+ }else{
+	 echo 'The user you inserted doesn\'t exist! <a href="'. get_site_url() .'/wp-admin/admin.php?page=all_services"><button> Search again </button></a>'; 
+	 die();
+ }
+
  echo $mpbp_crud_printer->mpbp_render_services(
  [
  ['id', 'input', 'number', 'mpbp_id', 'ID', (isset($_GET['id']))? $_GET['id'] : '', ''],
- ['name', 'input', 'text', "mpbp_name" , 'Name', 
- ($_GET['action'] == 'edit') ? $array_fetch['name'] : ((isset($_POST['name']))? $_POST['name'] : ""), ''],
- ['description', 'textarea', 'text', 'mpbp_description', 'Description', 
- ($_GET['action'] == 'edit') ? $array_fetch['description'] : ((isset($_POST['description']))? $_POST['description'] : ""), ''],
- ['pictures', 'img', 'text', 'mpbp_pictures', 'Pictures', 
- ($_GET['action'] == 'edit') ? $array_fetch['pictures'] : ((isset($_POST['pictures']))? $_POST['pictures'] : ""), '' ],
- ["price", 'input', 'number', 'mpbp_price', 'Price', 
- ($_GET['action'] == 'edit') ? $array_fetch['price'] : ((isset($_POST['price']))? $_POST['price'] : ""), ''],
- ["date_created", "input", "text", "mpbp_s_date_created", "Date Created", 
- ($_GET['action'] == 'edit') ? $array_fetch['date_created'] : ((isset($_POST['date_created']))? $_POST['date_created'] : ""), ""],
+ ['name', 'input', 'text', "mpbp_name" , 'Name', $mpbp_print_data[0] , ''],
+ ['description', 'textarea', 'text', 'mpbp_description', 'Description', $mpbp_print_data[1], ''],
+ ['pictures', 'img', 'text', 'mpbp_pictures', 'Pictures', $mpbp_print_data[2], '' ],
+ ["price", 'input', 'number', 'mpbp_price', 'Price', $mpbp_print_data[3], ''],
+ ["date_created", "input", "text", "mpbp_s_date_created", "Date Created", $mpbp_print_data[4], ""],
  ["category", 'select', 'text', 'mpbp_category' , 'Category', 
- [($_GET['action'] == 'edit') ? $array_fetch['category'] : ((isset($_POST['category']))? $_POST['category'] : "Select Category"), 
+ [($mpbp_print_data[5] != "" ) ? $mpbp_print_data[5] : "Select Category", 
   "Ride Sharing",  
   "Accomodation", 
   "Hotel", 
   "Flight", 
   "Other"], ''],
- ["available_times", 'input', 'text', 'mpbp_available_times' , 'Available Times', 
- ($_GET['action'] == 'edit') ? $array_fetch['available_times'] : ((isset($_POST['available_times']))? $_POST['available_times'] : ""), ''],
- ["quantity", 'input', 'number', 'mpbp_quantity' , 'Quantity', 
- ($_GET['action'] == 'edit') ? $array_fetch['quantity'] : ((isset($_POST['quantity']))? $_POST['quantity'] : ""), ''],
+ ["available_times", 'input', 'text', 'mpbp_available_times' , 'Available Times', $mpbp_print_data[6], ''],
+ ["quantity", 'input', 'number', 'mpbp_quantity' , 'Quantity', $mpbp_print_data[7], ''],
  ["status", 'select', 'text', 'mpbp_status' , 'Status', 
- [($_GET['action'] == 'edit') ? $array_fetch['status'] : ((isset($_POST['status']))? $_POST['status'] : "Select Status"),
+ [($mpbp_print_data[8] != '') ? $mpbp_print_data[8] : "Select Status",
  "Available",
  "Not Available"], ''],
- ["extra_info", 'input', 'text', 'mpbp_extra_info' , 'Extra Info', 
- ($_GET['action'] == 'edit') ? $array_fetch['extra_info'] : ((isset($_POST['extra_info']))? $_POST['extra_info'] : ""), ''],
+ ["extra_info", 'input', 'text', 'mpbp_extra_info' , 'Extra Info', $mpbp_print_data[9], ''],
  ["", "input", "submit", "button", "", "Submit", ""]], 
   ($_GET['action'] == 'edit')? '/wp-admin/admin.php?page=Services&action=edit' : "", 
   '', 

@@ -215,8 +215,13 @@ public function mpbp_delete_admin_data($dbTable, $id, $section, $page, $success,
 	
 	if(isset($_POST[$section])){
 		if($_GET['action'] == 'delete' && $_GET['id'] != '' && $_POST[$section] == 'Yes'){		  
-			$wpdb->delete( $dbTable, array('id' => $id ));
+			$wpdb->delete($dbTable, array('id' => $id ));
 			echo $success . $_GET['id'];
+			?>
+			     <script type="text/javascript">
+			     window.location = <?php echo "'". get_site_url(). '/wp-admin/admin.php?page=all_services'. "';";?>
+			     </script>
+             <?php
 		}else if($_POST[$section] == 'No'){
 			/*
 			* if user chooses not to delete his data redirect him to all admin page
