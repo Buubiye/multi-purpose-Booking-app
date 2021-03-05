@@ -17,18 +17,20 @@
 
   $mpbp_db_table =  'wp_mpbpservices2';
   $mpbp_services_results_per_page = 5;
-  $mpbp_listing_title = 'Services';
+  $mpbp_listing_title = '<h1>Services</h1>';
   $mpbp_listing_button = 'Add New';
   $mpbp_listing_button_url = '/wp-admin/admin.php?page=Services&action=add_new';
   $mpbp_items = 'Services';
   $mpbp_page_name = 'all_services';
   $mpbp_listing_url = '/wp-admin/admin.php?page=all_services&order=';
+  $mpbp_listing_td = ["pictures", "name", "category", "quantity", "status"];
+  $mpbp_listing_td_data;
   /*
   *
   */
-  $mpbp_listing_th = ["Name", "Pictures", "Category", "Quantity", "Status"];
+  $mpbp_listing_th = ["", "Pictures", "Name", "Category", "Quantity", "Status"];
   $mpbp_listing_th_data = ['<td id="cb" class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-1">Select All</label><input id="cb-select-all-1" type="checkbox"></td>'];
-  for($i = 1; $i < sizeof($mpbp_listing_th){
+  for($i = 1; $i < sizeof($mpbp_listing_th); $i++){
 	  $mpbp_listing_th_data[$i] = '<th scope="col" id="mpbp_'. $mpbp_listing_th[$i] .'" class="manage-column column-'. $mpbp_listing_th[$i] .' sortable">'. $mpbp_listing_th[$i] .'</span></th>';
   }
   /*
@@ -36,7 +38,6 @@
   *
   */
   
-  function mpbp_display_services(){
   echo $mpbp_listing_title;
   /*
   * connect to database
@@ -111,10 +112,6 @@
   $mpbp_services_page_previous_limit;
   ($mpbp_current_service_page>=$mpbp_services_number_of_pages)? $mpbp_services_page_next_limit = "mpbp_disabled" : '';
   ($mpbp_current_service_page<=1)? $mpbp_services_page_previous_limit = "mpbp_disabled" : '';
-  
-  /*
-  * search
-  */
   ?>
   <a href="<?php echo get_site_url(). $mpbp_listing_button_url;?>" class="page-title-action">
   <?php echo $mpbp_listing_button; ?></a>
@@ -128,7 +125,7 @@
 
     <div class="tablenav top">
         <h2 class="screen-reader-text">Pages list navigation</h2>
-        <div class="tablenav-pages"><span class="displaying-num"><?php echo $mpbp_services_size . $mpbp_items;?></span>
+        <div class="tablenav-pages"><span class="displaying-num"><?php echo $mpbp_services_size . " " . $mpbp_items;?></span>
 		        <input name="page" value="<?php echo $mpbp_page_name; ?>"/>
                 <a  class="prev-page <?php echo $mpbp_services_page_previous_limit . '" href="'. get_site_url(). $mpbp_listing_url . $mpbp_previous_service_page;?>"><span class="screen-reader-text">Boggii hore</span><span aria-hidden="true">‹</span></a>
                 <span class="paging-input"><label class="screen-reader-text">Current Page</label><input class="current-page" id="current-page-selector" type="text" name="order" value="<?php echo $mpbp_current_service_page;?>" size="1" aria-describedby="table-paging"><span class="tablenav-paging-text"> of 
@@ -152,38 +149,41 @@
 			if($mpbp_services_query_this_page[$row]->name != ''){
 			?>
             <tr id="post-3" class="iedit author-self level-0 post-3 type-page status-draft hentry entry">
-                <th scope="row" class="check-column"> <label class="screen-reader-text" for="cb-select-3">Select Privacy Policy</label>
-                    <input id="cb-select-3" type="checkbox" name="post[]" value="3">
-                </th>
-                <td class="title column-title has-row-actions column-primary page-title" data-colname="Title">
-                    <div class="locked-info"><span class="locked-avatar"></span> <span class="locked-text"></span></div>
-                    <strong>
+			<th scope="row" class="check-column"> <label class="screen-reader-text" for="cb-select-3">Select Privacy Policy</label>
+                <input id="cb-select-3" type="checkbox" name="post[]" value="3">
+            </th>
+			 <?php
+			 for($td_data = 0; $td_data<sizeof($mpbp_listing_td); $td_data++){
+				   $td = $mpbp_listing_td[$td_data];
+					if($td == $mpbp_listing_td[1]){
+						$mpbp_listing_td_data[$td_data] =  '<td class="title column-title has-row-actions column-primary page-title" data-colname="Title">
+                <strong>
 						<a class="row-title" href="<?php echo get_site_url() ?>/wp-admin/post.php?post=3&amp;action=edit" aria-label="“Privacy Policy” (Edit)">
-						<?php echo $mpbp_services_query_this_page[$row]->name; ?></a> 
+						'. $mpbp_services_query_this_page[$row]->$td .'</a> 
 					</strong>
 					
                     <div class="row-actions"><span class="edit">
-						<a href="<?php echo get_site_url(). '/wp-admin/admin.php?page=Services&action=edit&id='. $mpbp_services_query_this_page[$row]->id;?>" 
+						<a href="'.  get_site_url(). "/wp-admin/admin.php?page=Services&action=edit&id=". $mpbp_services_query_this_page[$row]->$td .'" 
 						aria-label="Edit “Privacy Policy”">Tifaftir</a> | </span>
-						<span class="trash"><a href="<?php echo get_site_url(); ?>/wp-admin/admin.php?page=Services&action=delete&id=<?php 
-						echo $mpbp_services_query_this_page[$row]->id; ?>" class="submitdelete" aria-label="Move “Privacy Policy” to the Bin">Trash</a> | </span>
+						<span class="trash"><a href="'. get_site_url() .'/wp-admin/admin.php?page=Services&action=delete&id='. 
+					 $mpbp_services_query_this_page[$row]->$td .'" class="submitdelete" aria-label="Move “Privacy Policy” to the Bin">Trash</a> | </span>
 					<span class="view">
 					<a href="http://localhost:8080/wordpress/?page_id=3&amp;preview=true" rel="bookmark" aria-label="Preview “Privacy Policy”">Horu’eeg</a>
-					</span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button>
-                </td>
-                <td class="author column-author" data-colname="Qoraa"><a>
-				<img src="<?php preg_match('/(http(.*?)(?=\,))/', $mpbp_services_query_this_page[$row]->pictures, $mpbp_s_first_image); print_r($mpbp_s_first_image[0]);?>" 
-				height="50"/></a></td>
-                <td class="comments column-comments" data-colname="Faallooyin">
-                    <div class="post-com-count-wrapper">
-                        <span aria-hidden="true"><?php echo $mpbp_services_query_this_page[$row]->category; ?></span>
-						<span class="screen-reader-text">No Comments</span><span class="post-com-count post-com-count-pending post-com-count-no-pending">
-						<span class="comment-count comment-count-no-pending" aria-hidden="true">0</span><span class="screen-reader-text">No Comments</span></span>
-                    </div>
-                </td>
-                <td class="date mpbp-column-quanity" data-colname="quantity"><?php echo $mpbp_services_query_this_page[$row]->quantity; ?></td>
-				<td class="date mpbp-column-status" data-colname="status"><?php echo $mpbp_services_query_this_page[$row]->status; ?></td>
-            </tr>
+					</span></div>
+                </td>';
+				}elseif($td == $mpbp_listing_td[0]){
+					preg_match("/(http(.*?)(?=\,))/", $mpbp_services_query_this_page[$row]->$td, $mpbp_s_first_image);
+				     $mpbp_listing_td_data[$td_data] =  '<td class="author column-author" data-colname="Qoraa"><a>
+				     <img src="'. $mpbp_s_first_image[0] .'" height="50"/></a></td>';
+				 }else{
+					$mpbp_listing_td_data[$td_data] =  '
+					  <td class="date mpbp-column-status" data-colname="status">'. $mpbp_services_query_this_page[$row]->$td .'</td>
+					 ';
+				 }
+			    }
+			    echo implode($mpbp_listing_td_data);
+			  ?>
+			</tr>
 			<?php
 			}
 			} ?>
@@ -191,23 +191,18 @@
 
         <tfoot>
             <tr>
-                <td id="cb" class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-1">Select All</label><input id="cb-select-all-1" type="checkbox"></td>
-                <th scope="col" id="mpbp_s_name" class="manage-column column-title column-primary sortable"><span>Name</span></th>
-                <th scope="col" id="mpbp_s_pictures" class="manage-column column-author">Pictures</th>
-                <th scope="col" id="mpbp_s_category" class="manage-column column-comments num sortable">Category<span></span></th>
-                <th scope="col" id="mpbp_s_quantity" class="manage-column column-date sortable"><span>Quantity</span></th>
-				<th scope="col" id="mpbp_s_status" class="manage-column column-date sortable"><span>Status</span></th>
+                <?php
+				  echo implode($mpbp_listing_th_data);
+				?>
             </tr>
         </tfoot>
 
     </table>
 </form>
   <?php
-  }
   
   function mpbp_shortcode_func(){
 	  return 'hello world';
   }
   add_shortcode('mpbp_services', 'mpbp_shortcode_func');
-  mpbp_display_services();
 ?>

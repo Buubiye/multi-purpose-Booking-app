@@ -23,12 +23,12 @@
   $mpbp_items = 'Services';
   $mpbp_page_name = 'all_services';
   $mpbp_listing_url = '/wp-admin/admin.php?page=all_services&order=';
-  $mpbp_listing_td = ["name", "pictures", "category", "quantity", "status"];
+  $mpbp_listing_td = ["pictures", "name", "category", "quantity", "status"];
   $mpbp_listing_td_data;
   /*
   *
   */
-  $mpbp_listing_th = ["", "Name", "Pictures", "Category", "Quantity", "Status"];
+  $mpbp_listing_th = ["", "Pictures", "Name", "Category", "Quantity", "Status"];
   $mpbp_listing_th_data = ['<td id="cb" class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-1">Select All</label><input id="cb-select-all-1" type="checkbox"></td>'];
   for($i = 1; $i < sizeof($mpbp_listing_th); $i++){
 	  $mpbp_listing_th_data[$i] = '<th scope="col" id="mpbp_'. $mpbp_listing_th[$i] .'" class="manage-column column-'. $mpbp_listing_th[$i] .' sortable">'. $mpbp_listing_th[$i] .'</span></th>';
@@ -112,14 +112,6 @@
   $mpbp_services_page_previous_limit;
   ($mpbp_current_service_page>=$mpbp_services_number_of_pages)? $mpbp_services_page_next_limit = "mpbp_disabled" : '';
   ($mpbp_current_service_page<=1)? $mpbp_services_page_previous_limit = "mpbp_disabled" : '';
-  
-  $hel = $mpbp_listing_td[1];
-  echo '<h1>'. $mpbp_services_query_this_page[1]->$hel . '</h1>';
-  //-------------------------
-
-  /*
-  * search
-  */
   ?>
   <a href="<?php echo get_site_url(). $mpbp_listing_button_url;?>" class="page-title-action">
   <?php echo $mpbp_listing_button; ?></a>
@@ -133,7 +125,7 @@
 
     <div class="tablenav top">
         <h2 class="screen-reader-text">Pages list navigation</h2>
-        <div class="tablenav-pages"><span class="displaying-num"><?php echo $mpbp_services_size . $mpbp_items;?></span>
+        <div class="tablenav-pages"><span class="displaying-num"><?php echo $mpbp_services_size . " " . $mpbp_items;?></span>
 		        <input name="page" value="<?php echo $mpbp_page_name; ?>"/>
                 <a  class="prev-page <?php echo $mpbp_services_page_previous_limit . '" href="'. get_site_url(). $mpbp_listing_url . $mpbp_previous_service_page;?>"><span class="screen-reader-text">Boggii hore</span><span aria-hidden="true">‹</span></a>
                 <span class="paging-input"><label class="screen-reader-text">Current Page</label><input class="current-page" id="current-page-selector" type="text" name="order" value="<?php echo $mpbp_current_service_page;?>" size="1" aria-describedby="table-paging"><span class="tablenav-paging-text"> of 
@@ -163,7 +155,7 @@
 			 <?php
 			 for($td_data = 0; $td_data<sizeof($mpbp_listing_td); $td_data++){
 				   $td = $mpbp_listing_td[$td_data];
-					if($td == $mpbp_listing_td[0]){
+					if($td == $mpbp_listing_td[1]){
 						$mpbp_listing_td_data[$td_data] =  '<td class="title column-title has-row-actions column-primary page-title" data-colname="Title">
                 <strong>
 						<a class="row-title" href="<?php echo get_site_url() ?>/wp-admin/post.php?post=3&amp;action=edit" aria-label="“Privacy Policy” (Edit)">
@@ -179,7 +171,7 @@
 					<a href="http://localhost:8080/wordpress/?page_id=3&amp;preview=true" rel="bookmark" aria-label="Preview “Privacy Policy”">Horu’eeg</a>
 					</span></div>
                 </td>';
-				}elseif($td == $mpbp_listing_td[1]){
+				}elseif($td == $mpbp_listing_td[0]){
 					preg_match("/(http(.*?)(?=\,))/", $mpbp_services_query_this_page[$row]->$td, $mpbp_s_first_image);
 				     $mpbp_listing_td_data[$td_data] =  '<td class="author column-author" data-colname="Qoraa"><a>
 				     <img src="'. $mpbp_s_first_image[0] .'" height="50"/></a></td>';
