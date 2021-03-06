@@ -161,7 +161,7 @@ public function mpbp_display_admin_data($type, $id, $dbTable){
 * inserts new values to the database(wp_mpbpadmin2 )
 *******
 */
-public function mpbp_insert_to_db($tableName, $data, $dataFormat, $isset, $success){
+public function mpbp_insert_to_db($tableName, $data, $dataFormat, $isset, $success, $url){
 	global $wpdb;
 	if($_GET['action'] == 'add_new'){ 
 		if($this->mpbp_admin_error == ''){
@@ -171,11 +171,12 @@ public function mpbp_insert_to_db($tableName, $data, $dataFormat, $isset, $succe
 			* This SQL query inserts new value to database wp_mpbpadmin2
 			*/
 			if(isset($_POST[$isset])){
+				echo "this hapeened";
 			$wpdb->insert($tableName, $data, $dataFormat);
 			$lastid = $wpdb->insert_id;
 			?>
 			<script type="text/javascript">
-				window.location = <?php echo "'". get_site_url(). '/wp-admin/admin.php?page=my_table2&action=edit&id='. $lastid . "';";?>
+				window.location = <?php echo "'". get_site_url(). $url .'&action=edit&id='. $lastid . "';";?>
 			</script>
              <?php
 			return $success;
@@ -219,7 +220,7 @@ public function mpbp_delete_admin_data($dbTable, $id, $section, $page, $success,
 			echo $success . $_GET['id'];
 			?>
 			     <script type="text/javascript">
-			     window.location = <?php echo "'". get_site_url(). '/wp-admin/admin.php?page=all_services'. "';";?>
+			     window.location = <?php echo "'". get_site_url(). $url . "';";?>
 			     </script>
              <?php
 		}else if($_POST[$section] == 'No'){

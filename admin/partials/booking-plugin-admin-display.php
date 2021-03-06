@@ -108,7 +108,8 @@ if(isset($_POST['name'])){
 	  $mpbp_crud_printer->mpbp_display_admin_data(
 	  "id",
 	  $_GET['id'], 
-	  'wp_mpbpservices2'
+	  'wp_mpbpservices2',
+	  '/wp-admin/admin.php?page=all_services'
 	  ); 
  }
 
@@ -225,7 +226,8 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
   ),
   array('%s', '%s', '%s', '%d', '%s', '%s', '%s', '%d', '%s', '%s'),
   'name', 
-  'Succes! inserted data.');
+  'Succes! inserted data.',
+  '/wp-admin/admin.php?page=my_table2');
   }
 
 ?>

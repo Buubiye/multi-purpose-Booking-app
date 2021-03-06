@@ -139,7 +139,8 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
 	 'mpbp_verify_service_delete', 
 	 'order', 
 	 'successfully deleted ', 
-	 get_site_url() .'/wp-admin/admin.php?page=orders'
+	 get_site_url() .'/wp-admin/admin.php?page=orders_crud',
+	 '/wp-admin/admin.php?page=orders'
 	 );
 }
 
@@ -184,10 +185,10 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
  ['service_provider_id', 'input', 'number', 'mpbp_service_provider_id', 'service_provider_id', $mpbp_print_data[2], '' ],
  ["duration", 'input', 'text', 'mpbp_duration', 'duration', $mpbp_print_data[3], ''],
  ["client_location", "input", "text", "mpbp_s_client_location", "client_location", $mpbp_print_data[4], ""],
- ["gps_coordinates", 'input', 'text', 'mpbp_gps_coordinates' , 'gps_coordinates', '', ''],
+ ["gps_coordinates", 'input', 'text', 'mpbp_gps_coordinates' , 'gps_coordinates', $mpbp_print_data[5], ''],
  ["price", 'input', 'text', 'mpbp_price' , 'price', $mpbp_print_data[6], ''],
  ["rating", 'input', 'text', 'mpbp_rating' , 'rating', $mpbp_print_data[7], ''],
- ["status", 'input', 'text', 'mpbp_status' , 'Status', '', ''],
+ ["status", 'input', 'text', 'mpbp_status' , 'Status', $mpbp_print_data[8], ''],
  ["extra_info", 'input', 'text', 'mpbp_extra_info' , 'Extra Info', $mpbp_print_data[9], ''],
  ["", "input", "submit", "button", "", "Submit", ""]
  ], 
@@ -201,9 +202,9 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
   /*
   * The below function stores inserted 
   */
-  if(!empty($_POST['name']) && $_GET['action'] == 'add_new'){
+  if(!empty($_POST['date']) && $_GET['action'] == 'add_new'){
   $mpbp_crud_printer->mpbp_insert_to_db(
-  'wp_mpbp_orders',
+  'wp_mpbp_orders', 
   array(
     "date" => $mpbp_insert[0],
 	"client_id" => $mpbp_insert[1],
@@ -218,7 +219,8 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
   ),
   array('%s', '%d', '%d', '%s', '%s', '%s', '%d', '%s', '%s', '%s'),
   'date', 
-  'Succes! inserted data.');
+  'Succes! inserted data.',
+  '/wp-admin/admin.php?page=orders_crud');
   }
 
 
