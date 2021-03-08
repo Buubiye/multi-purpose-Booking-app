@@ -10,8 +10,23 @@
  * @package    Booking_Plugin
  * @subpackage Booking_Plugin/admin/partials
  */
+ if(isset($_POST['user_login'])){
+ $userdata = array(
+    'user_pass'             => '',   //(string) The plain-text user password.
+    'user_login'            => '',   //(string) The user's login username.
+    'user_nicename'         => '',   //(string) The URL-friendly user name.
+    'user_url'              => '',   //(string) The user URL.
+    'user_email'            => '',   //(string) The user email address.
+    'display_name'          => '',   //(string) The user's display name. Default is the user's username.
+    'nickname'              => '',   //(string) The user's nickname. Default is the user's username.
+    'first_name'            => '',   //(string) The user's first name. For new users, will be used to build the first part of the user's display name if $display_name is not specified.
+    'last_name'             => '',   //(string) The user's last name. For new users, will be used to build the second part of the user's display name if $display_name is not specified.
+    'description'           => '',   //(string) The user's biographical description.
+    'user_registered'       => '',   //(string) Date the user registered. Format is 'Y-m-d H:i:s'.
+    'show_admin_bar_front'  => '',   //(string|bool) Whether to display the Admin Bar for the user on the site's front end. Default true.
+    'role'                  => '',   //(string) User's role.
  
-  echo '<h1> This is users page </h1>';
+);
  $website = "http://example.com";
 $userdata = array(
     'user_login' =>  'login_name',
@@ -26,6 +41,7 @@ if ( ! is_wp_error( $user_id ) ) {
     echo "User created : ". $user_id;
 }
 
+ }
 
 
  require_once plugin_dir_path(dirname(__FILE__) ).'class-booking-plugin-crud-actions.php';
@@ -183,9 +199,23 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
  }
 
  echo $mpbp_crud_printer->mpbp_render_services(
- [
+ [ 
+ ['user_pass', 'input', 'text', 'user_pass', 'User Password', (isset($_GET['id']))? $_GET['id'] : '', ''],
+ ['user_login', 'input', 'text', 'user_login', 'User Login', (isset($_GET['id']))? $_GET['id'] : '', ''],
+ ['user_nicename', 'input', 'text', 'user_nicename', 'User Nicename', (isset($_GET['id']))? $_GET['id'] : '', ''],
+ ['user_url', 'input', 'text', 'user_url', 'User Url', (isset($_GET['id']))? $_GET['id'] : '', ''],
+ ['user_email', 'input', 'email', 'user_email', 'User Email', (isset($_GET['id']))? $_GET['id'] : '', ''],
+ ['display_name', 'input', 'text', 'display_name', 'Display Name', (isset($_GET['id']))? $_GET['id'] : '', ''],
+ ['nickname', 'input', 'text', 'nickname', 'Nickname', (isset($_GET['id']))? $_GET['id'] : '', ''],
+ ['first_name', 'input', 'text', 'first_name', 'First Name', (isset($_GET['id']))? $_GET['id'] : '', ''],
+ ['last_name', 'input', 'text', 'last_name', 'Last Name', (isset($_GET['id']))? $_GET['id'] : '', ''],
+ ['description', 'input', 'text', 'description', 'Description', (isset($_GET['id']))? $_GET['id'] : '', ''],
+ ['user_registered', 'input', 'text', 'user_registered', 'User Registered', (isset($_GET['id']))? $_GET['id'] : '', ''],
+ ['show_admin_bar_front', 'input', 'text', 'show_admin-bar_front', 'Show Admin Bar Front', (isset($_GET['id']))? $_GET['id'] : '', ''],
+ ['role', 'input', 'text', 'role', 'Role', (isset($_GET['id']))? $_GET['id'] : '', ''], 
+ 
  ['user_id', 'input', 'number', 'mpbp_user_id', 'User ID', (isset($_GET['id']))? $_GET['id'] : '', ''],
- ['pictures', 'input', 'text', "mpbp_pictures" , 'Pictures', $mpbp_print_data[0] , ''],
+ ['pictures', 'img', 'text', "mpbp_pictures" , 'Pictures', $mpbp_print_data[0] , ''],
  ['type', 'input', 'text', 'mpbp_type', 'Type', $mpbp_print_data[1], ''],
  ['date_created', 'input', 'text', 'mpbp_date_created', 'Date Created', $mpbp_print_data[2], '' ],
  ["number", 'input', 'text', 'mpbp_number', 'Number', $mpbp_print_data[3], ''],
@@ -225,13 +255,13 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
 * this is the db function, it will be stored in the plugin activation file
 *
 */
-global $mpbp_service_db_version;
+/*global $mpbp_service_db_version;
 		$mpbp_service_db_version = '1.0';
 function create_mpbp_services_db_table() {
 			global $wpdb;
 			global $mpbp_service_db_version;
 
-			$table_name = $wpdb->prefix . 'mpbp_orders';
+			$table_name = $wpdb->prefix . 'mpbp_users';
 			
 			$charset_collate = $wpdb->get_charset_collate();
 			$sql = "CREATE TABLE $table_name (
@@ -252,6 +282,7 @@ function create_mpbp_services_db_table() {
 		}
 		
 		create_mpbp_services_db_table();
+		*/
 
 
 ?>
