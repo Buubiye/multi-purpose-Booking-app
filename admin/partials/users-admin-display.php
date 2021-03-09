@@ -10,37 +10,37 @@
  * @package    Booking_Plugin
  * @subpackage Booking_Plugin/admin/partials
  */
- if(isset($_POST['user_login'])){
- $userdata = array(
-    'user_pass'             => '',   //(string) The plain-text user password.
-    'user_login'            => '',   //(string) The user's login username.
-    'user_nicename'         => '',   //(string) The URL-friendly user name.
-    'user_url'              => '',   //(string) The user URL.
-    'user_email'            => '',   //(string) The user email address.
-    'display_name'          => '',   //(string) The user's display name. Default is the user's username.
-    'nickname'              => '',   //(string) The user's nickname. Default is the user's username.
-    'first_name'            => '',   //(string) The user's first name. For new users, will be used to build the first part of the user's display name if $display_name is not specified.
-    'last_name'             => '',   //(string) The user's last name. For new users, will be used to build the second part of the user's display name if $display_name is not specified.
-    'description'           => '',   //(string) The user's biographical description.
-    'user_registered'       => '',   //(string) Date the user registered. Format is 'Y-m-d H:i:s'.
-    'show_admin_bar_front'  => '',   //(string|bool) Whether to display the Admin Bar for the user on the site's front end. Default true.
-    'role'                  => '',   //(string) User's role.
+ global $user_id;
+ global $error_string;
  
-);
- $website = "http://example.com";
-$userdata = array(
-    'user_login' =>  'login_name',
-    'user_url'   =>  $website,
-    'user_pass'  =>  NULL // When creating an user, `user_pass` is expected.
+ if($_GET['action'] == 'add_new'){
+	 if(!empty($_POST['user_login'])){
+ $userdata = array(
+    'user_pass'             => $_POST['user_pass'],   //(string) The plain-text user password.
+    'user_login'            => $_POST['user_login'],   //(string) The user's login username.
+    'user_nicename'         => $_POST['user_nicename'],   //(string) The URL-friendly user name.
+    'user_url'              => $_POST['user_url'],   //(string) The user URL.
+    'user_email'            => $_POST['user_email'],  //(string) The user email address.
+    'display_name'          => $_POST['display_name'],  //(string) The user's display name. Default is the user's username.
+    'nickname'              => $_POST['nickname'],   //(string) The user's nickname. Default is the user's username.
+    'first_name'            => $_POST['first_name'],   //(string) The user's first name. For new users, will be used to build the first part of the user's display name if $display_name is not specified.
+    'last_name'             => $_POST['last_name'],   //(string) The user's last name. For new users, will be used to build the second part of the user's display name if $display_name is not specified.
+    'description'           => $_POST['description'],   //(string) The user's biographical description.
+    'user_registered'       => $_POST['user_registered'],   //(string) Date the user registered. Format is 'Y-m-d H:i:s'.
+    'show_admin_bar_front'  => $_POST['show_admin_bar_front'],   //(string|bool) Whether to display the Admin Bar for the user on the site's front end. Default true.
+    'role'                  => $_POST['role']  //(string) User's role.
 );
  
 $user_id = wp_insert_user( $userdata ) ;
  
 // On success.
-if ( ! is_wp_error( $user_id ) ) {
-    echo "User created : ". $user_id;
+if ( is_wp_error( $user_id ) ) {
+    $error_string = $user_id->get_error_message();
+    echo '<div id="message" class="error"><p>' . $error_string . '</p></div>';
+}else{
+	echo "User created : ". $user_id;
 }
-
+	 }
  }
 
 
@@ -54,7 +54,6 @@ if ( ! is_wp_error( $user_id ) ) {
  *
  */
  $mpbp_crud_printer->mpbp_admin = [
-	'user_id',
 	'pictures',
 	'type',
 	'date_created',
@@ -66,7 +65,6 @@ if ( ! is_wp_error( $user_id ) ) {
 * stores the logic for input validation
 */
  $mpbp_crud_printer->mpbp_admin_validation_logic = [
-	!empty($_POST['user_id']),
 	!empty($_POST['pictures']),
 	!empty($_POST['type']),
 	!empty($_POST['date_created']),
@@ -101,11 +99,10 @@ print_r($mpbp_insert);
 * $error string to print out error messages
 *******
 */
-if(isset($_POST['user_id'])){
+if(isset($_POST['type']) && $_GET['action'] == 'edit'){
 	$mpbp_crud_printer->mpbp_admin_update(
 	'wp_mpbp_users',
 	 array(
-	  'User_id' => $_POST['User_id'],
 	  'pictures' => $_POST['pictures'],
 	  'type' => $_POST['type'],
 	  'date_created' => $_POST['date_created'],
@@ -200,21 +197,20 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
 
  echo $mpbp_crud_printer->mpbp_render_services(
  [ 
- ['user_pass', 'input', 'text', 'user_pass', 'User Password', (isset($_GET['id']))? $_GET['id'] : '', ''],
- ['user_login', 'input', 'text', 'user_login', 'User Login', (isset($_GET['id']))? $_GET['id'] : '', ''],
- ['user_nicename', 'input', 'text', 'user_nicename', 'User Nicename', (isset($_GET['id']))? $_GET['id'] : '', ''],
- ['user_url', 'input', 'text', 'user_url', 'User Url', (isset($_GET['id']))? $_GET['id'] : '', ''],
- ['user_email', 'input', 'email', 'user_email', 'User Email', (isset($_GET['id']))? $_GET['id'] : '', ''],
- ['display_name', 'input', 'text', 'display_name', 'Display Name', (isset($_GET['id']))? $_GET['id'] : '', ''],
- ['nickname', 'input', 'text', 'nickname', 'Nickname', (isset($_GET['id']))? $_GET['id'] : '', ''],
- ['first_name', 'input', 'text', 'first_name', 'First Name', (isset($_GET['id']))? $_GET['id'] : '', ''],
- ['last_name', 'input', 'text', 'last_name', 'Last Name', (isset($_GET['id']))? $_GET['id'] : '', ''],
- ['description', 'input', 'text', 'description', 'Description', (isset($_GET['id']))? $_GET['id'] : '', ''],
- ['user_registered', 'input', 'text', 'user_registered', 'User Registered', (isset($_GET['id']))? $_GET['id'] : '', ''],
- ['show_admin_bar_front', 'input', 'text', 'show_admin-bar_front', 'Show Admin Bar Front', (isset($_GET['id']))? $_GET['id'] : '', ''],
- ['role', 'input', 'text', 'role', 'Role', (isset($_GET['id']))? $_GET['id'] : '', ''], 
- 
- ['user_id', 'input', 'number', 'mpbp_user_id', 'User ID', (isset($_GET['id']))? $_GET['id'] : '', ''],
+ ['user_pass', 'input', 'text', 'user_pass', 'User Password', (isset($_POST['user_pass']))? $_POST['user_pass'] : '', ''],
+ ['user_login', 'input', 'text', 'user_login', 'User Login', (isset($_POST['user_login']))? $_POST['user_login'] : '', ''],
+ ['user_nicename', 'input', 'text', 'user_nicename', 'User Nicename', (isset($_POST['user_nicename']))? $_POST['user_nicename'] : '', ''],
+ ['user_url', 'input', 'text', 'user_url', 'User Url', (isset($_POST['user_url']))? $_POST['user_url'] : '', ''],
+ ['user_email', 'input', 'email', 'user_email', 'User Email', (isset($_POST['user_email']))? $POST['user_email'] : '', ''],
+ ['display_name', 'input', 'text', 'display_name', 'Display Name', (isset($_POST['display_name']))? $_POST['display_name'] : '', ''],
+ ['nickname', 'input', 'text', 'nickname', 'Nickname', (isset($_POST['nickname']))? $_POST['nickname'] : '', ''],
+ ['first_name', 'input', 'text', 'first_name', 'First Name', (isset($_POST['first_name']))? $_POST['first_name'] : '', ''],
+ ['last_name', 'input', 'text', 'last_name', 'Last Name', (isset($_POST['last_name']))? $_POST['last_name'] : '', ''],
+ ['description', 'input', 'text', 'description', 'Description', (isset($_POST['description']))? $_POST['description'] : '', ''],
+ ['user_registered', 'input', 'text', 'user_registered', 'User Registered', (isset($_POST['user_registered']))? $_POST['user_registered'] : '', ''],
+ ['show_admin_bar_front', 'input', 'text', 'show_admin-bar_front', 'Show Admin Bar Front', (isset($_POST['show_admin_bar_front']))? $_POST['show_admin_bar_front'] : '', ''],
+ ['role', 'input', 'text', 'role', 'Role', (isset($_POST['role']))? $_POST['role'] : '', ''], 
+ ['user_id', 'input', 'number', 'mpbp_user_id', 'User ID', '', ''],
  ['pictures', 'img', 'text', "mpbp_pictures" , 'Pictures', $mpbp_print_data[0] , ''],
  ['type', 'input', 'text', 'mpbp_type', 'Type', $mpbp_print_data[1], ''],
  ['date_created', 'input', 'text', 'mpbp_date_created', 'Date Created', $mpbp_print_data[2], '' ],
@@ -232,11 +228,13 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
   /*
   * The below function stores inserted 
   */
-  if(!empty($_POST['date']) && $_GET['action'] == 'add_new'){
+  global $error_string;
+  if(!empty($_POST['type']) && $_GET['action'] == 'add_new' && $error_string == ''){
+	  global $user_id;
   $mpbp_crud_printer->mpbp_insert_to_db(
   'wp_mpbp_users', 
   array(
-    'user_id' => $mpbp_insert[0],
+    'user_id' => $user_id,
 	'pictures' => $mpbp_insert[1],
 	'type' => $mpbp_insert[2],
 	'date_created' => $mpbp_insert[3],
@@ -246,7 +244,9 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
   array('%d', '%s', '%s', '%s', '%s', '%s'),
   'pictures', 
   'Succes! inserted data.',
-  '/wp-admin/admin.php?page=orders_crud');
+  '/wp-admin/admin.php?page=users');
+  }else{
+	  echo $error_string;
   }
 
 
