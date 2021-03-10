@@ -1,288 +1,39 @@
 <?php
-/**
- * This file executes user crud functionality
- *
- * This file is used to crud user data
- *
- * @link       Ahmed-Buubiye
- * @since      1.0.0
- *
- * @package    Booking_Plugin
- * @subpackage Booking_Plugin/admin/partials
- */
- global $user_id;
- global $error_string;
- 
- if($_GET['action'] == 'add_new'){
-	 if(!empty($_POST['user_login'])){
- $userdata = array(
-    'user_pass'             => $_POST['user_pass'],   //(string) The plain-text user password.
-    'user_login'            => $_POST['user_login'],   //(string) The user's login username.
-    'user_nicename'         => $_POST['user_nicename'],   //(string) The URL-friendly user name.
-    'user_url'              => $_POST['user_url'],   //(string) The user URL.
-    'user_email'            => $_POST['user_email'],  //(string) The user email address.
-    'display_name'          => $_POST['display_name'],  //(string) The user's display name. Default is the user's username.
-    'nickname'              => $_POST['nickname'],   //(string) The user's nickname. Default is the user's username.
-    'first_name'            => $_POST['first_name'],   //(string) The user's first name. For new users, will be used to build the first part of the user's display name if $display_name is not specified.
-    'last_name'             => $_POST['last_name'],   //(string) The user's last name. For new users, will be used to build the second part of the user's display name if $display_name is not specified.
-    'description'           => $_POST['description'],   //(string) The user's biographical description.
-    'user_registered'       => $_POST['user_registered'],   //(string) Date the user registered. Format is 'Y-m-d H:i:s'.
-    'show_admin_bar_front'  => $_POST['show_admin_bar_front'],   //(string|bool) Whether to display the Admin Bar for the user on the site's front end. Default true.
-    'role'                  => $_POST['role']  //(string) User's role.
-);
- 
-$user_id = wp_insert_user( $userdata ) ;
- 
-// On success.
-if ( is_wp_error( $user_id ) ) {
-    $error_string = $user_id->get_error_message();
-    echo '<div id="message" class="error"><p>' . $error_string . '</p></div>';
-}else{
-	echo "User created : ". $user_id;
-}
-	 }
- }
 
-
- require_once plugin_dir_path(dirname(__FILE__) ).'class-booking-plugin-crud-actions.php';
-
+require_once plugin_dir_path(dirname(__FILE__)).'class-booking-plugin-listings.php';
 /*
- * initializes the "mpbp_crud" class
- */
- $mpbp_crud_printer = new mpbp_crud();
- /*
- *
- */
- $mpbp_crud_printer->mpbp_admin = [
-	'pictures',
-	'type',
-	'date_created',
-	'number',
-	'birthdate'
-];
-
-/*
-* stores the logic for input validation
+* variables needed to be added
+* 1. Database table - $mpbp_db_table
+* 2. number of rows to be displayed per page - $mpbp_services_results_per_page
+* 3. page title - $mpbp_listing_title
+* 4. header button name update/add_new - $mpbp_listing_button;
+* 5. header button [add_new] url - $mpbp_listing_button_url;
+* 6. page name - $mpbp_items
+* 7. page name for get request e.g. $_GET['all_services'] - $mpbp_page_name;
+* 8. short url when user click next or previous e.g. '/wp-admin/admin.php?page=all_services&order=' - $mpbp_listing_url;
+* 9. Table header <th> name array - $mpbp_listing_th;
+* 10. Table header <th> data array - $mpbp_listing_th_data;
+* 10. Table data <td> array() - $mpbp_listing_td;
 */
- $mpbp_crud_printer->mpbp_admin_validation_logic = [
-	!empty($_POST['pictures']),
-	!empty($_POST['type']),
-	!empty($_POST['date_created']),
-	!empty($_POST['number']),
-	!empty($_POST['birthdate'])
-	];
-	
-/*
-* stores the data after it is validated
-*/
-$mpbp_insert = $mpbp_crud_printer->mpbp_validate_admin();
-print_r($mpbp_insert);
-/*
-*******
-* This function validates data for "update" action and "add_new" action
-*
-* @since    1.0.0
-* @access   public
-*******
-*/
-//print_r($mpbp_crud_printer->mpbp_validate_admin());
-
-/*
-*******
-* update data the selected row from db(wp_mpbpadmin2 )
-*
-* @since    1.0.0
-* @access   public 
-* $d string fetch id
-* $type array stores the value types of the data eg. %s, %d e.t.c
-* $success string to print out the success message
-* $error string to print out error messages
-*******
-*/
-if(isset($_POST['type']) && $_GET['action'] == 'edit'){
-	$mpbp_crud_printer->mpbp_admin_update(
-	'wp_mpbp_users',
-	 array(
-	  'pictures' => $_POST['pictures'],
-	  'type' => $_POST['type'],
-	  'date_created' => $_POST['date_created'],
-	  'number' => $_POST['number'],
-	  'birthdate' => $_POST['birthdate']
-	  ), 
-	  array(
-	  'id' => $_POST['id']
-	  ), 
-	$_GET['action'] == 'edit',
-	'Successfully updated user #'.$_POST['id'], 
-	'There is error! Please check check the values.'
-	);
-}
-
-/*
-*******
-* fetch data from db(wp_mpbpadmin2), this data will be displayed on the "input" elements 
-*******
-*/
- if($_GET['action'] == 'edit' || $_GET['action'] == 'delete'){
-	  $mpbp_crud_printer->mpbp_display_admin_data(
-	  "id",
-	  $_GET['id'], 
-	  'wp_mpbp_users'
-	  ); 
- }
-
-$array_fetch = $mpbp_crud_printer->mpbp_fetched_data_results;
-print_r($array_fetch);
-
-/*
-*******
-* inserts new values to the database(wp_mpbpadmin2 )
-*******
-*/
-//mpbp_insert_to_db($sql, $isset, $success);
-
-/*
-********
-* Deletes the selected row(s) in db(wp_mpbpadmin2)
-*******
-*
-* since 1.0.0
-* $section string to specify which page's data is deleted eg servies or orders
-* $page string to specify the page we are in
-*/
-if($_GET['action'] == 'delete'){
-$mpbp_crud_printer->mpbp_delete_admin_data(
-     "wp_mpbp_users",
-	 $_GET['id'], 
-	 'mpbp_verify_service_delete', 
-	 'user', 
-	 'successfully deleted ', 
-	 get_site_url() .'/wp-admin/admin.php?page=users',
-	 '/wp-admin/admin.php?page=users'
-	 );
-}
-
-//['name', 'element', 'type', 'class' , 'placeholder', 'value', 'options']
-//mpbp_printout_inputs($name, $element, $type, $class , $placeholder, $value, $options);
-
-/* 
-* renders the inputs in respective order 
-*/
-//mpbp_render_services($data, $url, $action, $h1Text, $method, $id, $buttonName)
- /*
- * This function renders the form
- * mpbp_render_services($data, $url, $action, $h1Text, $method, $id, $buttonName)
- */
- global $wpdb;
- if($_GET['action'] == 'edit' || $_GET['action'] == 'delete'){
- $mpbp_verify_if_data_exists = $wpdb->get_results("SELECT * FROM wp_mpbp_users WHERE  id = ". $_GET['id'] ."");
- }
- $mpbp_print_data;
-
- if($wpdb->num_rows > 0 || $_GET['action'] == 'add_new'){
-	 for($x = 0; $x < sizeof($mpbp_crud_printer->mpbp_admin); $x++){
-	 //user exists
-	 if($_GET['action'] == 'add_new' && isset($_POST[$mpbp_crud_printer->mpbp_admin[$x]]) != ''){
-		 $mpbp_print_data[$x] = $_POST[$mpbp_crud_printer->mpbp_admin[$x]];
-	 } elseif($_GET['action'] == 'add_new' && isset($_POST[$mpbp_crud_printer->mpbp_admin[$x]]) == ''){
-		 $mpbp_print_data[$x] = '';
-	 } elseif($_GET['action'] == 'edit' || $_GET['action'] == 'delete'){
-		 $mpbp_print_data[$x] = $array_fetch[$mpbp_crud_printer->mpbp_admin[$x]];
-	}
-	}
- }else{
-	 echo 'The user you inserted doesn\'t exist! <a href="'. get_site_url() .'/wp-admin/admin.php?page=users"><button> Search again </button></a>'; 
-	 die();
- }
-
- echo $mpbp_crud_printer->mpbp_render_services(
- [ 
- ['user_pass', 'input', 'text', 'user_pass', 'User Password', (isset($_POST['user_pass']))? $_POST['user_pass'] : '', ''],
- ['user_login', 'input', 'text', 'user_login', 'User Login', (isset($_POST['user_login']))? $_POST['user_login'] : '', ''],
- ['user_nicename', 'input', 'text', 'user_nicename', 'User Nicename', (isset($_POST['user_nicename']))? $_POST['user_nicename'] : '', ''],
- ['user_url', 'input', 'text', 'user_url', 'User Url', (isset($_POST['user_url']))? $_POST['user_url'] : '', ''],
- ['user_email', 'input', 'email', 'user_email', 'User Email', (isset($_POST['user_email']))? $POST['user_email'] : '', ''],
- ['display_name', 'input', 'text', 'display_name', 'Display Name', (isset($_POST['display_name']))? $_POST['display_name'] : '', ''],
- ['nickname', 'input', 'text', 'nickname', 'Nickname', (isset($_POST['nickname']))? $_POST['nickname'] : '', ''],
- ['first_name', 'input', 'text', 'first_name', 'First Name', (isset($_POST['first_name']))? $_POST['first_name'] : '', ''],
- ['last_name', 'input', 'text', 'last_name', 'Last Name', (isset($_POST['last_name']))? $_POST['last_name'] : '', ''],
- ['description', 'input', 'text', 'description', 'Description', (isset($_POST['description']))? $_POST['description'] : '', ''],
- ['user_registered', 'input', 'text', 'user_registered', 'User Registered', (isset($_POST['user_registered']))? $_POST['user_registered'] : '', ''],
- ['show_admin_bar_front', 'input', 'text', 'show_admin-bar_front', 'Show Admin Bar Front', (isset($_POST['show_admin_bar_front']))? $_POST['show_admin_bar_front'] : '', ''],
- ['role', 'input', 'text', 'role', 'Role', (isset($_POST['role']))? $_POST['role'] : '', ''], 
- ['user_id', 'input', 'number', 'mpbp_user_id', 'User ID', '', ''],
- ['pictures', 'img', 'text', "mpbp_pictures" , 'Pictures', $mpbp_print_data[0] , ''],
- ['type', 'input', 'text', 'mpbp_type', 'Type', $mpbp_print_data[1], ''],
- ['date_created', 'input', 'text', 'mpbp_date_created', 'Date Created', $mpbp_print_data[2], '' ],
- ["number", 'input', 'text', 'mpbp_number', 'Number', $mpbp_print_data[3], ''],
- ["birthdate", "input", "text", "mpbp_birthdate", "Birth Date", $mpbp_print_data[4], ""],
- ["", "input", "submit", "button", "", "Submit", ""]
- ], 
-  ($_GET['action'] == 'edit')? '/wp-admin/admin.php?page=users&action=edit' : "", 
-  '', 
-  'Add New User!', 
-  'POST', 
-  'mpbp_add_new', 
-  ($_GET['action'] == 'edit')? 'Add New' : '');
-  
+$mpbp_service_listing = new mpbp_data_listing();
+  $mpbp_service_listing->mpbp_db_table =  'wp_mpbp_users';
+  $mpbp_service_listing->mpbp_services_results_per_page = 5;
+  $mpbp_service_listing->mpbp_listing_title = '<h1>Users</h1>';
+  $mpbp_service_listing->mpbp_listing_button = 'Add New';
+  $mpbp_service_listing->mpbp_listing_button_url = '/wp-admin/admin.php?page=users_crud';
+  $mpbp_service_listing->mpbp_items = 'Users';
+  $mpbp_service_listing->mpbp_page_name = 'users';
+  $mpbp_service_listing->mpbp_listing_url = '/wp-admin/admin.php?page=users&order=';
+  $mpbp_service_listing->mpbp_listing_td = ["pictures", "first_name", "user_email", "role", "number"];
+  $mpbp_service_listing->mpbp_listing_td_data;
+  $mpbp_service_listing->mpbp_search_columns = ["id", "name"];
+  $mpbp_service_listing->mpbp_user_data = ["first_name", "user_email", "role"];
   /*
-  * The below function stores inserted 
+  *
   */
-  global $error_string;
-  if(!empty($_POST['type']) && $_GET['action'] == 'add_new' && $error_string == ''){
-	  global $user_id;
-  $mpbp_crud_printer->mpbp_insert_to_db(
-  'wp_mpbp_users', 
-  array(
-    'user_id' => $user_id,
-	'pictures' => $mpbp_insert[1],
-	'type' => $mpbp_insert[2],
-	'date_created' => $mpbp_insert[3],
-	'number' => $mpbp_insert[4],
-	'birthdate' => $mpbp_insert[5]
-  ),
-  array('%d', '%s', '%s', '%s', '%s', '%s'),
-  'pictures', 
-  'Succes! inserted data.',
-  '/wp-admin/admin.php?page=users');
-  }else{
-	  echo $error_string;
-  }
+  $mpbp_service_listing->mpbp_listing_th = ["", "Pictures", "Name", "Email", "Role", "Number"];
+  $mpbp_service_listing->mpbp_listing_th_data = ['<td id="cb" class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-1">Select All</label><input id="cb-select-all-1" type="checkbox"></td>'];
+   
+  $mpbp_service_listing->mpbp_render_listing(); 
 
 
-/*
-* 
-* this is the db function, it will be stored in the plugin activation file
-*
-*/
-/*global $mpbp_service_db_version;
-		$mpbp_service_db_version = '1.0';
-function create_mpbp_services_db_table() {
-			global $wpdb;
-			global $mpbp_service_db_version;
-
-			$table_name = $wpdb->prefix . 'mpbp_users';
-			
-			$charset_collate = $wpdb->get_charset_collate();
-			$sql = "CREATE TABLE $table_name (
-				id int(11) NOT NULL AUTO_INCREMENT,
-							user_id varchar (255),
-							pictures varchar (255),
-							type varchar (255),
-							date_created varchar (255),
-							number varchar (1000),
-							birthdate varchar (255),
-							PRIMARY KEY (id)					
-							) $charset_collate; ";
-
-			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-			dbDelta( $sql );
-
-			add_option( 'mpbp_service_db_version', $mpbp_service_db_version );
-		}
-		
-		create_mpbp_services_db_table();
-		*/
-
-
-?>

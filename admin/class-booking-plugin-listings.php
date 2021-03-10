@@ -26,6 +26,7 @@ class mpbp_data_listing{
   public $mpbp_listing_td;
   public $mpbp_listing_td_data;
   public $mpbp_search_columns;
+  public $mpbp_user_data;
   /*
   *
   */
@@ -156,9 +157,30 @@ class mpbp_data_listing{
                 <input id="cb-select-3" type="checkbox" name="post[]" value="3">
             </th>
 			 <?php
+			 /*
+			 * print out the <td> for the list
+			 */
 			 for($td_data = 0; $td_data<sizeof($this->mpbp_listing_td); $td_data++){
 				   $td = $this->mpbp_listing_td[$td_data];
-					if($td == $this->mpbp_listing_td[1]){
+					if(in_array($td, $this->mpbp_user_data)){
+					 /*-----------------------------------------------
+
+					 if this has bar from users display users info
+					 
+					 */
+					    /*
+						* if page = user or service providers get  the "user_id" column data
+						*/
+						global $pagenow;
+						//if($pagenow == "users" || $pagenow == "service-providers"){
+							global $wpdb;
+							$get_user_id = $mpbp_services_query_this_page[$row]->user_id;
+							$user_info = get_userdata($get_user_id);
+						    $this->mpbp_listing_td_data[$td_data] = 
+					        '<td class="date mpbp-column-status" data-colname="status">'. $user_info->$td .'</td>';
+						//}
+
+				 }elseif($td == $this->mpbp_listing_td[1]){
 						$this->mpbp_listing_td_data[$td_data] =  '<td class="title column-title has-row-actions column-primary page-title" data-colname="Title">
                 <strong>
 						<a class="row-title" href="<?php echo get_site_url() ?>/wp-admin/post.php?post=3&amp;action=edit" aria-label="“Privacy Policy” (Edit)">

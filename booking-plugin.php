@@ -98,9 +98,9 @@ class My_Table2 {
 
         public function admin_menu() {
             $menu_title = 'Multi-Purpose-Booking';  // The title of your menu entry
-			$menu_subTitles = ['Services', 'orders', 'users', 'service-providers', 'settings', 'all_services', 'orders_crud'];
+			$menu_subTitles = ['Services', 'orders', 'users', 'service-providers', 'settings', 'all_services', 'orders_crud', 'users_crud', 'service_provider_crud' ];
             $menu_slug  = 'my_table2';   
-			$sum_menu_1_slugs = ['Services', 'orders', 'users', 'service-providers', 'settings', 'all_services', 'orders_crud'];
+			$sum_menu_1_slugs = ['Services', 'orders', 'users', 'service-providers', 'settings', 'all_services', 'orders_crud', 'users_crud', 'service_provider_crud' ];
 			// The slug, for example: wp-admin/admin.php?page=my_table
             add_menu_page($menu_title, $menu_title, 'manage_options', $menu_slug, array($this, 'admin_page'));
 			add_submenu_page($menu_slug, $menu_subTitles[0], $menu_subTitles[0], 'manage_options', $menu_subTitles[0], array($this, 'services_page'));
@@ -111,6 +111,8 @@ class My_Table2 {
             //hidden submenus
 			add_submenu_page($menu_slug, $menu_subTitles[5], $menu_subTitles[5], 'manage_options', $menu_subTitles[5], array($this, 'all_services_page'));
 			add_submenu_page($menu_slug, $menu_subTitles[6], $menu_subTitles[6], 'manage_options', $menu_subTitles[6], array($this, 'orders_crud_page'));
+			add_submenu_page($menu_slug, $menu_subTitles[7], $menu_subTitles[7], 'manage_options', $menu_subTitles[7], array($this, 'users_crud_page'));
+			add_submenu_page($menu_slug, $menu_subTitles[8], $menu_subTitles[8], 'manage_options', $menu_subTitles[8], array($this, 'service_providers_crud_page'));
 		}
 		
 		public function admin_page() {
@@ -131,8 +133,14 @@ class My_Table2 {
 		public function users_page(){
 			require_once('admin\partials\users-admin-display.php');
 		}
+		public function users_crud_page(){
+			require_once('admin\partials\users-admin-crud.php');
+		}
 		public function service_providers_page(){
 			require_once('admin\partials\service-providers-admin-display.php');
+		}
+		public function service_providers_crud_page(){
+			require_once('admin\partials\service-providers-admin-crud.php');
 		}
 		public function settings_page(){
 			require_once('admin\partials\settings-admin-display.php');
