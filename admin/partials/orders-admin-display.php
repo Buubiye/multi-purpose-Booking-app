@@ -1,8 +1,8 @@
 <?php
 /**
- * This file executes order list
+ * This file executes orders crud functionality
  *
- * This file is used to display the list of orders
+ * This file is used to allow users to insert, update, delete and search orders data.
  *
  * @link       Ahmed-Buubiye
  * @since      1.0.0
@@ -14,11 +14,20 @@
  require_once plugin_dir_path(dirname(__FILE__) ).'class-booking-plugin-crud-actions.php';
 
 /*
- * initializes the "mpbp_crud" class
- */
+  * initializes the "mpbp_crud" class
+  *
+  * @since    1.0.0
+  * @access   public
+  */
  $mpbp_crud_printer = new mpbp_crud();
+ 
  /*
- *
+  * The below array stores the names of the "inputs" which will be 
+  * rendered by "mpbp_render_services" function.
+  *
+  * @since    1.0.0
+  * @access   public
+  * @type     array
  */
  $mpbp_crud_printer->mpbp_admin = [
     "date",
@@ -35,6 +44,9 @@
 
 /*
 * stores the logic for input validation
+*
+* @since    1.0.0
+* @access   public
 */
  $mpbp_crud_printer->mpbp_admin_validation_logic = [
 	!empty($_POST["date"]),
@@ -51,18 +63,13 @@
 	
 /*
 * stores the data after it is validated
-*/
-$mpbp_insert = $mpbp_crud_printer->mpbp_validate_admin();
-print_r($mpbp_insert);
-/*
-*******
 * This function validates data for "update" action and "add_new" action
 *
 * @since    1.0.0
 * @access   public
-*******
 */
-//print_r($mpbp_crud_printer->mpbp_validate_admin());
+$mpbp_insert = $mpbp_crud_printer->mpbp_validate_admin();
+print_r($mpbp_insert);
 
 /*
 *******
@@ -103,6 +110,9 @@ if(isset($_POST['name'])){
 /*
 *******
 * fetch data from db(wp_mpbpadmin2), this data will be displayed on the "input" elements 
+*
+* @since    1.0.0
+* @access   public
 *******
 */
  if($_GET['action'] == 'edit' || $_GET['action'] == 'delete'){
@@ -115,13 +125,6 @@ if(isset($_POST['name'])){
 
 $array_fetch = $mpbp_crud_printer->mpbp_fetched_data_results;
 print_r($array_fetch);
-
-/*
-*******
-* inserts new values to the database(wp_mpbpadmin2 )
-*******
-*/
-//mpbp_insert_to_db($sql, $isset, $success);
 
 /*
 ********
@@ -143,9 +146,6 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
 	 '/wp-admin/admin.php?page=orders'
 	 );
 }
-
-//['name', 'element', 'type', 'class' , 'placeholder', 'value', 'options']
-//mpbp_printout_inputs($name, $element, $type, $class , $placeholder, $value, $options);
 
 /* 
 * renders the inputs in respective order 
@@ -177,6 +177,12 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
 	 die();
  }
 
+/*
+  * The below function rendders the input for submitting data to database
+  *
+  * @since    1.0.0
+  * @access   public
+  */
  echo $mpbp_crud_printer->mpbp_render_services(
  [
  ['id', 'input', 'number', 'mpbp_id', 'ID', (isset($_GET['id']))? $_GET['id'] : '', ''],
@@ -201,6 +207,9 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
   
   /*
   * The below function stores inserted 
+  *
+  * @since    1.0.0
+  * @access   public
   */
   if(!empty($_POST['date']) && $_GET['action'] == 'add_new'){
   $mpbp_crud_printer->mpbp_insert_to_db(

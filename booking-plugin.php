@@ -98,9 +98,9 @@ class My_Table2 {
 
         public function admin_menu() {
             $menu_title = 'Multi-Purpose-Booking';  // The title of your menu entry
-			$menu_subTitles = ['Services', 'orders', 'users', 'service-providers', 'settings', 'all_services', 'orders_crud', 'users_crud', 'service_provider_crud' ];
+			$menu_subTitles = ['Services', 'orders', 'all_users', 'service-providers', 'settings', 'all_services', 'orders_crud', 'users', 'service_provider_crud' ];
             $menu_slug  = 'my_table2';   
-			$sum_menu_1_slugs = ['Services', 'orders', 'users', 'service-providers', 'settings', 'all_services', 'orders_crud', 'users_crud', 'service_provider_crud' ];
+			$sum_menu_1_slugs = ['Services', 'orders', 'all_users', 'service-providers', 'settings', 'all_services', 'orders_crud', 'users', 'service_provider_crud' ];
 			// The slug, for example: wp-admin/admin.php?page=my_table
             add_menu_page($menu_title, $menu_title, 'manage_options', $menu_slug, array($this, 'admin_page'));
 			add_submenu_page($menu_slug, $menu_subTitles[0], $menu_subTitles[0], 'manage_options', $menu_subTitles[0], array($this, 'services_page'));
@@ -148,3 +148,13 @@ class My_Table2 {
     }
 
     new My_Table2();
+
+   function mpbp_orders_func(){
+	   require_once('admin\partials\orders-admin-display.php');
+        return 'hello world, this is my first shortcode';
+   }	   
+   /* register shortcodes */
+		add_shortcode(
+           'mpbp_orders',
+           'mpbp_orders_func'
+        );
