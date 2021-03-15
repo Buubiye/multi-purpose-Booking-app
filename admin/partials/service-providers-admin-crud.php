@@ -227,7 +227,7 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
  $mpbp_verify_if_data_exists = $wpdb->get_results("SELECT * FROM ". $mpbp_db_name ." WHERE  id = ". $_GET['id'] ."");
  }
  $mpbp_print_data;
- $user_data_raw[17];
+ 
 $user_info; 
 if($_GET['action'] == 'add_new'){
 	$user_info = get_userdata($user_id);
@@ -235,17 +235,17 @@ if($_GET['action'] == 'add_new'){
 	$extracted_id = $wpdb->get_results('SELECT user_id FROM '. $mpbp_db_name . ' WHERE id = '. $_GET["id"] .'');
 	$user_info = get_userdata($extracted_id[0]->user_id);
 }  
-		echo $array_fetch['number'];
+
  if($wpdb->num_rows > 0 || $_GET['action'] == 'add_new'){
 	 for($x = 0; $x < sizeof($mpbp_crud_printer->mpbp_admin) + sizeof($user_data_raw); $x++){
 	 //user exists
 	 /*
 	 * if user is inserted the below if statement will print out user data with different fields
 	 */
-	 if($_GET['action'] == 'add_new' && isset($user_id) != 0 && $x < sizeof($user_data_raw)){
+	 if($_GET['action'] == 'add_new' && isset($user_id) != 0 && $x < sizeof($user_data_raw) - sizeof($mpbp_crud_printer->mpbp_admin)){
 	     $userdata_row_index = $user_data_raw[$x];
 		 $mpbp_print_data[$x] = $user_info->$userdata_row_index;
-	 }else if($_GET['action'] == 'edit' | $_GET['action'] == 'delete' && $x < sizeof($user_data_raw)){
+	 }else if($_GET['action'] == 'edit' | $_GET['action'] == 'delete' && $x < sizeof($user_data_raw) - sizeof($mpbp_crud_printer->mpbp_admin)){
 		 $userdata_row_index = $user_data_raw[$x];
 		 $mpbp_print_data[$x]= $user_info->$userdata_row_index;
 	 }else if($_GET['action'] == 'add_new' && isset($_POST[$mpbp_crud_printer->mpbp_admin[$x]]) != ''){
