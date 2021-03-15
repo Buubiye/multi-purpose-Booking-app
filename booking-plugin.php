@@ -98,9 +98,9 @@ class My_Table2 {
 
         public function admin_menu() {
             $menu_title = 'Multi-Purpose-Booking';  // The title of your menu entry
-			$menu_subTitles = ['Services', 'orders', 'all_users', 'service-providers', 'settings', 'all_services', 'orders_crud', 'users', 'service_provider_crud' ];
+			$menu_subTitles = ['Services', 'orders', 'all_users', 'all_service_providers', 'settings', 'all_services', 'orders_crud', 'users', 'service_provider' ];
             $menu_slug  = 'my_table2';   
-			$sum_menu_1_slugs = ['Services', 'orders', 'all_users', 'service-providers', 'settings', 'all_services', 'orders_crud', 'users', 'service_provider_crud' ];
+			$sum_menu_1_slugs = ['Services', 'orders', 'all_users', 'all_service_providers', 'settings', 'all_services', 'orders_crud', 'users', 'service_provider' ];
 			// The slug, for example: wp-admin/admin.php?page=my_table
             add_menu_page($menu_title, $menu_title, 'manage_options', $menu_slug, array($this, 'admin_page'));
 			add_submenu_page($menu_slug, $menu_subTitles[0], $menu_subTitles[0], 'manage_options', $menu_subTitles[0], array($this, 'services_page'));
