@@ -30,6 +30,79 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+
+add_action( 'personal_options_update', 'save_extra_user_profile_fields_zpr' );
+add_action( 'edit_user_profile_update', 'save_extra_user_profile_fields_zpr' );
+
+function save_extra_user_profile_fields_zpr( $user_id ) {
+    if(!current_user_can( 'edit_user', $user_id ) ) { 
+        return false; 
+    }
+    update_user_meta($user_id, 'number', $_POST["number"]);
+}
+
+add_action( 'show_user_profile', 'extra_user_profile_fields_zpr' );
+add_action( 'edit_user_profile', 'extra_user_profile_fields_zpr' );
+
+function extra_user_profile_fields_zpr( $user ) { 
+    $user_id = $user->ID;
+    ?>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.0.js"></script>
+    <h3>Extra profile information</h3>
+    <table class="form-table">
+        <tr>
+            <td>Number</td>
+            <td><input type="text" name="number">
+            </td>
+        </tr>
+		<tr>
+            <td>Pictures</td>
+            <td><input type="text" name="pictures">
+            </td>
+        </tr>
+    </table>
+    <script type="text/javascript">
+        $('input').addClass('regular-text');
+        $('input[name=number]').val('<?php echo get_the_author_meta('number', $user->ID); ?>');
+        // Hide some default options //
+            /*
+            $('.user-url-wrap').hide();
+            $('.user-description-wrap').hide();
+            $('.user-profile-picture').hide();
+            $('.user-rich-editing-wrap').hide();
+            $('.user-admin-color-wrap').hide();
+            $('.user-comment-shortcuts-wrap').hide();
+            $('.show-admin-bar').hide();
+            $('.user-language-wrap').hide();
+            //*/
+    </script>
+<?php 
+}
+
+function new_modify_user_table_zpr( $column ) {
+    $column['number'] = 'Number';
+    return $column;
+}
+add_filter( 'manage_users_columns', 'new_modify_user_table_zpr' );
+
+function new_modify_user_table_row_zpr( $val, $column_name, $user_id ) {
+    $meta = get_user_meta($user_id);
+    switch ($column_name) {
+        case 'number' :
+            $number = $meta['number'][0];
+            return $number;
+        default:
+    }
+    return $val;
+}
+add_filter( 'manage_users_custom_column', 'new_modify_user_table_row_zpr', 10, 3 );
+
+
+
+
+
+
+
 /**
  * Currently plugin version.
  * Start at version 1.0.0 and use SemVer - https://semver.org
@@ -158,3 +231,5 @@ class My_Table2 {
            'mpbp_orders',
            'mpbp_orders_func'
         );
+		
+		

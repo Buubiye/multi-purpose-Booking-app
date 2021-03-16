@@ -47,9 +47,10 @@
 	'services'	
 ];
 
- if($_GET['action'] == 'add_new'){
+ if($_GET['action'] == 'add_new' || $_GET['action'] == 'edit'){
 	 if(!empty($_POST['user_login'])){
  $userdata = array(
+    'ID'                    => $_POST['user_id'],
     'user_pass'             => $_POST['user_pass'],   //(string) The plain-text user password.
     'user_login'            => $_POST['user_login'],   //(string) The user's login username.
     'user_nicename'         => $_POST['user_nicename'],   //(string) The URL-friendly user name.
@@ -64,7 +65,7 @@
     'show_admin_bar_front'  => $_POST['show_admin_bar_front'],   //(string|bool) Whether to display the Admin Bar for the user on the site's front end. Default true.
     'role'                  => $_POST['role']  //(string) User's role.
 );
-
+	
 /*
 * stores the id of the user
 *
@@ -229,6 +230,8 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
  $mpbp_print_data;
  
 $user_info; 
+$extracted_id;
+
 if($_GET['action'] == 'add_new'){
 	$user_info = get_userdata($user_id);
 }else if($_GET['action'] == 'edit' || 'delete'){
@@ -237,7 +240,7 @@ if($_GET['action'] == 'add_new'){
 }  
 
  if($wpdb->num_rows > 0 || $_GET['action'] == 'add_new'){
-	 for($x = 0; $x < sizeof($mpbp_crud_printer->mpbp_admin) + sizeof($user_data_raw); $x++){
+	 for($x = 0; $x < sizeof($user_data_raw); $x++){
 	 //user exists
 	 /*
 	 * if user is inserted the below if statement will print out user data with different fields
@@ -270,6 +273,7 @@ if($_GET['action'] == 'add_new'){
   */
  echo $mpbp_crud_printer->mpbp_render_services(
  [ 
+ ['id', 'input', 'number', 'mpbp_id', 'ID', (isset($_GET['id']))? $_GET['id'] : '', ''],
  ['user_pass', 'input', 'text', 'user_pass', 'User Password', $mpbp_print_data[0], ''],
  ['user_login', 'input', 'text', 'user_login', 'User Login', $mpbp_print_data[1], ''],
  ['user_nicename', 'input', 'text', 'user_nicename', $mpbp_print_data[2], ''],
@@ -283,15 +287,14 @@ if($_GET['action'] == 'add_new'){
  ['user_registered', 'input', 'text', 'user_registered', 'User Registered', $mpbp_print_data[10], ''],
  ['show_admin_bar_front', 'input', 'text', 'show_admin-bar_front', 'Show Admin Bar Front', $mpbp_print_data[11], ''],
  ['role', 'input', 'text', 'role', 'Role', $mpbp_print_data[12], ''], 
- ['user_id', 'input', 'number', 'mpbp_user_id', 'User ID', '', ''],
+ ['user_id', 'input', 'number', 'mpbp_user_id', 'User ID', $extracted_id[0]->user_id, ''],
  ['pictures', 'img', 'text', "mpbp_pictures" , 'Pictures', $mpbp_print_data[13] , ''],
  ['type', 'input', 'text', 'mpbp_type', 'Type', $mpbp_print_data[14], ''],
- ['date_created', 'input', 'text', 'mpbp_date_created', 'Date Created', $mpbp_print_data[15], '' ],
- ["number", 'input', 'text', 'mpbp_number', 'Number', $mpbp_print_data[16], ''],
- ["birthdate", "input", "text", "mpbp_birthdate", "Birth Date", $mpbp_print_data[17], ""],
- ["distance_moved", "input", "text", "mpbp_distance_moved", "Distance Moved", $mpbp_print_data[18], ""],
- ["total_distance_moved", "input", "text", "mpbp_total_distance_moved", "Total Distance Moved", $mpbp_print_data[19], ""],
- ["services", "input", "text", "mpbp_services", "Services", $mpbp_print_data[20], ""],
+ ["number", 'input', 'text', 'mpbp_number', 'Number', $mpbp_print_data[15], ''],
+ ["birthdate", "input", "text", "mpbp_birthdate", "Birth Date", $mpbp_print_data[16], ""],
+ ["distance_moved", "input", "text", "mpbp_distance_moved", "Distance Moved", $mpbp_print_data[17], ""],
+ ["total_distance_moved", "input", "text", "mpbp_total_distance_moved", "Total Distance Moved", $mpbp_print_data[18], ""],
+ ["services", "input", "text", "mpbp_services", "Services", $mpbp_print_data[19], ""],
  ["", "input", "submit", "button", "", "Submit", ""]
  ], 
   ($_GET['action'] == 'edit')? '/wp-admin/admin.php?page=users&action=edit' : "", 
@@ -313,17 +316,15 @@ if($_GET['action'] == 'add_new'){
   $mpbp_crud_printer->mpbp_insert_to_db(
   $mpbp_db_name, 
   array(
-    'user_id' => $user_id,
 	'pictures' => $mpbp_insert[1],
 	'type' => $mpbp_insert[2],
-	'date_created' => $mpbp_insert[3],
-	'number' => $mpbp_insert[4],
-	'birthdate' => $mpbp_insert[5],
-	'distance_moved' => $mpbp_insert[6],
-	'total_distance_moved' => $mpbp_insert[7],
-	'services' => $mpbp_insert[8],
+	'number' => $mpbp_insert[3],
+	'birthdate' => $mpbp_insert[4],
+	'distance_moved' => $mpbp_insert[5],
+	'total_distance_moved' => $mpbp_insert[6],
+	'services' => $mpbp_insert[7],
   ),
-  array('%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'),
+  array('%s', '%s', '%s', '%s', '%s', '%s', '%s'),
   'pictures', 
   'Succes! inserted data.',
   '/wp-admin/admin.php?page=service_provider');
