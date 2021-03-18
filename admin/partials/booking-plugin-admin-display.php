@@ -173,7 +173,7 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
 	}
  }else{
 	 echo 'The user you inserted doesn\'t exist! <a href="'. get_site_url() .'/wp-admin/admin.php?page=all_services"><button> Search again </button></a>'; 
-	 die();
+	
  }
 
  echo $mpbp_crud_printer->mpbp_render_services(

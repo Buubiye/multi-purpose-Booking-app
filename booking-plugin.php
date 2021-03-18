@@ -322,7 +322,7 @@ $mpbp_service_listing = new mpbp_data_listing();
   $mpbp_service_listing->mpbp_services_results_per_page = 5;
   $mpbp_service_listing->mpbp_listing_title = '<h1>Services</h1>';
   $mpbp_service_listing->mpbp_listing_button = 'Add New';
-  $mpbp_service_listing->mpbp_listing_button_url = '/index.php/sample-page/?';
+  $mpbp_service_listing->mpbp_listing_button_url = '/index.php/services/?';
   $mpbp_service_listing->mpbp_items = 'Services';
   $mpbp_service_listing->mpbp_page_name = 'all_services';
   $mpbp_service_listing->mpbp_listing_url = '/wp-admin/admin.php?page=all_services&order=';
@@ -339,10 +339,14 @@ $mpbp_service_listing = new mpbp_data_listing();
 
    }
    
+   function mpbp_service_page(){
+	   return require_once plugin_dir_path(dirname(__FILE__)).'multi-purpose-Booking-app\admin\partials\booking-plugin-admin-display.php';
+   }
    /* register shortcodes */
    function add_mpbp_shorcodes(){
 	    add_shortcode( 'services', 'mpbp_services_shortcode' );
-		add_shortcode('mpbp_orders', 'mpbp_orders_func');
+		add_shortcode( 'service_page', 'mpbp_service_page' );
+		add_shortcode( 'mpbp_orders', 'mpbp_orders_func' );
    }
    add_action('init', 'add_mpbp_shorcodes');
 	
