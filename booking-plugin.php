@@ -30,40 +30,81 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+/*
+*--------------------------------------------------------------------------------------------
+* This section will be exported to a different file
+*
+*/
+add_action( 'personal_options_update', 'save_extra_user_profile_fields_qif' );
+add_action( 'edit_user_profile_update', 'save_extra_user_profile_fields_qif' );
 
-add_action( 'personal_options_update', 'save_extra_user_profile_fields_zpr' );
-add_action( 'edit_user_profile_update', 'save_extra_user_profile_fields_zpr' );
-
-function save_extra_user_profile_fields_zpr( $user_id ) {
+function save_extra_user_profile_fields_qif( $user_id ) {
     if(!current_user_can( 'edit_user', $user_id ) ) { 
         return false; 
     }
+    update_user_meta($user_id, 'pictures', $_POST["pictures"]);
     update_user_meta($user_id, 'number', $_POST["number"]);
+    update_user_meta($user_id, 'birthdate', $_POST["birthdate"]);
+    update_user_meta($user_id, 'distance_moved_today', $_POST["distance_moved_today"]);
+    update_user_meta($user_id, 'total_orders', $_POST["total_orders"]);
+    update_user_meta($user_id, 'total_distance_moved', $_POST["total_distance_moved"]);
+    update_user_meta($user_id, 'services', $_POST["services"]);
 }
 
-add_action( 'show_user_profile', 'extra_user_profile_fields_zpr' );
-add_action( 'edit_user_profile', 'extra_user_profile_fields_zpr' );
+add_action( 'show_user_profile', 'extra_user_profile_fields_qif' );
+add_action( 'edit_user_profile', 'extra_user_profile_fields_qif' );
 
-function extra_user_profile_fields_zpr( $user ) { 
+function extra_user_profile_fields_qif( $user ) { 
     $user_id = $user->ID;
     ?>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.0.js"></script>
     <h3>Extra profile information</h3>
     <table class="form-table">
         <tr>
+            <td>Pictures</td>
+            <td><input type="text" name="pictures">
+            </td>
+        </tr>
+        <tr>
             <td>Number</td>
             <td><input type="text" name="number">
             </td>
         </tr>
-		<tr>
-            <td>Pictures</td>
-            <td><input type="text" name="pictures">
+        <tr>
+            <td>Birthdate</td>
+            <td><input type="text" name="birthdate">
+            </td>
+        </tr>
+        <tr>
+            <td>Distance Moved Today</td>
+            <td><input type="text" name="distance_moved_today">
+            </td>
+        </tr>
+        <tr>
+            <td>Total Orders</td>
+            <td><input type="text" name="total_orders">
+            </td>
+        </tr>
+        <tr>
+            <td>Total Distance Moved</td>
+            <td><input type="text" name="total_distance_moved">
+            </td>
+        </tr>
+        <tr>
+            <td>Services</td>
+            <td><input type="text" name="services">
             </td>
         </tr>
     </table>
     <script type="text/javascript">
         $('input').addClass('regular-text');
+        $('input[name=pictures]').val('<?php echo get_the_author_meta('pictures', $user->ID); ?>');
         $('input[name=number]').val('<?php echo get_the_author_meta('number', $user->ID); ?>');
+        $('input[name=birthdate]').val('<?php echo get_the_author_meta('birthdate', $user->ID); ?>');
+        $('input[name=distance_moved_today]').val('<?php echo get_the_author_meta('distance_moved_today', $user->ID); ?>');
+        $('input[name=total_orders]').val('<?php echo get_the_author_meta('total_orders', $user->ID); ?>');
+        $('input[name=total_distance_moved]').val('<?php echo get_the_author_meta('total_distance_moved', $user->ID); ?>');
+        $('input[name=services]').val('<?php echo get_the_author_meta('services', $user->ID); ?>');
         // Hide some default options //
             /*
             $('.user-url-wrap').hide();
@@ -79,25 +120,47 @@ function extra_user_profile_fields_zpr( $user ) {
 <?php 
 }
 
-function new_modify_user_table_zpr( $column ) {
+function new_modify_user_table_qif( $column ) {
     $column['number'] = 'Number';
+    $column['birthdate'] = 'Birthdate';
+    $column['total_orders'] = 'Total Orders';
     return $column;
 }
-add_filter( 'manage_users_columns', 'new_modify_user_table_zpr' );
+add_filter( 'manage_users_columns', 'new_modify_user_table_qif' );
 
-function new_modify_user_table_row_zpr( $val, $column_name, $user_id ) {
+function new_modify_user_table_row_qif( $val, $column_name, $user_id ) {
     $meta = get_user_meta($user_id);
     switch ($column_name) {
+        case 'pictures' :
+            $pictures = $meta['pictures'][0];
+            return $pictures;
         case 'number' :
             $number = $meta['number'][0];
             return $number;
+        case 'birthdate' :
+            $birthdate = $meta['birthdate'][0];
+            return $birthdate;
+        case 'distance_moved_today' :
+            $distance_moved_today = $meta['distance_moved_today'][0];
+            return $distance_moved_today;
+        case 'total_orders' :
+            $total_orders = $meta['total_orders'][0];
+            return $total_orders;
+        case 'total_distance_moved' :
+            $total_distance_moved = $meta['total_distance_moved'][0];
+            return $total_distance_moved;
+        case 'services' :
+            $services = $meta['services'][0];
+            return $services;
         default:
     }
     return $val;
 }
-add_filter( 'manage_users_custom_column', 'new_modify_user_table_row_zpr', 10, 3 );
+add_filter( 'manage_users_custom_column', 'new_modify_user_table_row_qif', 10, 3 );
 
-
+/*
+* -------------------------------------------------------------------------------------
+*/
 
 
 
@@ -222,14 +285,66 @@ class My_Table2 {
 
     new My_Table2();
 
+
+/*
+*--------------------------------------------------------------------
+* this section works on shortcodes and it will be exported to a different file
+*/
    function mpbp_orders_func(){
 	   require_once('admin\partials\orders-admin-display.php');
         return 'hello world, this is my first shortcode';
-   }	   
+   }  
+   
+   //add a service shortcode
+   function mpbp_services_shortcode( $atts = [], $content = null, $tags = '' ){
+	   $s = shortcode_atts(array(
+	   'id' => '',
+	   'number'=> '',
+	   'category' => ''
+	   ), $atts );
+	   
+	  /* //extract the ids from the services from dbtable
+	   global $wpdb;
+	   $ids = 'WHERE id IN ('. trim(json_encode($s['id']), '[]') .')' | "";
+	   $get_data = $wpdb->get_results('SELECT * FROM wp_mpbpservices2'. $ids;
+	   
+	   //create a loop which prints out the services in a gallery form
+	   $mpbp_number_of_products = sizeof($get_data) | 10;
+	   for($i = 0; $i < $mpbp_number_of_products; $i++){
+		   echo '<div style="float: left">
+		         
+		   ';
+		   
+	   }*/
+	   require_once plugin_dir_path(dirname(__FILE__)).'multi-purpose-Booking-app\admin\class-booking-plugin-listings.php';
+$mpbp_service_listing = new mpbp_data_listing();
+  $mpbp_service_listing->mpbp_db_table =  'wp_mpbpservices2';
+  $mpbp_service_listing->mpbp_services_results_per_page = 5;
+  $mpbp_service_listing->mpbp_listing_title = '<h1>Services</h1>';
+  $mpbp_service_listing->mpbp_listing_button = 'Add New';
+  $mpbp_service_listing->mpbp_listing_button_url = '/index.php/sample-page/?';
+  $mpbp_service_listing->mpbp_items = 'Services';
+  $mpbp_service_listing->mpbp_page_name = 'all_services';
+  $mpbp_service_listing->mpbp_listing_url = '/wp-admin/admin.php?page=all_services&order=';
+  $mpbp_service_listing->mpbp_listing_td = ["pictures", "name", "category", "quantity", "status"];
+  $mpbp_service_listing->mpbp_listing_td_data;
+  $mpbp_service_listing->mpbp_search_columns = ["id", "name"];
+  /*
+  *
+  */
+  $mpbp_service_listing->mpbp_listing_th = ["", "Pictures", "Name", "Category", "Quantity", "Status"];
+  $mpbp_service_listing->mpbp_listing_th_data = ['<td id="cb" class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-1">Select All</label><input id="cb-select-all-1" type="checkbox"></td>'];
+   
+  return $mpbp_service_listing->mpbp_render_listing(); 
+
+   }
+   
    /* register shortcodes */
-		add_shortcode(
-           'mpbp_orders',
-           'mpbp_orders_func'
-        );
-		
-		
+   function add_mpbp_shorcodes(){
+	    add_shortcode( 'services', 'mpbp_services_shortcode' );
+		add_shortcode('mpbp_orders', 'mpbp_orders_func');
+   }
+   add_action('init', 'add_mpbp_shorcodes');
+	
+
+

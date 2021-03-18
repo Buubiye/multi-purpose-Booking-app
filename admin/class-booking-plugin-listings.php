@@ -117,7 +117,7 @@ class mpbp_data_listing{
   ($mpbp_current_service_page>=$mpbp_services_number_of_pages)? $mpbp_services_page_next_limit = "mpbp_disabled" : '';
   ($mpbp_current_service_page<=1)? $mpbp_services_page_previous_limit = "mpbp_disabled" : '';
   ?>
-  <a href="<?php echo get_site_url(). $mpbp_listing_button_url . '&action=add_new';?>" class="page-title-action">
+  <a href="<?php echo get_site_url(). $mpbp_listing_button_url . 'action=add_new';?>" class="page-title-action">
   <?php echo $this->mpbp_listing_button; ?></a>
   <form id="mpbp_services_list_form" method="GET">
 
@@ -162,44 +162,8 @@ class mpbp_data_listing{
 			 */
 			 for($td_data = 0; $td_data<sizeof($this->mpbp_listing_td); $td_data++){
 				   $td = $this->mpbp_listing_td[$td_data];
-					if(in_array($td, $this->mpbp_user_data)){
-						$get_user_id = $mpbp_services_query_this_page[$row]->user_id;
-						$user_info = get_userdata($get_user_id);
-					 /*-----------------------------------------------
-
-					 if this has bar from users display users info
-					 
-					 */
-					    /*
-						* if page = user or service providers get  the "user_id" column data
-						*/
-						global $pagenow;
-						global $wpdb;
-						
-						if($td == $this->mpbp_listing_td[1]){
-							$this->mpbp_listing_td_data[$td_data] =  '<td class="title column-title has-row-actions column-primary page-title" data-colname="Title">
-							<strong>
-								<a class="row-title" href="<?php echo get_site_url() ?>/wp-admin/post.php?post=3&amp;action=edit" aria-label="“Privacy Policy” (Edit)">
-								'. $user_info->$td .'</a> 
-							</strong>
-							
-							<div class="row-actions"><span class="edit">
-								<a href="'.  get_site_url(). $this->mpbp_listing_button_url ."&action=edit&id=". $mpbp_services_query_this_page[$row]->id .'" 
-								aria-label="Edit “Privacy Policy”">Tifaftir</a> | </span>
-								<span class="trash"><a href="'. get_site_url() . $this->mpbp_listing_button_url .'&action=delete&id='. 
-							 $mpbp_services_query_this_page[$row]->id .'" class="submitdelete" aria-label="Move “Privacy Policy” to the Bin">Trash</a> | </span>
-							<span class="view">
-							<a href="http://localhost:8080/wordpress/?page_id=3&amp;preview=true" rel="bookmark" aria-label="Preview “Privacy Policy”">Horu’eeg</a>
-							</span></div>
-							 </td>';
-						}else{
-						//if($pagenow == "users" || $pagenow == "service-providers"){
-						    $this->mpbp_listing_td_data[$td_data] = 
-					        '<td class="date mpbp-column-status" data-colname="status">'. $user_info->$td .'</td>';
-						//}
-					}
-
-				 }elseif($td == $this->mpbp_listing_td[1]){
+				   
+				   if($td == $this->mpbp_listing_td[1]){
 						$this->mpbp_listing_td_data[$td_data] =  '<td class="title column-title has-row-actions column-primary page-title" data-colname="Title">
                 <strong>
 						<a class="row-title" href="<?php echo get_site_url() ?>/wp-admin/post.php?post=3&amp;action=edit" aria-label="“Privacy Policy” (Edit)">
@@ -207,9 +171,9 @@ class mpbp_data_listing{
 					</strong>
 					
                     <div class="row-actions"><span class="edit">
-						<a href="'.  get_site_url(). $this->mpbp_listing_button_url ."&action=edit&id=". $mpbp_services_query_this_page[$row]->id .'" 
+						<a href="'.  get_site_url(). $this->mpbp_listing_button_url ."action=edit&id=". $mpbp_services_query_this_page[$row]->id .'" 
 						aria-label="Edit “Privacy Policy”">Tifaftir</a> | </span>
-						<span class="trash"><a href="'. get_site_url() . $this->mpbp_listing_button_url .'&action=delete&id='. 
+						<span class="trash"><a href="'. get_site_url() . $this->mpbp_listing_button_url .'action=delete&id='. 
 					 $mpbp_services_query_this_page[$row]->id .'" class="submitdelete" aria-label="Move “Privacy Policy” to the Bin">Trash</a> | </span>
 					<span class="view">
 					<a href="http://localhost:8080/wordpress/?page_id=3&amp;preview=true" rel="bookmark" aria-label="Preview “Privacy Policy”">Horu’eeg</a>
