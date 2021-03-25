@@ -325,7 +325,7 @@ $mpbp_service_listing = new mpbp_data_listing();
   $mpbp_service_listing->mpbp_listing_button_url = '/index.php/services/?';
   $mpbp_service_listing->mpbp_items = 'Services';
   $mpbp_service_listing->mpbp_page_name = 'all_services';
-  $mpbp_service_listing->mpbp_listing_url = '/wp-admin/admin.php?page=all_services&order=';
+  $mpbp_service_listing->mpbp_listing_url = '/index.php/sample-page/?order=';
   $mpbp_service_listing->mpbp_listing_td = ["pictures", "name", "category", "quantity", "status"];
   $mpbp_service_listing->mpbp_listing_td_data;
   $mpbp_service_listing->mpbp_search_columns = ["id", "name"];

@@ -163,7 +163,7 @@ public function mpbp_display_admin_data($type, $id, $dbTable){
 */
 public function mpbp_insert_to_db($tableName, $data, $dataFormat, $isset, $success, $url){
 	global $wpdb;
-	if($_GET['action'] == 'add_new'){ 
+	if($_GET['action'] == 'add_new' || $_GET['process'] == 'order'){ 
 		if($this->mpbp_admin_error == ''){
 			/*
 			* if(isset('name') is used to stop the query from happening if the user -

@@ -32,6 +32,7 @@
  $mpbp_crud_printer->mpbp_admin = [
     "date",
 	"client_id",
+	"service_id",
 	"service_provider_id",
 	"duration",
 	"client_location",
@@ -39,7 +40,9 @@
 	"price",
 	"rating",
 	"status",
-	"extra_info"
+	"extra_info",
+	"quantity",
+	"coupon"
 ];
 
 /*
@@ -51,6 +54,7 @@
  $mpbp_crud_printer->mpbp_admin_validation_logic = [
 	!empty($_POST["date"]),
 	!empty($_POST["client_id"]),
+	!empty($_POST["service_id"]),
 	!empty($_POST["service_provider_id"]),
 	!empty($_POST["duration"]),
 	!empty($_POST["client_location"]),
@@ -58,7 +62,9 @@
 	!empty($_POST["price"]),
 	!empty($_POST["rating"]),
 	!empty($_POST["status"]),
-	!empty($_POST["extra_info"])
+	!empty($_POST["extra_info"]),
+	!empty($_POST["quantity"]),
+	!empty($_POST["coupon"])
 	];
 	
 /*
@@ -89,6 +95,7 @@ if(isset($_POST['name'])){
 	 array(
 	  "date" => $_POST['date'],
 	  "client_id" => $_POST['client_id'],
+	  "service_id" => $_POST['service_id'],
 	  "service_provider_id" => $_POST['service_provider_id'],
 	  "duration" => $_POST['duration'],
 	  "client_location" => $_POST['client_location'],
@@ -96,12 +103,14 @@ if(isset($_POST['name'])){
 	  "price" => $_POST['price'],
 	  "rating" => $_POST['rating'],
 	  "status" => $_POST['status'],
-	  "extra_info" => $_POST['extra_info']
+	  "extra_info" => $_POST['extra_info'],
+	  "quantity" => $_POST['quantity'],
+	  "coupon" => $_POST['coupon']
 	  ), 
 	  array(
 	  'id' => $_POST['id']
 	  ), 
-	$_GET['action'] == 'edit',
+	$_GET['action'] == 'edit' & $_GET['process'] != 'order',
 	'Successfully updated order #'.$_POST['id'], 
 	'There is error! Please check check the values.'
 	);
@@ -115,7 +124,7 @@ if(isset($_POST['name'])){
 * @access   public
 *******
 */
- if($_GET['action'] == 'edit' || $_GET['action'] == 'delete'){
+ if($_GET['action'] == 'edit' && $_GET['process'] != 'order' | $_GET['action'] == 'delete'){
 	  $mpbp_crud_printer->mpbp_display_admin_data(
 	  "id",
 	  $_GET['id'], 
@@ -147,10 +156,6 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
 	 );
 }
 
-/* 
-* renders the inputs in respective order 
-*/
-//mpbp_render_services($data, $url, $action, $h1Text, $method, $id, $buttonName)
  /*
  * This function renders the form
  * mpbp_render_services($data, $url, $action, $h1Text, $method, $id, $buttonName)
@@ -161,12 +166,12 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
  }
  $mpbp_print_data;
 
- if($wpdb->num_rows > 0 || $_GET['action'] == 'add_new'){
+ if($wpdb->num_rows > 0 || $_GET['action'] == 'add_new' | $_GET['process'] == 'order'){
 	 for($x = 0; $x < sizeof($mpbp_crud_printer->mpbp_admin); $x++){
 	 //user exists
-	 if($_GET['action'] == 'add_new' && isset($_POST[$mpbp_crud_printer->mpbp_admin[$x]]) != ''){
+	 if($_GET['action'] == 'add_new' | $_GET['process'] == 'order' && isset($_POST[$mpbp_crud_printer->mpbp_admin[$x]]) != ''){
 		 $mpbp_print_data[$x] = $_POST[$mpbp_crud_printer->mpbp_admin[$x]];
-	 } elseif($_GET['action'] == 'add_new' && isset($_POST[$mpbp_crud_printer->mpbp_admin[$x]]) == ''){
+	 } elseif($_GET['action'] == 'add_new' | $_GET['process'] == 'order' && isset($_POST[$mpbp_crud_printer->mpbp_admin[$x]]) == ''){
 		 $mpbp_print_data[$x] = '';
 	 } elseif($_GET['action'] == 'edit' || $_GET['action'] == 'delete'){
 		 $mpbp_print_data[$x] = $array_fetch[$mpbp_crud_printer->mpbp_admin[$x]];
@@ -188,14 +193,17 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
  ['id', 'input', 'number', 'mpbp_id', 'ID', (isset($_GET['id']))? $_GET['id'] : '', ''],
  ['date', 'input', 'text', "mpbp_date" , 'Date', $mpbp_print_data[0] , ''],
  ['client_id', 'input', 'text', 'mpbp_client_id', 'Client ID', $mpbp_print_data[1], ''],
- ['service_provider_id', 'input', 'number', 'mpbp_service_provider_id', 'service_provider_id', $mpbp_print_data[2], '' ],
- ["duration", 'input', 'text', 'mpbp_duration', 'duration', $mpbp_print_data[3], ''],
- ["client_location", "input", "text", "mpbp_s_client_location", "client_location", $mpbp_print_data[4], ""],
- ["gps_coordinates", 'input', 'text', 'mpbp_gps_coordinates' , 'gps_coordinates', $mpbp_print_data[5], ''],
- ["price", 'input', 'text', 'mpbp_price' , 'price', $mpbp_print_data[6], ''],
- ["rating", 'input', 'text', 'mpbp_rating' , 'rating', $mpbp_print_data[7], ''],
- ["status", 'input', 'text', 'mpbp_status' , 'Status', $mpbp_print_data[8], ''],
- ["extra_info", 'input', 'text', 'mpbp_extra_info' , 'Extra Info', $mpbp_print_data[9], ''],
+ ['service_id', 'input', 'text', 'mpbp_service_id', 'Service ID', $mpbp_print_data[2], ''],
+ ['service_provider_id', 'input', 'number', 'mpbp_service_provider_id', 'service_provider_id', $mpbp_print_data[3], '' ],
+ ["duration", 'input', 'text', 'mpbp_duration', 'duration', $mpbp_print_data[4], ''],
+ ["client_location", "input", "text", "mpbp_s_client_location", "client_location", $mpbp_print_data[5], ""],
+ ["gps_coordinates", 'input', 'text', 'mpbp_gps_coordinates' , 'gps_coordinates', $mpbp_print_data[6], ''],
+ ["price", 'input', 'text', 'mpbp_price' , 'price', $mpbp_print_data[7], ''],
+ ["rating", 'input', 'text', 'mpbp_rating' , 'rating', $mpbp_print_data[8], ''],
+ ["status", 'input', 'text', 'mpbp_status' , 'Status', $mpbp_print_data[9], ''],
+ ["extra_info", 'input', 'text', 'mpbp_extra_info' , 'Extra Info', $mpbp_print_data[10], ''],
+ ["quantity", 'input', 'number', 'mpbp_quantity' , 'quantity', $mpbp_print_data[11], ''],
+ ["coupon", 'input', 'text', 'mpbp_coupon' , 'coupon', $mpbp_print_data[12], ''],
  ["", "input", "submit", "button", "", "Submit", ""]
  ], 
   ($_GET['action'] == 'edit')? '/wp-admin/admin.php?page=Services&action=edit' : "", 
@@ -211,22 +219,25 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
   * @since    1.0.0
   * @access   public
   */
-  if(!empty($_POST['date']) && $_GET['action'] == 'add_new'){
+  if(!empty($_POST['date']) && $_GET['action'] == 'add_new' | $_GET['process'] == 'order'){
   $mpbp_crud_printer->mpbp_insert_to_db(
   'wp_mpbp_orders', 
   array(
     "date" => $mpbp_insert[0],
 	"client_id" => $mpbp_insert[1],
-	"service_provider_id" => $mpbp_insert[2],
-	"duration" => $mpbp_insert[3],
-	"client_location" => $mpbp_insert[4],
-	"gps_coordinates" => $mpbp_insert[5],
-	"price" => $mpbp_insert[6],
-	"rating" => $mpbp_insert[7],
-	"status" => $mpbp_insert[8],
-	"extra_info" => $mpbp_insert[9] 
+	"service_id" => $mpbp_insert[2],
+	"service_provider_id" => $mpbp_insert[3],
+	"duration" => $mpbp_insert[4],
+	"client_location" => $mpbp_insert[5],
+	"gps_coordinates" => $mpbp_insert[6],
+	"price" => $mpbp_insert[7],
+	"rating" => $mpbp_insert[8],
+	"status" => $mpbp_insert[9],
+	"extra_info" => $mpbp_insert[10],
+    "quantity" => $mpbp_insert[11], 
+    "coupon" => $mpbp_insert[12] 	
   ),
-  array('%s', '%d', '%d', '%s', '%s', '%s', '%d', '%s', '%s', '%s'),
+  array('%s', '%d', '%s', '%d', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s'),
   'date', 
   'Succes! inserted data.',
   '/wp-admin/admin.php?page=orders_crud');
@@ -252,8 +263,11 @@ function create_mpbp_services_db_table() {
 				id int(11) NOT NULL AUTO_INCREMENT,
 				            date varchar (255),
 							client_id varchar (255),
+							service_id varchar (255),
 							service_provider_id varchar (255),
+							quantity varchar (255),
 							duration varchar (255),
+							coupon varchar (255),
 							client_location varchar (255),
 							gps_coordinates varchar (1000),
 							price varchar (255),
