@@ -334,12 +334,41 @@ $mpbp_service_listing = new mpbp_data_listing();
   */
   $mpbp_service_listing->mpbp_listing_th = ["", "Pictures", "Name", "Category", "Quantity", "Status"];
   $mpbp_service_listing->mpbp_listing_th_data = ['<td id="cb" class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-1">Select All</label><input id="cb-select-all-1" type="checkbox"></td>'];
-   
+   echo "<button> Order Now </button>";
   return $mpbp_service_listing->mpbp_render_listing(); 
 
    }
    
    function mpbp_service_page(){
+	   if(isset($_POST['cookie_value'])){
+		   //cookie array - orders data
+			$cookie_value = array(
+			   "date" => 'bitch',
+	           "client_id" => '',
+	           "service_id" => $_POST['id_r'],
+	           "service_provider_id" => '',
+	           "duration" => '',
+	           "client_location" => '',
+	           "gps_coordinates" => '',
+	           "price" => '',
+	           "rating" => '',
+	           "status" => '',
+	           "extra_info" => '',
+	           "quantity" => '',
+	           "coupon" => ''
+			);
+			$json = json_encode($cookie_value,JSON_UNESCAPED_SLASHES);
+	?>
+	<script>
+	    // stores cookies of the service ordered
+	    document.cookie = 'order_values=' + <?php echo json_encode($json,JSON_UNESCAPED_SLASHES); ?> +'expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/';
+		alert('GG my G');
+	</script>
+	<?php
+	//setcookie('order_values', $json);
+		
+		}
+	    echo "<form method='POST'><input name='id_r'/><input type='text' name='cookie_value'/>'<button type='submit'> Order Now </button></form>";
 	   return require_once plugin_dir_path(dirname(__FILE__)).'multi-purpose-Booking-app\admin\partials\booking-plugin-admin-display.php';
    }
    /* register shortcodes */

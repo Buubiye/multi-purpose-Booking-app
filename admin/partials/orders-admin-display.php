@@ -244,6 +244,20 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
   }
 
 
+//------------ !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/*$mpbp_order_values = $_COOKIE['order_values'];
+$mpbp_cookie_trimed = trim($mpbp_order_values, 'expires=Fri, 31 Dec 9999 23:59:59 GMT');
+$mpbp_cookie_trimed2 = stripslashes($mpbp_cookie_trimed);
+$mpbp_cookie_trimed3 = explode(',', $mpbp_cookie_trimed2);
+print_r($mpbp_cookie_trimed3[0][1]);
+*/
+$cookie = $_COOKIE['order_values'];
+$cookie = trim($cookie, 'expires=Fri, 31 Dec 9999 23:59:59 GMT');
+$cookie = stripslashes($cookie);
+//$cookie = rtrim($cookie, "\0");
+$savedCardArray = json_decode($cookie);
+
+print_r($savedCardArray->date);
 /*
 * 
 * this is the db function, it will be stored in the plugin activation file
