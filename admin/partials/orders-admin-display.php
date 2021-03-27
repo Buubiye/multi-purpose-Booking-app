@@ -258,9 +258,39 @@ $cookie = stripslashes($cookie);
 //$savedCardArray = json_decode($cookie);
 
 //$_POST['service_id'] = $savedCardArray->date;
-echo '<p id="json_data">';
+
+
+echo '<p onload="mpbp_create_cookies()" id="json_data">';
 print_r($cookie);
 echo '</p>';
+if($_GET['purchase'] == 'yes'){
+ if(isset($_POST['date'])){
+		   //cookie array - orders data
+			$cookie_value = array(
+			   "date" => $_POST['date'],
+	           "client_id" => $_POST['client_id'],
+	           "service_id" => $_POST['service_id'],
+	           "service_provider_id" => $_POST['service_provider_id'],
+	           "duration" => $_POST['duration'],
+	           "client_location" => $_POST['client_location'],
+	           "gps_coordinates" =>$_POST['gps_coordinates'],
+	           "price" => $_POST['price'],
+	           "rating" => $_POST['rating'],
+	           "status" => $_POST['status'],
+	           "extra_info" => $_POST['extra_info'],
+	           "quantity" => $_POST['quantity'],
+	           "coupon" => $_POST['coupon']
+			);
+			$json = json_encode($cookie_value,JSON_UNESCAPED_SLASHES);
+	?>
+	<script>
+	    // stores cookies of the service ordered
+	    document.cookie = 'order_values=' + <?php echo json_encode($json,JSON_UNESCAPED_SLASHES); ?> +'expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/';
+		alert('GG my G');
+	</script>
+	<?php
+ }
+}
 /*
 * 
 * this is the db function, it will be stored in the plugin activation file
