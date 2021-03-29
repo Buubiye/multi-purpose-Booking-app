@@ -74,7 +74,8 @@ jQuery(document).ready(function ($){
 	/*
 	* embed orders-cookie-values to the add_new order form
 	*/
-	function mpbp_create_cookies(){
+	$('body').on('click', '#json_data', function(){
+		console.log('this workerd');
 		// changes the values in order value input fields
 		let json_data = $('#json_data').text();
 		json_data = JSON.parse(json_data);
@@ -100,7 +101,7 @@ jQuery(document).ready(function ($){
 			}*/
 		}
 		//alert(JSON.stringify(mpbp_parent));
-	};
+	});
 	
 	/*
 	* add a datepicker

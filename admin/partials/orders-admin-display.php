@@ -258,11 +258,12 @@ $cookie = stripslashes($cookie);
 //$savedCardArray = json_decode($cookie);
 
 //$_POST['service_id'] = $savedCardArray->date;
-
-
-echo '<p onload="mpbp_create_cookies()" id="json_data">';
+echo "<p onload='mpbp_create_cookies()' id='json_data'>";
 print_r($cookie);
 echo '</p>';
+// enqueue the cookies function which displays the cookies data on the order's input fields
+	wp_enqueue_script( 'cookies_script', plugin_dir_url(__DIR__). '/js/booking_plugin_cookies.js');
+	
 if($_GET['purchase'] == 'yes'){
  if(isset($_POST['date'])){
 		   //cookie array - orders data
