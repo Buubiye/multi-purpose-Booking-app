@@ -124,7 +124,7 @@ if(isset($_POST['name'])){
 * @access   public
 *******
 */
- if($_GET['action'] == 'edit' && $_GET['process'] != 'order' | $_GET['action'] == 'delete'){
+ if($_GET['action'] == 'edit' && isset($_GET['process']) != 'order' | $_GET['action'] == 'delete'){
 	  $mpbp_crud_printer->mpbp_display_admin_data(
 	  "id",
 	  $_GET['id'], 
@@ -133,7 +133,6 @@ if(isset($_POST['name'])){
  }
 
 $array_fetch = $mpbp_crud_printer->mpbp_fetched_data_results;
-print_r($array_fetch);
 
 /*
 ********
@@ -169,9 +168,9 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
  if($wpdb->num_rows > 0 || $_GET['action'] == 'add_new' | $_GET['process'] == 'order'){
 	 for($x = 0; $x < sizeof($mpbp_crud_printer->mpbp_admin); $x++){
 	 //user exists
-	 if($_GET['action'] == 'add_new' | $_GET['process'] == 'order' && isset($_POST[$mpbp_crud_printer->mpbp_admin[$x]]) != ''){
+	 if($_GET['action'] == 'add_new' | isset($_GET['process']) == 'order' && isset($_POST[$mpbp_crud_printer->mpbp_admin[$x]]) != ''){
 		 $mpbp_print_data[$x] = $_POST[$mpbp_crud_printer->mpbp_admin[$x]];
-	 } elseif($_GET['action'] == 'add_new' | $_GET['process'] == 'order' && isset($_POST[$mpbp_crud_printer->mpbp_admin[$x]]) == ''){
+	 } elseif($_GET['action'] == 'add_new' | isset($_GET['process']) == 'order' && isset($_POST[$mpbp_crud_printer->mpbp_admin[$x]]) == ''){
 		 $mpbp_print_data[$x] = '';
 	 } elseif($_GET['action'] == 'edit' || $_GET['action'] == 'delete'){
 		 $mpbp_print_data[$x] = $array_fetch[$mpbp_crud_printer->mpbp_admin[$x]];
@@ -241,9 +240,19 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
   'date', 
   'Succes! inserted data.',
   '/wp-admin/admin.php?page=orders_crud');
+  
+  // subract the ordered amount from the stock of the service
+  $mpbp_older_value = $wpdb->get_results("
+	SELECT quantity FROM wp_mpbpservices2 WHERE id =". $mpbp_insert[2]
+  );
+  foreach($mpbp_older_value as $result){
+	  $wpdb->update(
+	  'wp_mpbpservices2',
+	  array("quantity" => $result->quantity - $mpbp_insert[11]),
+	  array('id' => $mpbp_insert[2])
+	  );
   }
-
-
+  }
 //------------ !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 /*$mpbp_order_values = $_COOKIE['order_values'];
 $mpbp_cookie_trimed = trim($mpbp_order_values, 'expires=Fri, 31 Dec 9999 23:59:59 GMT');
@@ -262,9 +271,11 @@ echo "<p onload='mpbp_create_cookies()' id='json_data'>";
 print_r($cookie);
 echo '</p>';
 // enqueue the cookies function which displays the cookies data on the order's input fields
+if(isset($_GET['process']) == 'order'){
 	wp_enqueue_script( 'cookies_script', plugin_dir_url(__DIR__). '/js/booking_plugin_cookies.js');
-	
-if($_GET['purchase'] == 'yes'){
+}
+
+if(isset($_GET['purchase']) == 'yes'){
  if(isset($_POST['date'])){
 		   //cookie array - orders data
 			$cookie_value = array(
@@ -288,6 +299,7 @@ if($_GET['purchase'] == 'yes'){
 	    // stores cookies of the service ordered
 	    document.cookie = 'order_values=' + <?php echo json_encode($json,JSON_UNESCAPED_SLASHES); ?> +'expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/';
 		alert('GG my G');
+		window.location = <?php echo "'". get_site_url(). "/wp-admin/admin.php?page=orders_crud&action=add_new&process=order';";?>
 	</script>
 	<?php
  }
