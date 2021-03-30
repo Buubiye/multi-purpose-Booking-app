@@ -85,7 +85,7 @@ public function mpbp_validate_admin(){
 		if($this->mpbp_admin_validation_logic[$logic]){
 			$this->mpbp_admin_data[$logic] = $_POST[$this->mpbp_admin[$logic]];
 		}else{
-			$this->mpbp_admin_error[$this->mpbp_admin[$logic]] = 'please check the '. $this->mpbp_admin[$logic];
+			$this->mpbp_admin_error[$this->mpbp_admin[$logic]] = '<div class="notice notice-error"> <p>please check the <strong>'. $this->mpbp_admin[$logic] . '</strong></p></div>';
 		}
 	}
 	/*
@@ -129,7 +129,7 @@ public function mpbp_admin_update($dbTable, $data, $dataFormat, $logic, $success
 			*/
 			return $success;
 		}else{
-			 $errorMessage= json_encode($this->mpbp_admin_error);
+			 $errorMessage= implode($this->mpbp_admin_error);
 			 return $error . $errorMessage;
 		}
 	 }
