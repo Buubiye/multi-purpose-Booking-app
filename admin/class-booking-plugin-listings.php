@@ -35,7 +35,7 @@ class mpbp_data_listing{
   
   public function mpbp_render_listing(){
   for($i = 1; $i < sizeof($this->mpbp_listing_th); $i++){
-	  $this->mpbp_listing_th_data[$i] = '<th scope="col" id="mpbp_'. $this->mpbp_listing_th[$i] .'" class="manage-column column-'. $this->mpbp_listing_th[$i] .' sortable">'. $this->mpbp_listing_th[$i] .'</span></th>';
+	  $this->mpbp_listing_th_data[$i] = '<th scope="col" id="mpbp_'. $this->mpbp_listing_th[$i] .'" class="manage-column column-'. $this->mpbp_listing_th[$i] .' sortable"><p>'. $this->mpbp_listing_th[$i] .'</p></span></th>';
   }
   /*
   * This file displays the services in a list of 10 per laod

@@ -1,32 +1,26 @@
 <?php
-/*
-* This file contains the services page
-*/
 
-class mpbp_crud{
-/*
-*******
-* This function validates data for "update" action and "add_new" action
-*******
-*/
-public function mpbp_validate_services(){
-	 
-	 /*
-	 * The below four global variable do the following stuff respectively
-	 * stores the data after it is validated
-	 * stores the errors when user clicks submit
-	 * stores the input names of services update or add new form
-	 * Stores the logic for validating inputs
-	 */
-	 global $mpbp_services_data;  		       
-	 global $mpbp_services_error; 		      
-	 global $mpbp_services;       		      
-	 global $mpbp_services_validation_logic;  
-	 
-	/*
-	* This array stores the names of the inputs in service page
-	*/
-	$mpbp_services = [
+/**
+ * Provide a services crud functionality.
+ *
+ * This file is used to make crud function for the plugin's "services" table.
+ *
+ * @link       Ahmed-Buubiye
+ * @since      1.0.0
+ *
+ * @package    Booking_Plugin
+ * @subpackage Booking_Plugin/admin/partials
+ */
+ 
+ require_once plugin_dir_path(dirname(__FILE__) ).'class-booking-plugin-crud-actions.php';
+ /*
+ * initializes the "mpbp_crud" class
+ */
+ $mpbp_crud_printer = new mpbp_crud();
+ /*
+ *
+ */
+ $mpbp_crud_printer->mpbp_admin = [
 	"name", 
 	"description",
 	"pictures",
@@ -37,265 +31,204 @@ public function mpbp_validate_services(){
 	"quantity",
 	"status",
 	"extra_info" 
-	];
-	
-	/*
-	* This array stores the logic for validating every input
-	*/
-	$mpbp_services_validation_logic = [
+];
+
+/*
+* stores the logic for input validation
+*/
+ $mpbp_crud_printer->mpbp_admin_validation_logic = [
 	!empty($_POST['name']),
 	!empty($_POST['description']),
 	!empty($_POST['pictures']),
-    !empty($_POST['price']),
+	!empty($_POST['price']),
 	!empty($_POST['date_created']),
 	!empty($_POST['category']) || isset($_POST['category']) != 'Select Category',
 	!empty($_POST['available_times']),
 	!empty($_POST['quantity']),
-	!empty($_POST['status']) | isset($_POST['status']) != 'Select Status',
-	!empty($_POST['extra_info']) 
+	!empty($_POST['status']) || isset($_POST['status']) != 'Select Status',
+	!empty($_POST['extra_info'])
 	];
 	
-	/*
-	* This if statement fires if user sets the name value and clicks submit
-	* the for loop loops through the data submitted by user and validates the data
-	* with the logic stored in "$mpbp_services_validation_logic" array.
-	* all the errors detected are assigned to the "$mpbp_services_error" array for later use
-	*/
-	if(isset($_POST['name'])){ 
-	$mpbp_services_error = null;
-	for($logic = 0; $logic<sizeof($mpbp_services_validation_logic); $logic++){
-		if($mpbp_services_validation_logic[$logic]){
-			$mpbp_services_data[$logic] = $_POST[$mpbp_services[$logic]];
-		}else{
-			$mpbp_services_error[$mpbp_services[$logic]] = 'please check the '. $mpbp_services[$logic];
-		}
-	}
-	};
+/*
+* stores the data after it is validated
+*/
+$mpbp_insert = $mpbp_crud_printer->mpbp_validate_admin();
+print_r($mpbp_insert);
+/*
+*******
+* This function validates data for "update" action and "add_new" action
+*
+* @since    1.0.0
+* @access   public
+*******
+*/
+//print_r($mpbp_crud_printer->mpbp_validate_admin());
+
+/*
+*******
+* update data the selected row from db(wp_mpbpadmin2 )
+*
+* @since    1.0.0
+* @access   public 
+* $d string fetch id
+* $type array stores the value types of the data eg. %s, %d e.t.c
+* $success string to print out the success message
+* $error string to print out error messages
+*******
+*/
+if(isset($_POST['name'])){
+	$mpbp_crud_printer->mpbp_admin_update(
+	'wp_mpbpservices2',
+	 array(
+	  'name' => $_POST['name'],
+	  'description' => $_POST['description'],
+	  'pictures' => $_POST['pictures'],
+	  "price" => $_POST['price'],
+	  "category" => $_POST['category'],
+	  "available_times" => $_POST['available_times'],
+	  "quantity" => $_POST['quantity'],
+	  "status" => $_POST['status'],
+	  "extra_info" => $_POST['extra_info'] 
+	  ), 
+	  array(
+	  'id' => $_POST['id']
+	  ), 
+	$_GET['action'] == 'edit',
+	'Successfully updated service #'.$_POST['id'], 
+	'There is error! Please check check the values.'
+	);
 }
 
 /*
 *******
-* update data the selected row from db(wp_mpbpservices2 )
+* fetch data from db(wp_mpbpadmin2), this data will be displayed on the "input" elements 
 *******
 */
-public function mpbp_services_update(){
-	// fetch data for update
-		 global $mpbp_service_id;
-		 if(isset($_POST['name'])){
-		 $mpbp_service_id = $_POST['id']; 
-		 }
-		 global $mpbp_services_error;
-		 //update services data
-		 global $wpdb; 
-		 if($_GET['action'] == 'edit' && isset($_POST['name'])){
-		 if($mpbp_services_error == ''){
-			$wpdb->query(
-				$wpdb->prepare("
-					 UPDATE wp_mpbpservices2 SET name='%s', description='%s',
-					 pictures = '%s', price= '%s', date_created = '%s',
-					 category = '%s', available_times = '%s', quantity = '%d',
-					 status = '%s', extra_info = '%s'
-					 WHERE id= %d", $_POST['name'],
-					 $_POST['description'], $_POST['pictures'], $_POST['price'],
-					 $_POST['date_created'], $_POST['category'], $_POST['available_times'],
-					 $_POST['quantity'], $_POST['status'], $_POST['extra_info'], $mpbp_service_id
-				)
-			);
-			echo 'Succesfully Updated data!';
-		}else{
-			echo 'ERROR: Unable to update!';
-			print_r($mpbp_services_error);
-		}
-	 }
-}
+ if($_GET['action'] == 'edit' || $_GET['action'] == 'delete'){
+	  $mpbp_crud_printer->mpbp_display_admin_data(
+	  "id",
+	  $_GET['id'], 
+	  'wp_mpbpservices2',
+	  '/wp-admin/admin.php?page=all_services'
+	  ); 
+ }
+
+$array_fetch = $mpbp_crud_printer->mpbp_fetched_data_results;
+print_r($array_fetch);
 
 /*
 *******
-* fetch data from db(wp_mpbpservices2), this data will be displayed on the "input" elements 
+* inserts new values to the database(wp_mpbpadmin2 )
 *******
 */
-public function mpbp_display_services_data(){
-	// get the ID input value
-	     global $mpbp_service_id;
-		 $mpbp_service_id = $_GET['id']; 
-		 global $wpdb;
-		 global $mpbp_fetched_data_results;
-		 $fetch_data;
-		 if(isset($mpbp_service_id)){
-			$fetch_data = $wpdb->get_results("SELECT * FROM wp_mpbpservices2 WHERE id = ". $mpbp_service_id ."");
-		 foreach($fetch_data as $results){
-			 $mpbp_fetched_data_results['name'] = $results->name;
-			 $mpbp_fetched_data_results['description'] = $results->description;
-			 $mpbp_fetched_data_results['pictures'] = $results->pictures;
-			 $mpbp_fetched_data_results['price'] = $results->price;
-			 $mpbp_fetched_data_results['date_created'] = $results->date_created;
-			 $mpbp_fetched_data_results['category'] = $results->category;
-			 $mpbp_fetched_data_results['available_times'] = $results->available_times;
-			 $mpbp_fetched_data_results['quantity'] = $results->quantity;
-			 $mpbp_fetched_data_results['status'] = $results->status;
-			 $mpbp_fetched_data_results['extra_info'] = $results->extra_info;
-		 }
-		 }
-}
-
-/*
-*******
-* inserts new values to the database(wp_mpbpservices2 )
-*******
-*/
-public function mpbp_insert_to_db(){
-	global $wpdb;
-	global $mpbp_services_data;
-	global $mpbp_services_error;
-	if($_GET['action'] == 'add_new'){ 
-		if($mpbp_services_error == ''){
-			/*
-			* if(isset('name') is used to stop the query from happening if the user -
-			* loads empty values
-			* This SQL query inserts new value to database wp_mpbpservices2
-			*/
-			if(isset($_POST['name'])){
-			$wpdb->query(
-				$wpdb->prepare("
-					INSERT INTO wp_mpbpservices2 (name, description, pictures, price, date_created, category, available_times, quantity, status, extra_info) values (%s, %s, %s, %d, %s, %s, %s, %d, %s, %s)",  $mpbp_services_data[0], $mpbp_services_data[1], $mpbp_services_data[2], $mpbp_services_data[3], $mpbp_services_data[4], $mpbp_services_data[5], $mpbp_services_data[6], $mpbp_services_data[7], $mpbp_services_data[8], $mpbp_services_data[9]
-				)
-			);
-			}
-			echo 'Succesfully Inserted Data!';
-		}else{
-			echo 'ERROR: Unable to insert data!';
-			print_r($mpbp_services_error);
-		}
-	}
-}
+//mpbp_insert_to_db($sql, $isset, $success);
 
 /*
 ********
-* Deletes the selected row(s) in db(wp_mpbpservices2)
+* Deletes the selected row(s) in db(wp_mpbpadmin2)
 *******
+*
+* since 1.0.0
+* $section string to specify which page's data is deleted eg servies or orders
+* $page string to specify the page we are in
 */
-public function mpbp_delete_services_data(){
-	global $wpdb;
-	/*
-	* This is a conformation form which appears when user tries to delete data from his services db
-	*/
-	if($_GET['action'] == 'delete' && $_GET['id'] != '' && isset($_POST['mpbp_verify_service_delete']) == ''){
-		echo "<form method='POST' action=''><h3> Are you sure you want to delete service #". $_GET['id'] ."</h3>
-			  <label>YES:</lable><input type='radio' name='mpbp_verify_service_delete' value='Yes'/>
-			  <label>NO:</label><input type='radio' name='mpbp_verify_service_delete' value='No'/>
-			  <input type='submit' value='I CONFIRM THIS ACTION'/></form>";
-	}  
-	/*
-	* When confrmation forms appears, if user clicks "yes" [radio input element] delete the row by -
-	* extracting it id from $_GET['id'] method. Then print out a success message
-	*/
-	if(isset($_POST['mpbp_verify_service_delete'])){
-		if($_GET['action'] == 'delete' && $_GET['id'] != '' && $_POST['mpbp_verify_service_delete'] == 'Yes'){		  
-			$wpdb->query(
-				$wpdb->prepare("
-					DELETE FROM wp_mpbpservices2 WHERE id='%d'", $_GET['id']."
-				")
-			);
-			echo "succesfully deleted Service #". $_GET['id'];
-		}else if($_POST['mpbp_verify_service_delete'] == 'No'){
-			/*
-			* if user chooses not to delete his data redirect him to all services page
-			*/
-			header('Location:'. get_site_url() .'/wp-admin/admin.php?page=all_services');
-			die();
-		}
-	}
+if($_GET['action'] == 'delete'){
+$mpbp_crud_printer->mpbp_delete_admin_data(
+     "wp_mpbpservices2",
+	 $_GET['id'], 
+	 'mpbp_verify_service_delete', 
+	 'service', 
+	 'successfully deleted ', 
+	 get_site_url() .'/wp-admin/admin.php?page=all_services'
+	 );
 }
-
 
 //['name', 'element', 'type', 'class' , 'placeholder', 'value', 'options']
-public function mpbp_printout_inputs($name, $element, $type, $class , $placeholder, $value, $options){
-	switch($element){
-		case "input":
-			echo "<label>". $name ."</label><br><input type='". $type ."' name='". $name ."' id='mpbp_services_". $name ."' class='". $class ."' 
-				  placeholder='". $placeholder ."' value='". $value ."'/><br>";
-			break;
-		case "textarea":
-			echo "<label>". $name ."</label><br><textarea type='". $type ."' name='". $name ."' id='mpbp_services_". $name ."' class='". $class ."' 
-				  placeholder='". $placeholder ."'> ". $value ."</textarea><br>";
-			break;
-		case "img":
-			echo "<input type='". $type ."' id='". $name ."' name='". $name ."' placeholder='". $placeholder ."' value='". $value ."'/>
-					<div class='image-preview-wrapper'>
-                    <img id='image-preview' src='' width='200'/>
-					</div>
-					<input id='upload_image_button' type='button' class='button' value='". __( 'Upload image' ) ."' /></br>
-					<button type='button' id='mpbp_hidden_image_form_btn' value=''>insert to Form</button><br>";
-					break;
-		case "select":
-			echo "<label>". $name ."</label><br><select type='". $type ."' id='". $name ."' name='". $name ."' placeholder='". $placeholder ."'>";
-			for($i=0; $i<sizeof($value); $i++){
-				echo "<option id='mpbp_". $value[$i] ."' value='". $value[$i]."'> ". $value[$i]." </option>";
-			}
-			echo "</select><br>";
-			break;
+//mpbp_printout_inputs($name, $element, $type, $class , $placeholder, $value, $options);
+
+/* 
+* renders the inputs in respective order 
+*/
+//mpbp_render_services($data, $url, $action, $h1Text, $method, $id, $buttonName)
+ /*
+ * This function renders the form
+ * mpbp_render_services($data, $url, $action, $h1Text, $method, $id, $buttonName)
+ */
+ global $wpdb;
+ if($_GET['action'] == 'edit' || $_GET['action'] == 'delete'){
+ $mpbp_verify_if_data_exists = $wpdb->get_results("SELECT * FROM wp_mpbpservices2 WHERE  id = ". $_GET['id'] ."");
+ }
+ $mpbp_print_data;
+
+ if($wpdb->num_rows > 0 || $_GET['action'] == 'add_new'){
+	 for($x = 0; $x < sizeof($mpbp_crud_printer->mpbp_admin); $x++){
+	 //user exists
+	 if($_GET['action'] == 'add_new' && isset($_POST[$mpbp_crud_printer->mpbp_admin[$x]]) != ''){
+		 $mpbp_print_data[$x] = $_POST[$mpbp_crud_printer->mpbp_admin[$x]];
+	 } elseif($_GET['action'] == 'add_new' && isset($_POST[$mpbp_crud_printer->mpbp_admin[$x]]) == ''){
+		 $mpbp_print_data[$x] = '';
+	 } elseif($_GET['action'] == 'edit' || $_GET['action'] == 'delete'){
+		 $mpbp_print_data[$x] = $array_fetch[$mpbp_crud_printer->mpbp_admin[$x]];
 	}
-}
-
-public function mpbp_render_services(){
-	/*
-	* Prints out new inputs
-	* Below array shows how the data is organized
-	* ['name', 'element', 'type', 'class' , 'placeholder', 'value', 'options']
-	*/
-	global $mpbp_fetched_data_results;
-	$mpbp_s_val = [
-	    ["id", "input", "number", "mpbp_service_id", "ID", $_GET['id'], ""],
-		["name", "input", "text", "mpbp_service_name", "Name", 
-		($_GET['action'] == 'add_new')? $_POST['name'] : $mpbp_fetched_data_results['name'], ""],
-		["description", "textarea", "text", "mpbp_service_description", "Description", 
-		($_GET['action'] == 'add_new')? $_POST['description'] : $mpbp_fetched_data_results['description'], ""],
-		["pictures", "img", "text", "mpbp_service_pictures", "Pictures", 
-		($_GET['action'] == 'add_new') ? $_POST['pictures'] : $mpbp_fetched_data_results['pictures'], ""],
-		["price", "input", "number", "mpbp_s_price", "Price", 
-		($_GET['action'] == 'add_new') ? $_POST['price'] : $mpbp_fetched_data_results['price'], ""],
-		["date_created", "input", "text", "mpbp_s_date_created", "Date Created", 
-		($_GET['action'] == 'add_new') ? $_POST['date_created'] : $mpbp_fetched_data_results['date_created'], ""],
-		["category", "select", "text", "mpbp_s_category", "Category", 
-			[($_GET['action'] == 'add_new' && $_POST['category'] != '') ? $_POST['category'] : (($mpbp_fetched_data_results['category'] != '') ? $mpbp_fetched_data_results['category'] : "Select Category"), 
-			"Ride Sharing",  
-			"Accomodation", 
-			"Hotel", 
-			"Flight", 
-			"Other"] , ""],
-		["available_times", "input", "text", "mpbp_s_available_time", "Avaiable Times", 
-		($_GET['action'] == 'add_new') ? $_POST['available_times'] : $mpbp_fetched_data_results['available_times'] , ""],
-		["quantity", "input", "number", "mpbp_s_quantity", "Quantity", 
-		($_GET['action'] == 'add_new') ? $_POST['quantity'] : $mpbp_fetched_data_results['quantity'], ""],
-		["status", "select", "text", "mpbp_s_status", "Status", 
-			[($_GET['action'] == 'add_new') ? $_POST['status'] : (($mpbp_fetched_data_results['status'] != '')? $mpbp_fetched_data_results['status'] : "Select Status"),
-			"Available",
-			"Not Available"], ""],
-		["extra_info", "input", "text", "mpbp_s_extra_info", "Extra Info", 
-		($_GET['action'] == 'add_new') ? $_POST['extra_info'] : $mpbp_fetched_data_results['extra_info'], ""],
-		["", "input", "submit", "button", "", "Submit", ""]
-	];
-	
-	/*
-	* Loops through the above array and print out values
-	*/
-	echo '<form method="POST" enctype="multipart/form-data" action="" id="mpbp_services_1">';
-	echo '<h1 id="h11" class="wp-heading-inline"> Add New Services </h1>
-    <a href="'. get_site_url() .'/wp-admin/admin.php?page=Services&action=add_new" class="page-title-action">Add New</a><br>';
-	for($i = 0; $i < sizeof($mpbp_s_val); $i++){
-		mpbp_printout_inputs($mpbp_s_val[$i][0], $mpbp_s_val[$i][1], $mpbp_s_val[$i][2], $mpbp_s_val[$i][3] , $mpbp_s_val[$i][4], $mpbp_s_val[$i][5], $mpbp_s_val[$i][6]);
 	}
-	echo '</form>';
-}
-
-}
-
-$mpbp_new_crud = new mpbp_crud();
-
-$mpbp_new_crud->mpbp_insert_to_db();
-$mpbp_new_crud->mpbp_render_services();
-$mpbp_new_crud->mpbp_services_update();
-$mpbp_new_crud->mpbp_validate_services();
-$mpbp_new_crud->mpbp_display_services_data();
-$mpbp_new_crud->mpbp_delete_services_data();
+ }else{
+	 echo 'The user you inserted doesn\'t exist! <a href="'. get_site_url() .'/wp-admin/admin.php?page=all_services"><button> Search again </button></a>'; 
 	
+ }
+
+ echo $mpbp_crud_printer->mpbp_render_services(
+ [
+ ['id', 'input', 'number', 'mpbp_id', 'ID', (isset($_GET['id']))? $_GET['id'] : '', ''],
+ ['name', 'input', 'text', "mpbp_name" , 'Name', $mpbp_print_data[0] , ''],
+ ['description', 'textarea', 'text', 'mpbp_description', 'Description', $mpbp_print_data[1], ''],
+ ['pictures', 'img', 'text', 'mpbp_pictures', 'Pictures', $mpbp_print_data[2], '' ],
+ ["price", 'input', 'number', 'mpbp_price', 'Price', $mpbp_print_data[3], ''],
+ ["date_created", "input", "text", "mpbp_s_date_created", "Date Created", $mpbp_print_data[4], ""],
+ ["category", 'select', 'text', 'mpbp_category' , 'Category', 
+ [($mpbp_print_data[5] != "" ) ? $mpbp_print_data[5] : "Select Category", 
+  "Ride Sharing",  
+  "Accomodation", 
+  "Hotel", 
+  "Flight", 
+  "Other"], ''],
+ ["available_times", 'input', 'text', 'mpbp_available_times' , 'Available Times', $mpbp_print_data[6], ''],
+ ["quantity", 'input', 'number', 'mpbp_quantity' , 'Quantity', $mpbp_print_data[7], ''],
+ ["status", 'select', 'text', 'mpbp_status' , 'Status', 
+ [($mpbp_print_data[8] != '') ? $mpbp_print_data[8] : "Select Status",
+ "Available",
+ "Not Available"], ''],
+ ["extra_info", 'input', 'text', 'mpbp_extra_info' , 'Extra Info', $mpbp_print_data[9], ''],
+ ["", "input", "submit", "button", "", "Submit", ""]], 
+  ($_GET['action'] == 'edit')? '/wp-admin/admin.php?page=Services&action=edit' : "", 
+  '', 
+  'Add New My G!', 
+  'POST', 
+  'mpbp_add_new', 
+  ($_GET['action'] == 'edit')? 'Add New' : '');
+  
+  /*
+  * The below function stores inserted 
+  */
+  if(!empty($_POST['name']) && $_GET['action'] == 'add_new'){
+  $mpbp_crud_printer->mpbp_insert_to_db(
+  'wp_mpbpservices2',
+  array(
+  'name' => $mpbp_insert[0],
+  'description' => $mpbp_insert[1],
+  'pictures' => $mpbp_insert[2],
+  "price" => $mpbp_insert[3],
+  "date_created" => $mpbp_insert[4],
+  "category" => $mpbp_insert[5],
+  "available_times" => $mpbp_insert[6],
+  "quantity" => $mpbp_insert[7],
+  "status" => $mpbp_insert[8],
+  "extra_info" => $mpbp_insert[9] 
+  ),
+  array('%s', '%s', '%s', '%d', '%s', '%s', '%s', '%d', '%s', '%s'),
+  'name', 
+  'Succes! inserted data.',
+  '/wp-admin/admin.php?page=my_table2');
+  }
+
+?>
+

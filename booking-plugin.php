@@ -234,21 +234,21 @@ class My_Table2 {
 
         public function admin_menu() {
             $menu_title = 'Multi-Purpose-Booking';  // The title of your menu entry
-			$menu_subTitles = ['Services', 'orders', 'all_users', 'all_service_providers', 'settings', 'all_services', 'orders_crud', 'users', 'service_provider' ];
-            $menu_slug  = 'my_table2';   
-			$sum_menu_1_slugs = ['Services', 'orders', 'all_users', 'all_service_providers', 'settings', 'all_services', 'orders_crud', 'users', 'service_provider' ];
+			$menu_subTitles = ['all_Services', 'all_orders', 'all_users', 'all_service_providers', 'settings', 'services', 'orders', 'users', 'service_providers' ];
+            $menu_slug  = 'mpbp_home';   
+			$sum_menu_page_titles = ['Services', 'Orders', 'Users', 'Service_providers', 'Settings', 'services Crud', 'Orders Crud', 'Users Crud', 'Service Providers Crud' ];
 			// The slug, for example: wp-admin/admin.php?page=my_table
-            add_menu_page($menu_title, $menu_title, 'manage_options', $menu_slug, array($this, 'admin_page'));
-			add_submenu_page($menu_slug, $menu_subTitles[0], $menu_subTitles[0], 'manage_options', $menu_subTitles[0], array($this, 'services_page'));
-			add_submenu_page($menu_slug, $menu_subTitles[1], $menu_subTitles[1], 'manage_options', $menu_subTitles[1], array($this, 'all_orders_page'));
-			add_submenu_page($menu_slug, $menu_subTitles[2], $menu_subTitles[2], 'manage_options', $menu_subTitles[2], array($this, 'users_page'));
-			add_submenu_page($menu_slug, $menu_subTitles[3], $menu_subTitles[3], 'manage_options', $menu_subTitles[3], array($this, 'service_providers_page'));
-			add_submenu_page($menu_slug, $menu_subTitles[4], $menu_subTitles[4], 'manage_options', $menu_subTitles[4], array($this, 'settings_page'));
+            add_menu_page('Home', $menu_title, 'manage_options', $menu_slug, array($this, 'admin_page'));
+			add_submenu_page($menu_slug, $sum_menu_page_titles[0], $sum_menu_page_titles[0], 'manage_options', $menu_subTitles[0], array($this, 'all_services_page'));
+			add_submenu_page($menu_slug, $sum_menu_page_titles[1], $sum_menu_page_titles[1], 'manage_options', $menu_subTitles[1], array($this, 'all_orders_page'));
+			add_submenu_page($menu_slug, $sum_menu_page_titles[2], $sum_menu_page_titles[2], 'manage_options', $menu_subTitles[2], array($this, 'users_page'));
+			add_submenu_page($menu_slug, $sum_menu_page_titles[3], $sum_menu_page_titles[3], 'manage_options', $menu_subTitles[3], array($this, 'service_providers_page'));
+			add_submenu_page($menu_slug, $sum_menu_page_titles[4], $sum_menu_page_titles[4], 'manage_options', $menu_subTitles[4], array($this, 'settings_page'));
             //hidden submenus
-			add_submenu_page($menu_slug, $menu_subTitles[5], $menu_subTitles[5], 'manage_options', $menu_subTitles[5], array($this, 'all_services_page'));
-			add_submenu_page($menu_slug, $menu_subTitles[6], $menu_subTitles[6], 'manage_options', $menu_subTitles[6], array($this, 'orders_crud_page'));
-			add_submenu_page($menu_slug, $menu_subTitles[7], $menu_subTitles[7], 'manage_options', $menu_subTitles[7], array($this, 'users_crud_page'));
-			add_submenu_page($menu_slug, $menu_subTitles[8], $menu_subTitles[8], 'manage_options', $menu_subTitles[8], array($this, 'service_providers_crud_page'));
+			add_submenu_page($menu_slug, $sum_menu_page_titles[5], $sum_menu_page_titles[5], 'manage_options', $menu_subTitles[5], array($this, 'services_page'));
+			add_submenu_page($menu_slug, $sum_menu_page_titles[6], $sum_menu_page_titles[6], 'manage_options', $menu_subTitles[6], array($this, 'orders_crud_page'));
+			add_submenu_page($menu_slug, $sum_menu_page_titles[7], $sum_menu_page_titles[7], 'manage_options', $menu_subTitles[7], array($this, 'users_crud_page'));
+			add_submenu_page($menu_slug, $sum_menu_page_titles[8], $sum_menu_page_titles[8], 'manage_options', $menu_subTitles[8], array($this, 'service_providers_crud_page'));
 		}
 		
 		public function admin_page() {
@@ -362,7 +362,6 @@ $mpbp_service_listing = new mpbp_data_listing();
 	<script>
 	    // stores cookies of the service ordered
 	    document.cookie = 'order_values=' + <?php echo json_encode($json,JSON_UNESCAPED_SLASHES); ?> +'expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/';
-		alert('GG my G');
 	</script>
 	<?php
 	//setcookie('order_values', $json);

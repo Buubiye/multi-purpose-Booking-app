@@ -218,7 +218,7 @@ $mpbp_crud_printer->mpbp_delete_admin_data(
   * @since    1.0.0
   * @access   public
   */
-  if(!empty($_POST['date']) && $_GET['action'] == 'add_new' | $_GET['process'] == 'order'){
+  if(!empty($_POST['date']) && $_GET['action'] == 'add_new' | isset($_GET['process']) == 'order'){
   $mpbp_crud_printer->mpbp_insert_to_db(
   'wp_mpbp_orders', 
   array(
