@@ -22,3 +22,8 @@
     top: -8px;
     color: white;
  }
+ 
+ .mpbp_dashboard_column{
+	 width: 50%;
+	 float: left;
+ }
