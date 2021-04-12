@@ -24,6 +24,7 @@
  }
  
  .mpbp_dashboard_column{
-	 width: 50%;
+	 width: 30%;
+	 height: 300px;
 	 float: left;
  }

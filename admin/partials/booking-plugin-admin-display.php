@@ -37,24 +37,44 @@
  }
  
  // get orders data by date
- $mpbp_date = '13-12-2020';
+ $mpbp_date = '03-04-2021';
  $get_data_by_date = array();
  $mpbp_store_dates = array();
- for($i=0; $i<10; $i++){
+ for($i=0; $i<7; $i++){
 // increments the $mpbp_date date with a given number , 1 is minimum
- $mpbp_date = date('d-m-Y', strtotime($mpbp_date. ' + 1 days'));
+ $mpbp_date = date('Y-m-d', strtotime($mpbp_date. ' + 1 days'));
  // stores the values for each date to be later displayed on the graphs
- $get_data = $wpdb->get_results('SELECT COUNT(id) AS countOrders FROM wp_mpbp_orders WHERE date = "'. $mpbp_date . '"');
+ $get_data = $wpdb->get_results('SELECT COUNT(DATE_FORMAT(date, "%d")) AS countOrders,
+							DATE_FORMAT(date, "%d-%b") AS getDate FROM wp_mpbp_orders tbl
+							WHERE DATE_FORMAT(tbl.date, "%d-%m-%Y") BETWEEN "03-04-2021" AND "10-04-2021"
+                            GROUP BY DAY(date)');
  foreach($get_data as $results){
 	 $get_data_by_date[$i] = $results->countOrders;
+	 
  }
+ 
+ // stores the labels 
+ $custom_label = $mpbp_date;
+ //$mpbp_date_custom = date('d-M', strtotime($custom_label. ' + 1 days'));
  // stores dates extracted to be later diplayed on the charts
- $mpbp_store_dates[$i] = $mpbp_date;
+	 $mpbp_store_dates[$i] = $custom_label;
 }
 
-print_r($get_data_by_date);
+echo JSON_encode($get_data_by_date);
 echo '<br><br>';
-print_r($mpbp_store_dates);
+echo JSON_encode($mpbp_store_dates[0]);
+
+
+
+
+
+// exmaple query ##### should be deleted later
+$lklk = $wpdb->get_results('SELECT COUNT(DATE_FORMAT(date, "%d")) AS getCount, DATE_FORMAT(date, "%d-%b") AS getDate FROM wp_mpbp_orders tbl
+							WHERE DATE_FORMAT(tbl.date, "%d-%m-%Y") BETWEEN "03-04-2021" AND "10-04-2021"
+                            GROUP BY DAY(date)');
+print_r($lklk);
+echo '<br><br><br>';
+echo JSON_encode($lklk);
 ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.0.2/chart.min.js"></script>
 <div>
@@ -67,11 +87,11 @@ var ctx = document.getElementById("barChart");
 var barChart = new Chart(ctx, {
     type: 'bar',
     data: {
-        labels: ["Dog", "Cat", "Pangolin"],
+        labels: <?php echo JSON_encode($mpbp_store_dates); ?>,
         datasets: [{
-			      backgroundColor: '#00ff00',
-            label: '# of Votes 2016',
-            data: [12, 19, 3]
+			      backgroundColor: '#19a0ef',
+            label: '# of orders',
+            data: <?php echo JSON_encode($get_data_by_date); ?>
             }]
 		}
 });
@@ -87,6 +107,6 @@ function addData(chart, label, color, data) {
 
 // inserting the new dataset after 3 seconds
 setTimeout(function() {
-	addData(barChart, '# of Votes 2017', '#ff0000', [16, 14, 8]);
+	//addData(barChart, '# of Votes 2017', '#ff0000', [16, 14, 8]);
 }, 3000);
 </script>

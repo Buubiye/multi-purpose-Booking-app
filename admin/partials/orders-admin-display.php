@@ -321,7 +321,7 @@ function create_mpbp_services_db_table() {
 
 			$sql = "CREATE TABLE $table_name (
 				id int(11) NOT NULL AUTO_INCREMENT,
-				            date varchar (255),
+				            date datetime,
 							client_id varchar (255),
 							service_id varchar (255),
 							service_provider_id varchar (255),
