@@ -40,18 +40,24 @@
  $mpbp_date = '03-04-2021';
  $get_data_by_date = array();
  $mpbp_store_dates = array();
+ 
+  // stores the values for each date to be later displayed on the graphs
+ $get_data = $wpdb->get_results('SELECT COUNT(DATE_FORMAT(date, "%d")) AS countOrders,
+							DATE_FORMAT(date, "%Y-%m-%d") AS getDate FROM wp_mpbp_orders tbl
+							WHERE DATE_FORMAT(tbl.date, "%d-%m-%Y") BETWEEN "03-04-2021" AND "10-04-2021"
+                            GROUP BY DAY(date)');
+							
  for($i=0; $i<7; $i++){
 // increments the $mpbp_date date with a given number , 1 is minimum
  $mpbp_date = date('Y-m-d', strtotime($mpbp_date. ' + 1 days'));
- // stores the values for each date to be later displayed on the graphs
- $get_data = $wpdb->get_results('SELECT COUNT(DATE_FORMAT(date, "%d")) AS countOrders,
-							DATE_FORMAT(date, "%d-%b") AS getDate FROM wp_mpbp_orders tbl
-							WHERE DATE_FORMAT(tbl.date, "%d-%m-%Y") BETWEEN "03-04-2021" AND "10-04-2021"
-                            GROUP BY DAY(date)');
- foreach($get_data as $results){
-	 $get_data_by_date[$i] = $results->countOrders;
+	 // matches the selected range with the fetched data
+	 if($mpbp_date == isset($get_data[$i]->getDate)){
+	 $get_data_by_date[$i] = $get_data[$i]->countOrders;
+	 }else{
+	 $get_data_by_date[$i] = 0;	 
+	 }
 	 
- }
+ 
  
  // stores the labels 
  $custom_label = $mpbp_date;
@@ -63,7 +69,7 @@
 echo JSON_encode($get_data_by_date);
 echo '<br><br>';
 echo JSON_encode($mpbp_store_dates[0]);
-
+echo '<h1>'. $_POST['mpbp_date_range'] .'</h1>';
 
 
 
@@ -77,6 +83,15 @@ echo '<br><br><br>';
 echo JSON_encode($lklk);
 ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.0.2/chart.min.js"></script>
+<form method="POST">
+    <select name="mpbp_date_range">
+	   <option> <?php isset($_POST['mpbp_date_range'])? echo $_POST['mpbp_date_range'] : 'Select Filter' ?> </option>
+	   <option> Daily </option>
+	   <option> Monthly </option>
+	   <option> Yearly </option>
+	</select>
+	<button type="submit">Filter</button>
+</form>
 <div>
 	<div class="mpbp_dashboard_column">
 		<canvas id="barChart" width="400" height="400"></canvas>
