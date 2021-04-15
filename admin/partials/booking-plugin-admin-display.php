@@ -73,13 +73,21 @@
   echo $search_ending_date;
   echo '<h1> hello </h1>';  
   print_r($get_data);	
-  /*
-  * this is commented to be used as a backup
-    $get_data = $wpdb->get_results('SELECT COUNT(DATE_FORMAT(date, "%d")) AS countOrders,
-							DATE_FORMAT(date, "%Y-%m-%d") AS getDate FROM wp_mpbp_orders tbl
-							WHERE DATE_FORMAT(tbl.date, "%d-%m-%Y") BETWEEN "03-04-2021" AND "10-04-2021"
-                            GROUP BY DAY(date)');  
-   */
+  // convert $get_data stdclass object to array
+  $get_data_converted = json_decode(json_encode($get_data), true);
+  echo '<h1>';
+  print_r($get_data_converted);
+  echo '</h1>';
+ 
+ //search array funcction
+ function searchForId($id, $array) {
+   foreach ($array as $key => $val) {
+       if ($val['getDate'] === $id) {
+           return $key;
+       }
+   }
+   return null;
+}
  for($i=0; $i<7; $i++){
 	 
 // increments the $mpbp_date date with a given number , 1 is minimum
@@ -89,12 +97,31 @@ if($_POST['mpbp_date_range'] == 'Daily' | $_POST['mpbp_date_range'] == 'Select F
 	$mpbp_date = date('Y-M', strtotime($mpbp_date. ' - 1 Months'));
 }
 
+
+     // get the current date
+	 // search for a matching nested array with the same getDate value
+	 
+	 
+  $mpbp_get_index = searchForId($mpbp_date, $get_data_converted);
+ if( $mpbp_get_index != 0){
+	 $get_data_by_date[$i] = $get_data[$mpbp_get_index]->countOrders;
+ }else{
+	 $get_data_by_date[$i] = 0;	
+ };
+	/*foreach($get_data_converted as $key=>$val){
+		if($result->getDate == $mpbp_date){
+			echo '<h1>'. $key .'</h1>';  
+			$get_data_by_date[$i] = $get_data[$i]->countOrders;
+		}else{
+			$get_data_by_date[$i] = 0;	
+		}
+	}*/
 	 // matches the selected range with the fetched data
-	 if($mpbp_date == isset($get_data[$i]->getDate)){
+	 /*if($mpbp_date == isset($get_data[$i]->getDate)){
 	 $get_data_by_date[$i] = $get_data[$i]->countOrders;
 	 }else{
 	 $get_data_by_date[$i] = 0;	 
-	 }
+	 }*/
 	 
  
  
