@@ -113,7 +113,7 @@ if($_POST['mpbp_date_range'] == 'Daily' | $_POST['mpbp_date_range'] == 'Select F
      // get the current date
 	 // search for a matching nested array with the same getDate value
 	 
-	 
+	 echo '<h2 style="color:green"">'. $mpbp_date . '</h2>';
   $mpbp_get_index = searchForId($mpbp_date, $get_data_converted);
  if( $mpbp_get_index != 0){
 	 $get_data_by_date[$i] = $get_data[$mpbp_get_index]->countOrders;
@@ -128,6 +128,7 @@ if($_POST['mpbp_date_range'] == 'Daily' | $_POST['mpbp_date_range'] == 'Select F
  // stores dates extracted to be later diplayed on the charts
 	 $mpbp_store_dates[$i] = $custom_label;
 }
+print_r($get_data_by_date);
 
 // exmaple query ##### should be deleted later
 /*$lklk = $wpdb->get_results('SELECT COUNT(DATE_FORMAT(date, "%d")) AS getCount, DATE_FORMAT(date, "%d-%b") AS getDate FROM wp_mpbp_orders tbl
