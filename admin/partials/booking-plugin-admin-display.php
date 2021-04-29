@@ -62,13 +62,13 @@
 	   'date_displayed' => 'date, "%Y-%m-%d"',
 	   'search_date_format' => 'tbl.date, "%d-%m-%Y"',
 	   'search_ending_date' => date('d-m-Y'),
-	   'search_starting_date' => date('d-m-Y', strtotime($mpbp_this_day. ' - 7 Days')),
+	   'search_starting_date' => date('d-m-Y', strtotime($mpbp_this_day. ' - 8 Days')),
 	   'group_by' => "DAY"
 	  );
  }else if($_POST['mpbp_date_range'] == 'Monthly'){
 	 echo "<h1>here we are</h1>";
 	 $mpbp_query_data = array(
-	   'date_format' => 'date, "%m"',
+	   'date_format' => 'date, "%Y-%m"',
 	   'date_displayed' => 'date, "%Y-%m"',
 	   'search_date_format' => 'tbl.date, "%m-%Y"',
 	   'search_ending_date' => date('m-Y'),
@@ -98,7 +98,7 @@
            return $key;
        }
    }
-   return null;
+   return 'empty';
 }
  for($i=0; $i<7; $i++){
 	 
@@ -111,9 +111,9 @@ if($_POST['mpbp_date_range'] == 'Daily' | $_POST['mpbp_date_range'] == 'Select F
 	}
 }else if($_POST['mpbp_date_range'] == 'Monthly'){
 	if(!empty($get_data_by_date)){
-		$mpbp_date = date('Y-m', strtotime($mpbp_date. ' - 1 Months'));
+		$mpbp_date = date('Y-m', strtotime($mpbp_date. ' + 1 Months'));
 	}else{
-		$mpbp_date = date('Y-m');
+		$mpbp_date = date('Y-m', strtotime($mpbp_date. ' - 6 Months'));
 	}
 }
 
@@ -125,7 +125,7 @@ if($_POST['mpbp_date_range'] == 'Daily' | $_POST['mpbp_date_range'] == 'Select F
   $mpbp_get_index = searchForId($mpbp_date, $get_data_converted);
   echo '<h2 style="color:purple"">'. $mpbp_get_index .'</h2>';
   
- if(!empty($mpbp_get_index)){
+ if($mpbp_get_index != 'empty'){
 	 $get_data_by_date[$i] = $get_data[$mpbp_get_index]->countOrders;
  }else{
 	 $get_data_by_date[$i] = 0;	
