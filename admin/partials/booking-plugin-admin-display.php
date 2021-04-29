@@ -104,9 +104,17 @@
 	 
 // increments the $mpbp_date date with a given number , 1 is minimum
 if($_POST['mpbp_date_range'] == 'Daily' | $_POST['mpbp_date_range'] == 'Select Filter' | $_POST['mpbp_date_range'] == ''){
-	$mpbp_date = date('Y-m-d', strtotime($mpbp_date. ' + 1 Days'));
+	if($get_data_by_date == ''){
+		$mpbp_date = date('Y-m-d');
+	}else{
+		$mpbp_date = date('Y-m-d', strtotime($mpbp_date. ' + 1 Days'));
+	}
 }else if($_POST['mpbp_date_range'] == 'Monthly'){
-	$mpbp_date = date('Y-m', strtotime($mpbp_date. ' - 1 Months'));
+	if(!empty($get_data_by_date)){
+		$mpbp_date = date('Y-m', strtotime($mpbp_date. ' - 1 Months'));
+	}else{
+		$mpbp_date = date('Y-m');
+	}
 }
 
 
@@ -115,7 +123,9 @@ if($_POST['mpbp_date_range'] == 'Daily' | $_POST['mpbp_date_range'] == 'Select F
 	 
 	 echo '<h2 style="color:green"">'. $mpbp_date . '</h2>';
   $mpbp_get_index = searchForId($mpbp_date, $get_data_converted);
- if( $mpbp_get_index != 0){
+  echo '<h2 style="color:purple"">'. $mpbp_get_index .'</h2>';
+  
+ if(!empty($mpbp_get_index)){
 	 $get_data_by_date[$i] = $get_data[$mpbp_get_index]->countOrders;
  }else{
 	 $get_data_by_date[$i] = 0;	
