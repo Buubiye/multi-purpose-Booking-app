@@ -58,30 +58,39 @@
  */
  if($_POST['mpbp_date_range'] == 'Daily' || $_POST['mpbp_date_range'] == 'Select Filter' | !isset($_POST['mpbp_date_range'])){
 	 $mpbp_query_data = array(
-	   'date_format' => 'date, "%d"',
+	   'date_format' => 'date, "%Y-%m-%d"',
 	   'date_displayed' => 'date, "%Y-%m-%d"',
 	   'search_date_format' => 'tbl.date, "%d-%m-%Y"',
 	   'search_ending_date' => date('d-m-Y'),
 	   'search_starting_date' => date('d-m-Y', strtotime($mpbp_this_day. ' - 8 Days')),
-	   'group_by' => "DAY"
+	   'group_by' => "YEAR(date), MONTH(date), DAY(date)"
 	  );
  }else if($_POST['mpbp_date_range'] == 'Monthly'){
-	 echo "<h1>here we are</h1>";
 	 $mpbp_query_data = array(
-	   'date_format' => 'date, "%Y-%m"',
+	   'date_format' => 'date, "%m"',
 	   'date_displayed' => 'date, "%Y-%m"',
 	   'search_date_format' => 'tbl.date, "%m-%Y"',
 	   'search_ending_date' => date('m-Y'),
 	   'search_starting_date' => date('m-Y', strtotime($mpbp_this_month. ' - 7 Months')),
-	   'group_by' => "MONTH"
+	   'group_by' => "YEAR(date), MONTH(date)"
+	 );
+ }else if($_POST['mpbp_date_range'] == 'Yearly'){
+	 $mpbp_query_data = array(
+	   'date_format' => 'date, "%Y"',
+	   'date_displayed' => 'date, "%Y"',
+	   'search_date_format' => 'tbl.date, "%Y"',
+	   'search_ending_date' => date('Y'),
+	   'search_starting_date' => date('Y', strtotime($mpbp_this_month. ' - 7 Years')),
+	   'group_by' => "YEAR(date)"
 	 );
  }
+ 
  print_r($mpbp_query_data);
   // stores the values for each date to be later displayed on the graphs
  $get_data = $wpdb->get_results('SELECT COUNT(DATE_FORMAT('. $mpbp_query_data["date_format"] .')) AS countOrders,
 							DATE_FORMAT('. $mpbp_query_data["date_displayed"] .') AS getDate FROM wp_mpbp_orders tbl
 							WHERE DATE_FORMAT('. $mpbp_query_data["search_date_format"] .') BETWEEN "'. $mpbp_query_data["search_starting_date"] .'" 
-							AND "'. $mpbp_query_data["search_ending_date"] .'" GROUP BY '. $mpbp_query_data["group_by"] .'(date)');
+							AND "'. $mpbp_query_data["search_ending_date"] .'" GROUP BY '. $mpbp_query_data["group_by"] .'');
   
   echo '<h1> hello </h1>';  
   print_r($get_data);	
@@ -115,6 +124,12 @@ if($_POST['mpbp_date_range'] == 'Daily' | $_POST['mpbp_date_range'] == 'Select F
 	}else{
 		$mpbp_date = date('Y-m', strtotime($mpbp_date. ' - 6 Months'));
 	}
+}else if($_POST['mpbp_date_range'] == 'Yearly'){
+	if(!empty($get_data_by_date)){
+		$mpbp_date = date('Y-m', strtotime($mpbp_date. ' + 1 Year'));
+	}else{
+		$mpbp_date = date('Y-m', strtotime($mpbp_date. ' - 6 Year'));
+	}
 }
 
 
@@ -122,7 +137,19 @@ if($_POST['mpbp_date_range'] == 'Daily' | $_POST['mpbp_date_range'] == 'Select F
 	 // search for a matching nested array with the same getDate value
 	 
 	 echo '<h2 style="color:green"">'. $mpbp_date . '</h2>';
-  $mpbp_get_index = searchForId($mpbp_date, $get_data_converted);
+  // stores the found date in mysql query
+  $mpbp_get_index;
+  /*
+  * This if statement makes sure if the $_POST['mpbp_date_range'] != yearly to use the 
+  * regular "$mpbp_date" , if it is $_POST['mpbp_date_range'] == yearly it will use the
+  * it will use the "date('Y', strtotime($mpbp_date))", because $mpbp_date store Y-M date
+  * so the above function is used for converting the Y-m to Y only.
+  */
+  if($_POST['mpbp_date_range'] == 'Yearly'){
+	$mpbp_get_index = searchForId(date('Y', strtotime($mpbp_date)), $get_data_converted);
+  }else{
+	$mpbp_get_index = searchForId($mpbp_date, $get_data_converted);
+  }
   echo '<h2 style="color:purple"">'. $mpbp_get_index .'</h2>';
   
  if($mpbp_get_index != 'empty'){
@@ -133,10 +160,14 @@ if($_POST['mpbp_date_range'] == 'Daily' | $_POST['mpbp_date_range'] == 'Select F
  
  
  // stores the labels 
- $custom_label = $mpbp_date;
+ //$custom_label = $mpbp_date;
  //$mpbp_date_custom = date('d-M', strtotime($custom_label. ' + 1 days'));
  // stores dates extracted to be later diplayed on the charts
-	 $mpbp_store_dates[$i] = $custom_label;
+ if($_POST['mpbp_date_range'] == 'Yearly'){
+	 $mpbp_store_dates[$i] = date('Y', strtotime($mpbp_date));
+ }else{
+	  $mpbp_store_dates[$i] = $mpbp_date;
+ }
 }
 print_r($get_data_by_date);
 
