@@ -23,7 +23,15 @@ class mpbp_crud{
     */	 
 	public $mpbp_admin;       		      
 	  
-	 
+	 /*
+    * stores the name of the page
+	*
+	* @since    1.0.0
+	* @access   public
+	* @var      string    $mpbp_page_name    This string stores the name of the page.
+    */	 
+	public $mpbp_page_name; 
+	
 	/*
 	* This array stores the names of the inputs in admin page
 	*
@@ -119,6 +127,13 @@ public function mpbp_admin_update($dbTable, $data, $dataFormat, $logic, $success
 		 global $wpdb; 
 		 if($logic){
 		 if($this->mpbp_admin_error == ''){
+		/*	 * get user role
+		    $user = wp_get_current_user();
+            $role = (array) $user->roles;
+			 if($role[0] == "author" & authord-id != this-id){
+				 return "sorry, this data doesn't exist";
+			 }
+		 */
 				$wpdb->update($dbTable, $data, $dataFormat);
 			
 			/*
@@ -235,6 +250,18 @@ public function mpbp_delete_admin_data($dbTable, $id, $section, $page, $success,
 
 //['name', 'element', 'type', 'class' , 'placeholder', 'value', 'options']
 public function mpbp_printout_inputs($name, $element, $type, $class , $placeholder, $value, $options){
+	
+	$this->mpbp_display_admin_data(
+	  "id",
+	  5, 
+	  'wp_mpbpservices2',
+	  '/wp-admin/admin.php?page=all_services'
+	  ); 
+
+echo '<h1>';
+echo $this->mpbp_page_name;
+print_r($this->mpbp_fetched_data_results);
+echo '</h1>';
 	switch($element){
 		case "input":
 			return "<label>". $name ."</label><br><input type='". $type ."' name='". $name ."' id='mpbp_admin_". $name ."' class='". $class ."' 

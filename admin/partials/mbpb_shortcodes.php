@@ -1,4 +1,8 @@
 <?php 
+if ( !defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /*
 *--------------------------------------------------------------------
 * this section works on shortcodes and it will be exported to a different file

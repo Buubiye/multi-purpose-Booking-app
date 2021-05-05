@@ -10,6 +10,11 @@
  * @package    Booking_Plugin
  * @subpackage Booking_Plugin/admin/partials
  */
+ 
+ if ( !defined( 'ABSPATH' ) ) {
+	exit;
+}
+
  $x = ["id", "date"];
  echo implode(',', ["id", "date"]);
 require_once plugin_dir_path(dirname(__FILE__)).'class-booking-plugin-listings.php';

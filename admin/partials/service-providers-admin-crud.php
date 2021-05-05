@@ -1,4 +1,9 @@
 <?php
+
+if ( !defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * This file executes user crud functionality
  *

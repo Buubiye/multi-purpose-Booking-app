@@ -1,5 +1,9 @@
 <?php
 
+if ( !defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Provide a services crud functionality.
  *
@@ -33,6 +37,13 @@
 	"extra_info" 
 ];
 
+
+ /*
+    * stores the name of the page
+*/	 
+ $mpbp_crud_printer->mpbp_page_name = "wp_mpbpservices2"; 
+ 
+ 
 /*
 * stores the logic for input validation
 */
