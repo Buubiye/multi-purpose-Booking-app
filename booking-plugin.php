@@ -196,11 +196,14 @@ register_deactivation_hook( __FILE__, 'deactivate_booking_plugin' );
 require_once('includes\class-booking-plugin-activator.php');
 register_activation_hook( __FILE__, 'create_mpbp_services_db_table' );
 
+
+
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-booking-plugin.php';
+require plugin_dir_path( __FILE__ ) . 'includes\functions.php';
 
 /**
  * Begins execution of the plugin.
@@ -238,7 +241,7 @@ class My_Table2 {
             $menu_slug  = 'mpbp_home';   
 			$sum_menu_page_titles = ['Services', 'Orders', 'Users', 'Service_providers', 'Settings', 'services Crud', 'Orders Crud', 'Users Crud', 'Service Providers Crud' ];
 			// The slug, for example: wp-admin/admin.php?page=my_table
-            add_menu_page('Home', $menu_title, 'manage_options', $menu_slug, array($this, 'admin_page'));
+            add_menu_page($menu_title, $menu_title, 'manage_options', $menu_slug, array($this, 'admin_page'));
 			add_submenu_page($menu_slug, $sum_menu_page_titles[0], $sum_menu_page_titles[0], 'manage_options', $menu_subTitles[0], array($this, 'all_services_page'));
 			add_submenu_page($menu_slug, $sum_menu_page_titles[1], $sum_menu_page_titles[1], 'manage_options', $menu_subTitles[1], array($this, 'all_orders_page'));
 			add_submenu_page($menu_slug, $sum_menu_page_titles[2], $sum_menu_page_titles[2], 'manage_options', $menu_subTitles[2], array($this, 'users_page'));

@@ -37,7 +37,7 @@ $mpbp_service_listing = new mpbp_data_listing();
   $mpbp_service_listing->mpbp_services_results_per_page = 5;
   $mpbp_service_listing->mpbp_listing_title = '<h1>Orders</h1>';
   $mpbp_service_listing->mpbp_listing_button = 'Add New';
-  $mpbp_service_listing->mpbp_listing_button_url = '/wp-admin/admin.php?page=orders_crud&';
+  $mpbp_service_listing->mpbp_listing_button_url = '/wp-admin/admin.php?page=orders&';
   $mpbp_service_listing->mpbp_items = 'Orders';
   $mpbp_service_listing->mpbp_page_name = 'orders';
   $mpbp_service_listing->mpbp_listing_url = '/wp-admin/admin.php?page=orders&order=';
