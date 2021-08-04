@@ -6,3 +6,6 @@ Feature of this plugin will include:
 2. Fast and reliable
 3. Integration will third party apps
 4. Free forever
+
+
+<< This project will be published after 1 month which will be [23-Aug-2021] >>
